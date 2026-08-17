@@ -1,0 +1,28 @@
+/* **Start** => Use Fonts */
+@font-face {
+    font-family: "Title";
+    src: url("../assets/fonts/Lalezar-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Button";
+    src: url("../assets/fonts/Vazirmatn-Bold.ttf") format("truetype");
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: "Text";
+    src: url("../assets/fonts/Vazirmatn-Medium.ttf") format("truetype");
+    font-weight: 500;
+    font-style: normal;
+}
+@font-face {
+    font-family: "TextRegular";
+    src: url("../assets/fonts/Vazirmatn-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}
+/* **End** => Use Fonts */
+
+

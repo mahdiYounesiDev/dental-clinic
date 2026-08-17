@@ -1,0 +1,32 @@
+:root {
+    /* **Start** => Primary Colors */
+    --color-white: #ffffff;
+    --color-sky: #C7EEFF;
+    --color-mint: #50D890;
+    --color-dark: #1D242B;
+    --color-primary: #0077C0;
+    --color-accent: #FF7E67;
+    /* **End** => Primary Colors */
+
+    /* **Start** => Font Sizes */
+    --fs-xs: 0.75rem;   /* 12px */
+    --fs-sm: 0.875rem;  /* 14px */
+    --fs-md: 1rem;      /* 16px */
+    --fs-lg: 1.125rem;  /* 18px */
+    --fs-xl: 1.25rem;   /* 20px */
+    --fs-2xl: 1.5rem;   /* 24px */
+    --fs-3xl: 1.875rem; /* 30px */
+    --fs-4xl: 2.25rem;  /* 36px */
+    --fs-5xl: 3rem;     /* 48px */
+    --fs-6xl: 3.75rem;  /* 60px */
+    /* **End** => Font Sizes */
+
+    /* **Start** => Border Radius */
+    --radius-sm: 0.375rem;  /* 6px */
+    --radius-md: 0.5rem;    /* 8px */
+    --radius-lg: 0.75rem;   /* 12px */
+    --radius-xl: 1rem;      /* 16px */
+    --radius-2xl: 1.5rem;   /* 24px */
+    --radius-full: 100%;  /* 100% */
+    /* **End** => Border Radius */
+}
