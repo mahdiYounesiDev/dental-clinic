@@ -1,4 +1,4 @@
-/* Layout */
+/* ==================== Hero Layout & Video ==================== */
 .c-hero {
     position: relative;
     width: 100%;
@@ -8,6 +8,8 @@
     align-items: center;
     overflow: hidden;
     box-sizing: border-box;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
 }
 
 .c-hero *,
@@ -16,7 +18,6 @@
     box-sizing: border-box;
 }
 
-/* Background Video */
 .c-hero__video-wrapper {
     position: absolute;
     top: 0;
@@ -30,8 +31,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* Parallax Scroll Effect */
-    transform: translateY(var(--scroll-y, 0px));
     will-change: transform;
 }
 
@@ -57,7 +56,7 @@
     justify-content: center;
 }
 
-/* Glassmorphism Card (Improved Transparency & Typography) */
+/* ==================== Hero Card Component ==================== */
 .c-hero-card {
     align-self: flex-start;
     width: 100%;
@@ -69,6 +68,7 @@
     padding: 32px;
     border: 1px solid rgba(255, 255, 255, 0.4);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    will-change: transform, opacity;
 }
 
 .c-hero-card__title {
@@ -104,7 +104,7 @@
     padding: 12px var(--fs-lg);
     border-radius: var(--radius-md);
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease;
     box-shadow: 0 8px 18px rgba(0, 119, 192, 0.3);
 }
 
@@ -113,7 +113,7 @@
     transform: translateY(-2px);
 }
 
-/* Support Button (Redesigned for Video Contrast) */
+/* ==================== Floating Actions ==================== */
 .c-hero__support {
     position: absolute;
     bottom: 40px;
@@ -132,7 +132,8 @@
     border: 1px solid rgba(255, 255, 255, 0.3);
     text-decoration: none;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    will-change: transform, opacity;
 }
 
 .c-hero__support:hover {
@@ -156,14 +157,14 @@
     justify-content: center;
     text-decoration: none;
     box-shadow: 0 6px 16px rgba(0, 119, 192, 0.3);
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease;
 }
 
 .c-hero__scroll-btn:hover {
     transform: translateX(-50%) translateY(4px);
 }
 
-/* Responsive Styles */
+/* ==================== Responsive ==================== */
 @media screen and (max-width: 991px) {
     .c-hero__container {
         padding-top: 90px;
@@ -182,10 +183,4 @@
         transform: translateX(50%);
         bottom: 90px;
     }
-}
-.c-hero__video,
-.c-hero-card,
-.c-hero__support {
-    will-change: transform, opacity;
-    transition: transform 0.1s linear, opacity 0.1s linear;
 }

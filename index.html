@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LumiDent Clinic</title>
 
+    <!-- External Stylesheets -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 
+    <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="./css/main.css">
-
-    <title></title>
 </head>
 
 <body>
 
+    <!-- ==================== Header Section ==================== -->
     <header class="c-header-wrapper">
         <div class="c-header">
-
+            <!-- Brand & Mobile Toggle -->
             <div class="c-header__right">
                 <button class="c-header__toggle" id="js-header-toggle" aria-label="Toggle menu">
                     <span class="c-header__toggle-line"></span>
@@ -29,6 +32,7 @@
                 </a>
             </div>
 
+            <!-- Navigation Links -->
             <nav class="c-navbar" id="js-navbar">
                 <ul class="c-navbar__list">
                     <li class="c-navbar__item">
@@ -38,7 +42,7 @@
                         <a href="#" class="c-navbar__link">پزشکان</a>
                     </li>
                     <li class="c-navbar__item">
-                        <a href="#" class="c-navbar__link">گالری</a>
+                        <a href="#gallerySection" class="c-navbar__link">گالری</a>
                     </li>
                     <li class="c-navbar__item">
                         <a href="#" class="c-navbar__link">نظرات و سوالات</a>
@@ -55,6 +59,7 @@
                 </ul>
             </nav>
 
+            <!-- Social Links & Profile -->
             <div class="c-actions">
                 <a href="#" class="c-actions__icon" aria-label="Instagram">
                     <i class="fab fa-instagram"></i>
@@ -68,25 +73,24 @@
                 <a href="#" class="c-actions__icon" aria-label="Language">
                     <i class="fas fa-globe"></i>
                 </a>
-
                 <a href="#" class="c-actions__profile" aria-label="Profile">
                     <i class="fas fa-user-circle"></i>
                 </a>
             </div>
-
         </div>
     </header>
 
-
-    <!-- Hero Section -->
+    <!-- ==================== Hero Section ==================== -->
     <section class="c-hero">
+        <!-- Hero Background Video -->
         <div class="c-hero__video-wrapper">
-            <video class="c-hero__video" autoplay loop muted playsinline>
+            <video class="c-hero__video" autoplay muted loop playsinline preload="metadata" decoding="async">
                 <source src="./assets/videos/Dentist_hero.mp4" type="video/mp4">
             </video>
             <div class="c-hero__overlay"></div>
         </div>
 
+        <!-- Hero Content Container -->
         <div class="c-hero__container">
             <div class="c-hero-card">
                 <h1 class="c-hero-card__title">کلینیک تخصصی دندان پزشکی</h1>
@@ -97,19 +101,64 @@
                 <a href="#" class="c-hero-card__btn">سریع نوبت بگیر</a>
             </div>
 
+            <!-- Floating Action Buttons -->
             <a href="#" class="c-hero__support">
                 پشتیبانی <i class="fas fa-arrow-left"></i>
             </a>
 
-            <a href="#next-section" class="c-hero__scroll-btn" id="js-scroll-btn" aria-label="Scroll Down">
+            <a href="#gallerySection" class="c-hero__scroll-btn" id="js-scroll-btn" aria-label="Scroll Down">
                 <i class="fas fa-arrow-down"></i>
             </a>
         </div>
     </section>
 
+    <!-- ==================== Gallery Section ==================== -->
+    <section class="c-gallery" id="gallerySection" aria-labelledby="gallery-title">
+        <div class="c-gallery__container">
+            <!-- Gallery Header -->
+            <header class="c-gallery__header">
+                <div class="c-gallery__title-group">
+                    <span class="c-gallery__badge">نمونه کارها</span>
+                    <h2 id="gallery-title" class="c-gallery__title">گالری قبل و بعد درمان</h2>
+                </div>
 
+                <!-- Navigation Controls -->
+                <div class="c-gallery__actions">
+                    <nav class="c-gallery__nav" aria-label="Slider Controls">
+                        <button class="c-gallery__nav-btn js-gallery-prev" aria-label="Previous Slide">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                        <button class="c-gallery__nav-btn js-gallery-next" aria-label="Next Slide">
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                    </nav>
+                    <a href="#" class="c-gallery__btn">مشاهده همه</a>
+                </div>
+            </header>
+
+            <!-- Swiper Slider Container -->
+            <div class="swiper js-gallery-slider c-gallery-slider">
+                <div class="swiper-wrapper" id="js-gallery-wrapper">
+                    <!-- Slides injected dynamically via JavaScript -->
+                </div>
+                <div class="swiper-pagination c-gallery__pagination"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== Scripts ==================== -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="./js/components_js/nav_menu.js"></script>
     <script src="./js/components_js/hero.js"></script>
+    <script src="./js/components_js/gallery.js"></script>
 </body>
 
 </html>

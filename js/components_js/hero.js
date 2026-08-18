@@ -1,21 +1,35 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // DOM Elements
     const heroVideo = document.querySelector('.c-hero__video');
     const heroCard = document.querySelector('.c-hero-card');
     const heroSupport = document.querySelector('.c-hero__support');
     const scrollBtn = document.getElementById('js-scroll-btn');
+    const gallerySection = document.getElementById('gallerySection');
 
-    /* Smooth scroll for scroll-down button */
-    if (scrollBtn) {
+    // Smooth Scroll to Gallery
+    if (scrollBtn && gallerySection) {
         scrollBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            window.scrollTo({
-                top: window.innerHeight,
-                behavior: 'smooth'
-            });
+            gallerySection.scrollIntoView({ behavior: 'smooth' });
         });
     }
 
-    /* Advanced Multi-layer Parallax on Scroll */
+    // Performance Optimization: Pause Video when Gallery is Visible
+    if (heroVideo && gallerySection) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    heroVideo.pause();
+                } else {
+                    heroVideo.play().catch(() => {});
+                }
+            });
+        }, { threshold: 0.2 });
+
+        observer.observe(gallerySection);
+    }
+
+    // Scroll Animations (Parallax Effect)
     let ticking = false;
 
     window.addEventListener('scroll', () => {
@@ -25,27 +39,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 const heroHeight = window.innerHeight;
 
                 if (scrolled <= heroHeight) {
-                    /* Layer 1: Background Video (moves slower) */
+                    const progress = scrolled / heroHeight;
+
+                    // Video Translate
                     if (heroVideo) {
-                        heroVideo.style.transform = `translate3d(0, ${scrolled * 0.4}px, 0)`;
+                        heroVideo.style.transform = `translate3d(0, ${scrolled * 0.3}px, 0)`;
                     }
 
-                    /* Layer 2: Hero Glass Card (moves upward faster with scale/fade out) */
+                    // Card Animation
                     if (heroCard) {
-                        const progress = scrolled / heroHeight;
-                        const translateY = scrolled * -0.25;
-                        const scale = 1 - (progress * 0.08);
-                        const opacity = 1 - (progress * 1.2);
+                        const translateY = scrolled * -0.15;
+                        const opacity = 1 - (progress * 0.7);
+                        const scale = 1 - (progress * 0.03);
 
-                        heroCard.style.transform = `translate3d(0, ${translateY}px, 0) scale(${Math.max(scale, 0.9)})`;
+                        heroCard.style.transform = `translate3d(0, ${translateY}px, 0) scale(${scale})`;
                         heroCard.style.opacity = Math.max(opacity, 0);
                     }
 
-                    /* Layer 3: Support Button (moves sideways & fades out) */
+                    // Support Button Animation
                     if (heroSupport) {
-                        const progress = scrolled / heroHeight;
-                        const translateX = scrolled * 0.3;
-                        const opacity = 1 - (progress * 1.5);
+                        const translateX = scrolled * 0.15;
+                        const opacity = 1 - progress;
 
                         heroSupport.style.transform = `translate3d(${translateX}px, 0, 0)`;
                         heroSupport.style.opacity = Math.max(opacity, 0);
