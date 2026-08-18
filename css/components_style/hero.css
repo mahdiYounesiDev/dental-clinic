@@ -1,0 +1,191 @@
+/* Layout */
+.c-hero {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.c-hero *,
+.c-hero *::before,
+.c-hero *::after {
+    box-sizing: border-box;
+}
+
+/* Background Video */
+.c-hero__video-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.c-hero__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Parallax Scroll Effect */
+    transform: translateY(var(--scroll-y, 0px));
+    will-change: transform;
+}
+
+.c-hero__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 25, 47, 0.25);
+}
+
+.c-hero__container {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1280px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 100px var(--fs-lg) 40px var(--fs-lg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Glassmorphism Card (Improved Transparency & Typography) */
+.c-hero-card {
+    align-self: flex-start;
+    width: 100%;
+    max-width: 440px;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: var(--radius-xl);
+    padding: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+.c-hero-card__title {
+    font-family: "Title", sans-serif;
+    font-size: var(--fs-xl);
+    color: var(--color-primary);
+    margin: 0 0 8px 0;
+    line-height: 1.3;
+}
+
+.c-hero-card__subtitle {
+    font-family: "TextBold", sans-serif;
+    font-size: var(--fs-sm);
+    color: var(--color-dark);
+    margin: 0 0 16px 0;
+    opacity: 0.9;
+}
+
+.c-hero-card__desc {
+    font-family: "TextRegular", sans-serif;
+    font-size: var(--fs-sm);
+    color: var(--color-dark);
+    line-height: 1.8;
+    margin: 0 0 24px 0;
+}
+
+.c-hero-card__btn {
+    display: inline-block;
+    font-family: "Button", sans-serif;
+    font-size: var(--fs-xs);
+    color: var(--color-white);
+    background-color: var(--color-primary);
+    padding: 12px var(--fs-lg);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 18px rgba(0, 119, 192, 0.3);
+}
+
+.c-hero-card__btn:hover {
+    background-color: #005a93;
+    transform: translateY(-2px);
+}
+
+/* Support Button (Redesigned for Video Contrast) */
+.c-hero__support {
+    position: absolute;
+    bottom: 40px;
+    right: var(--fs-lg);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: "TextBold", sans-serif;
+    font-size: var(--fs-sm);
+    color: var(--color-white);
+    background: rgba(0, 119, 192, 0.85);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    padding: 10px 20px;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    text-decoration: none;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.c-hero__support:hover {
+    background: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(0, 119, 192, 0.4);
+}
+
+.c-hero__scroll-btn {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 44px;
+    height: 44px;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 6px 16px rgba(0, 119, 192, 0.3);
+    transition: all 0.3s ease;
+}
+
+.c-hero__scroll-btn:hover {
+    transform: translateX(-50%) translateY(4px);
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 991px) {
+    .c-hero__container {
+        padding-top: 90px;
+        align-items: center;
+    }
+
+    .c-hero-card {
+        align-self: center;
+        max-width: 100%;
+        text-align: center;
+        padding: var(--fs-lg);
+    }
+
+    .c-hero__support {
+        right: 50%;
+        transform: translateX(50%);
+        bottom: 90px;
+    }
+}
+.c-hero__video,
+.c-hero-card,
+.c-hero__support {
+    will-change: transform, opacity;
+    transition: transform 0.1s linear, opacity 0.1s linear;
+}
