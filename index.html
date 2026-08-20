@@ -349,61 +349,217 @@
         </div>
     </section>
 
-<!-- ==================== Equipment Showcase Section ==================== -->
-<section class="c-equipment" aria-label="Equipment Showcase">
-    <div class="c-equipment__container">
+    <!-- ==================== Equipment Showcase Section ==================== -->
+    <section class="c-equipment" aria-label="Equipment Showcase">
+        <div class="c-equipment__container">
 
-        <header class="c-equipment__header">
-            <span class="c-equipment__badge">Equipment</span>
-            <h2 class="c-equipment__title">تجهیزات تخصصی کلینیک</h2>
-        </header>
+            <header class="c-equipment__header">
+                <span class="c-equipment__badge">Equipment</span>
+                <h2 class="c-equipment__title">تجهیزات تخصصی کلینیک</h2>
+            </header>
 
-        <div class="c-equipment__grid">
+            <div class="c-equipment__grid">
 
-            <!-- Main Preview Image (Right Side in RTL) -->
-            <div class="c-equipment__preview">
-                <div class="c-equipment__preview-frame">
-                    <img id="js-equipment-main-img" src="https://via.placeholder.com/600x600/0077c0/ffffff?text=Equipment+1" alt="دستگاه لیزر پیشرفته" class="c-equipment__preview-img">
+                <!-- Main Preview Image (Right Side in RTL) -->
+                <div class="c-equipment__preview">
+                    <div class="c-equipment__preview-frame">
+                        <img id="js-equipment-main-img"
+                            src="https://via.placeholder.com/600x600/0077c0/ffffff?text=Equipment+1"
+                            alt="دستگاه لیزر پیشرفته" class="c-equipment__preview-img">
+                    </div>
                 </div>
-            </div>
 
-            <!-- Content and Thumbnails (Left Side in RTL) -->
-            <div class="c-equipment__content">
+                <!-- Content and Thumbnails (Left Side in RTL) -->
+                <div class="c-equipment__content">
 
-                <!-- Active Item Details -->
-                <article class="c-equipment__info">
-                    <h3 id="js-equipment-title" class="c-equipment__info-title">دستگاه لیزر پیشرفته</h3>
-                    <p id="js-equipment-desc" class="c-equipment__info-desc">
-                        این دستگاه با استفاده از آخرین تکنولوژی روز دنیا جهت درمان‌های تخصصی با بالاترین دقت و کمترین میزان آسیب به بافت استفاده می‌شود.
-                    </p>
+                    <!-- Active Item Details -->
+                    <article class="c-equipment__info">
+                        <h3 id="js-equipment-title" class="c-equipment__info-title">دستگاه لیزر پیشرفته</h3>
+                        <p id="js-equipment-desc" class="c-equipment__info-desc">
+                            این دستگاه با استفاده از آخرین تکنولوژی روز دنیا جهت درمان‌های تخصصی با بالاترین دقت و
+                            کمترین میزان آسیب به بافت استفاده می‌شود.
+                        </p>
 
-                    <footer class="c-equipment__info-footer">
-                        <div class="c-equipment__price-group">
-                            <span class="c-equipment__price-label">وضعیت / برند:</span>
-                            <span id="js-equipment-spec" class="c-equipment__price-value">ساخت آلمان (۲۰۲۵)</span>
-                        </div>
-                        <button type="button" class="c-equipment__btn" aria-label="View details">
-                            <span>جزئیات تکمیلی</span>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M19 12H5M12 19l-7-7 7-7"/>
-                            </svg>
-                        </button>
-                    </footer>
-                </article>
+                        <footer class="c-equipment__info-footer">
+                            <div class="c-equipment__price-group">
+                                <span class="c-equipment__price-label">وضعیت / برند:</span>
+                                <span id="js-equipment-spec" class="c-equipment__price-value">ساخت آلمان (۲۰۲۵)</span>
+                            </div>
+                            <button type="button" class="c-equipment__btn" aria-label="View details">
+                                <span>جزئیات تکمیلی</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M19 12H5M12 19l-7-7 7-7" />
+                                </svg>
+                            </button>
+                        </footer>
+                    </article>
 
-                <!-- Thumbnails Grid -->
-                <div class="c-equipment__thumbs" id="js-equipment-thumbs" role="region" aria-label="Equipment Selector">
-                    <!-- Dynamic rendering via JS -->
+                    <!-- Thumbnails Grid -->
+                    <div class="c-equipment__thumbs" id="js-equipment-thumbs" role="region"
+                        aria-label="Equipment Selector">
+                        <!-- Dynamic rendering via JS -->
+                    </div>
+
                 </div>
 
             </div>
 
         </div>
+    </section>
 
-    </div>
-</section>
+    <!-- ==================== Footer Section ==================== -->
+    <footer class="c-footer" role="contentinfo">
+        <!-- Top Decorative Glow -->
+        <div class="c-footer__glow" aria-hidden="true"></div>
 
+        <div class="c-footer__container">
 
+            <!-- Newsletter Callout Banner -->
+            <div class="c-footer__newsletter">
+                <div class="c-footer__newsletter-content">
+                    <h3 class="c-footer__newsletter-title">دریافت آخرین مقالات و تخفیف‌های ویژه</h3>
+                    <p class="c-footer__newsletter-desc">با عضویت در خبرنامه کلینیک، زودتر از بقیه از نوبت‌های کنسلی و
+                        کمپین‌ها باخبر شوید.</p>
+                </div>
+                <form class="c-footer__newsletter-form" action="#" method="POST">
+                    <div class="c-footer__input-group">
+                        <input type="email" class="c-footer__input" placeholder="آدرس ایمیل شما..." required
+                            aria-label="ایمیل جهت عضویت در خبرنامه">
+                        <button type="submit" class="c-footer__submit-btn">
+                            <span>عضویت</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Main Grid Links & Info -->
+            <div class="c-footer__grid">
+
+                <!-- Brand Column -->
+                <div class="c-footer__col c-footer__col--brand">
+                    <a href="/" class="c-footer__logo" aria-label="صفحه اصلی کلینیک">
+                        <div class="c-footer__logo-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <path d="M12 2v20M2 12h20" />
+                            </svg>
+                        </div>
+                        <span class="c-footer__logo-text">دنتال کلینیک</span>
+                    </a>
+                    <p class="c-footer__desc">
+                        مرکز تخصصی دندان‌پزشکی دیجیتال و زیبایی. ارائه خدمات هوشمند با بالاترین استانداردهای جهانی.
+                    </p>
+                    <div class="c-footer__socials" aria-label="شبکه‌های اجتماعی">
+                        <a href="#" class="c-footer__social-btn" aria-label="Instagram">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                            </svg>
+                        </a>
+                        <a href="#" class="c-footer__social-btn" aria-label="Telegram">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13" />
+                                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                            </svg>
+                        </a>
+                        <a href="#" class="c-footer__social-btn" aria-label="WhatsApp">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="c-footer__col" aria-label="دسترسی سریع">
+                    <h4 class="c-footer__title">دسترسی سریع</h4>
+                    <ul class="c-footer__list">
+                        <li><a href="#services" class="c-footer__link">خدمات تخصصی</a></li>
+                        <li><a href="#equipment" class="c-footer__link">تجهیزات مدرن</a></li>
+                        <li><a href="#doctors" class="c-footer__link">کادر پزشکی</a></li>
+                        <li><a href="#faq" class="c-footer__link">سوالات متداول</a></li>
+                    </ul>
+                </nav>
+
+                <!-- Dental Services -->
+                <nav class="c-footer__col" aria-label="خدمات درمانی">
+                    <h4 class="c-footer__title">خدمات کلینیک</h4>
+                    <ul class="c-footer__list">
+                        <li><a href="#" class="c-footer__link">ایمپلنت دیجیتال</a></li>
+                        <li><a href="#" class="c-footer__link">طرح لبخند و کامپوزیت</a></li>
+                        <li><a href="#" class="c-footer__link">ارتودنسی نامرئی</a></li>
+                        <li><a href="#" class="c-footer__link">عصب‌کشی با میکروسکوپ</a></li>
+                    </ul>
+                </nav>
+
+                <!-- Live Status & Contact -->
+                <div class="c-footer__col c-footer__col--status">
+                    <h4 class="c-footer__title">وضعیت پذیرش</h4>
+                    <div class="c-footer__status-card">
+                        <div class="c-footer__status-indicator">
+                            <span class="c-footer__status-dot"></span>
+                            <span id="js-clinic-status-text" class="c-footer__status-label">کلینیک فعال است</span>
+                        </div>
+                        <p class="c-footer__status-time">ساعات کاری: ۹:۰۰ الی ۲۰:۰۰</p>
+                    </div>
+                    <ul class="c-footer__contact-list">
+                        <li class="c-footer__contact-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                            </svg>
+                            <a href="tel:02188888888" dir="ltr">۰۲۱ - ۸۸۸۸ ۸۸۸۸</a>
+                        </li>
+                        <li class="c-footer__contact-item">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                <circle cx="12" cy="10" r="3" />
+                            </svg>
+                            <span>تهران، خیابان ولیعصر، نرسیده به ظفر</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Bottom Copyright & Back to Top -->
+            <div class="c-footer__bottom">
+                <p class="c-footer__copyright">
+                    تمامی حقوق مادی و معنوی محفوظ است. © ۱۴۰۴
+                </p>
+                <div class="c-footer__actions">
+                    <a href="#" class="c-footer__legal-link">حریم خصوصی</a>
+                    <span class="c-footer__legal-divider">•</span>
+                    <a href="#" class="c-footer__legal-link">شرایط استفاده</a>
+
+                    <!-- Back To Top Button -->
+                    <button type="button" id="js-back-to-top" class="c-footer__back-top"
+                        aria-label="بازگشت به بالای صفحه">
+                        <svg class="c-footer__progress-circle" width="100%" height="100%" viewBox="-1 -1 102 102">
+                            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" />
+                        </svg>
+                        <svg class="c-footer__arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5">
+                            <path d="M18 15l-6-6-6 6" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </footer>
 
 
     <!-- ==================== Scripts ==================== -->
