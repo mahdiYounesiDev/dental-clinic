@@ -171,12 +171,193 @@
         </div>
     </section>
 
+
+
+    <!-- ==================== FAQ and Comments Section ==================== -->
+    <section class="c-interaction" aria-label="FAQ and Comments Section">
+        <div class="c-interaction__container">
+
+            <div class="c-interaction__grid">
+
+                <!-- FAQ Section -->
+                <section class="c-faq" aria-labelledby="faq-heading" itemscope itemtype="https://schema.org/FAQPage">
+                    <header class="c-faq__header">
+                        <span class="c-faq__badge">پاسخ به ابهامات</span>
+                        <h2 id="faq-heading" class="c-faq__title">سوالات پرتکرار</h2>
+                    </header>
+
+                    <div class="c-faq__list" id="js-faq-grid">
+
+                        <details class="c-faq__item" itemscope itemprop="mainEntity"
+                            itemtype="https://schema.org/Question" open>
+                            <summary class="c-faq__question" itemprop="name">
+                                <span class="c-faq__question-text">چگونه می‌توانم نوبت حضوری ثبت کنم؟</span>
+                                <span class="c-faq__icon-box" aria-hidden="true">
+                                    <span class="c-faq__icon"></span>
+                                </span>
+                            </summary>
+                            <div class="c-faq__answer" itemscope itemprop="acceptedAnswer"
+                                itemtype="https://schema.org/Answer">
+                                <p itemprop="text">شما می‌توانید از طریق کارت پزشک مربوطه روی دکمه رزرو نوبت کلیک کرده و
+                                    زمان مورد نظر خود را انتخاب کنید.</p>
+                            </div>
+                        </details>
+
+                        <details class="c-faq__item" itemscope itemprop="mainEntity"
+                            itemtype="https://schema.org/Question">
+                            <summary class="c-faq__question" itemprop="name">
+                                <span class="c-faq__question-text">آیا امکان لغو یا تغییر زمان نوبت وجود دارد؟</span>
+                                <span class="c-faq__icon-box" aria-hidden="true">
+                                    <span class="c-faq__icon"></span>
+                                </span>
+                            </summary>
+                            <div class="c-faq__answer" itemscope itemprop="acceptedAnswer"
+                                itemtype="https://schema.org/Answer">
+                                <p itemprop="text">بله، تا ۲۴ ساعت قبل از زمان ویزیت می‌توانید از پنل کاربری اقدام به
+                                    لغو یا تغییر نوبت نمایید.</p>
+                            </div>
+                        </details>
+
+                        <details class="c-faq__item" itemscope itemprop="mainEntity"
+                            itemtype="https://schema.org/Question">
+                            <summary class="c-faq__question" itemprop="name">
+                                <span class="c-faq__question-text">مدارک پزشکی را چگونه ارسال کنم؟</span>
+                                <span class="c-faq__icon-box" aria-hidden="true">
+                                    <span class="c-faq__icon"></span>
+                                </span>
+                            </summary>
+                            <div class="c-faq__answer" itemscope itemprop="acceptedAnswer"
+                                itemtype="https://schema.org/Answer">
+                                <p itemprop="text">در هنگام ثبت نوبت و یا از طریق بخش پیام‌های پنل کاربری امکان آپلود
+                                    پرونده پزشکی وجود دارد.</p>
+                            </div>
+                        </details>
+
+                    </div>
+                </section>
+
+                <!-- Comments Section -->
+                <section class="c-comments" aria-labelledby="comments-heading">
+                    <header class="c-comments__header">
+                        <span class="c-comments__badge">دیدگاه بیماران</span>
+                        <h2 id="comments-heading" class="c-comments__title">نظرات و تجربیات</h2>
+                    </header>
+
+                    <!-- Comment Form Box -->
+                    <div class="c-comments__form-wrapper">
+                        <form class="c-comments__form" id="js-comment-form">
+                            <div class="c-comments__field">
+                                <label for="comment-text" class="c-comments__label">ارسال دیدگاه جدید</label>
+                                <textarea id="comment-text" class="c-comments__input" rows="3"
+                                    placeholder="نظر یا تجربه خود را وارد کنید..." required></textarea>
+                            </div>
+                            <div class="c-comments__form-footer">
+                                <button type="submit" class="c-comments__btn">
+                                    <span>ثبت دیدگاه</span>
+                                    <svg class="c-comments__btn-icon" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                    </svg>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Comments List -->
+                    <div class="c-comments__list" id="js-comments-grid" role="feed" aria-busy="false">
+
+                        <article class="c-comment-card">
+                            <header class="c-comment-card__header">
+                                <div class="c-comment-card__user">
+                                    <div class="c-comment-card__avatar"><span>ع</span></div>
+                                    <div class="c-comment-card__info">
+                                        <h3 class="c-comment-card__author">علی محمدی</h3>
+                                        <time class="c-comment-card__time">۱۰ دقیقه پیش</time>
+                                    </div>
+                                </div>
+                            </header>
+                            <div class="c-comment-card__body">
+                                <p>رفتار کادر درمانی بسیار محترمانه بود و روند دریافت نوبت هم خیلی سریع انجام شد.</p>
+                            </div>
+                        </article>
+
+                        <article class="c-comment-card">
+                            <header class="c-comment-card__header">
+                                <div class="c-comment-card__user">
+                                    <div class="c-comment-card__avatar"><span>س</span></div>
+                                    <div class="c-comment-card__info">
+                                        <h3 class="c-comment-card__author">سارا احمدی</h3>
+                                        <time class="c-comment-card__time">۳۰ دقیقه پیش</time>
+                                    </div>
+                                </div>
+                            </header>
+                            <div class="c-comment-card__body">
+                                <p>پزشک با حوصله تمام مدارک من را بررسی کردند و توضیحات کاملی ارائه دادند.</p>
+                            </div>
+                        </article>
+
+                        <article class="c-comment-card">
+                            <header class="c-comment-card__header">
+                                <div class="c-comment-card__user">
+                                    <div class="c-comment-card__avatar"><span>ر</span></div>
+                                    <div class="c-comment-card__info">
+                                        <h3 class="c-comment-card__author">رضا حسینی</h3>
+                                        <time class="c-comment-card__time">۱ ساعت پیش</time>
+                                    </div>
+                                </div>
+                            </header>
+                            <div class="c-comment-card__body">
+                                <p>محیط مطب بسیار تمیز و مرتب بود. فقط معطلی کوتاهی قبل از ورود داشتیم.</p>
+                            </div>
+                        </article>
+
+                        <article class="c-comment-card">
+                            <header class="c-comment-card__header">
+                                <div class="c-comment-card__user">
+                                    <div class="c-comment-card__avatar"><span>م</span></div>
+                                    <div class="c-comment-card__info">
+                                        <h3 class="c-comment-card__author">مریم کاظمی</h3>
+                                        <time class="c-comment-card__time">۲ ساعت پیش</time>
+                                    </div>
+                                </div>
+                            </header>
+                            <div class="c-comment-card__body">
+                                <p>سیستم ثبت نوبت آنلاین خیلی به من کمک کرد تا زمانم تلف نشود.</p>
+                            </div>
+                        </article>
+
+                        <article class="c-comment-card">
+                            <header class="c-comment-card__header">
+                                <div class="c-comment-card__user">
+                                    <div class="c-comment-card__avatar"><span>ا</span></div>
+                                    <div class="c-comment-card__info">
+                                        <h3 class="c-comment-card__author">امیر رضایی</h3>
+                                        <time class="c-comment-card__time">۳ ساعت پیش</time>
+                                    </div>
+                                </div>
+                            </header>
+                            <div class="c-comment-card__body">
+                                <p>کیفیت خدمات و پاسخگویی پشتیبانی عالی بود. ممنون از تیم خوبتون.</p>
+                            </div>
+                        </article>
+
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </section>
+
+
+
     <!-- ==================== Scripts ==================== -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="./js/components_js/nav_menu.js"></script>
     <script src="./js/components_js/hero.js"></script>
     <script src="./js/components_js/gallery.js"></script>
     <script src="./js/components_js/doctors_card.js"></script>
+    <script src="./js/components_js//FAQ__Comments.js"></script>
 
 </body>
 
