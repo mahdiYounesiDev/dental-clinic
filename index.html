@@ -349,6 +349,61 @@
         </div>
     </section>
 
+<!-- ==================== Equipment Showcase Section ==================== -->
+<section class="c-equipment" aria-label="Equipment Showcase">
+    <div class="c-equipment__container">
+
+        <header class="c-equipment__header">
+            <span class="c-equipment__badge">Equipment</span>
+            <h2 class="c-equipment__title">تجهیزات تخصصی کلینیک</h2>
+        </header>
+
+        <div class="c-equipment__grid">
+
+            <!-- Main Preview Image (Right Side in RTL) -->
+            <div class="c-equipment__preview">
+                <div class="c-equipment__preview-frame">
+                    <img id="js-equipment-main-img" src="https://via.placeholder.com/600x600/0077c0/ffffff?text=Equipment+1" alt="دستگاه لیزر پیشرفته" class="c-equipment__preview-img">
+                </div>
+            </div>
+
+            <!-- Content and Thumbnails (Left Side in RTL) -->
+            <div class="c-equipment__content">
+
+                <!-- Active Item Details -->
+                <article class="c-equipment__info">
+                    <h3 id="js-equipment-title" class="c-equipment__info-title">دستگاه لیزر پیشرفته</h3>
+                    <p id="js-equipment-desc" class="c-equipment__info-desc">
+                        این دستگاه با استفاده از آخرین تکنولوژی روز دنیا جهت درمان‌های تخصصی با بالاترین دقت و کمترین میزان آسیب به بافت استفاده می‌شود.
+                    </p>
+
+                    <footer class="c-equipment__info-footer">
+                        <div class="c-equipment__price-group">
+                            <span class="c-equipment__price-label">وضعیت / برند:</span>
+                            <span id="js-equipment-spec" class="c-equipment__price-value">ساخت آلمان (۲۰۲۵)</span>
+                        </div>
+                        <button type="button" class="c-equipment__btn" aria-label="View details">
+                            <span>جزئیات تکمیلی</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 12H5M12 19l-7-7 7-7"/>
+                            </svg>
+                        </button>
+                    </footer>
+                </article>
+
+                <!-- Thumbnails Grid -->
+                <div class="c-equipment__thumbs" id="js-equipment-thumbs" role="region" aria-label="Equipment Selector">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
 
 
     <!-- ==================== Scripts ==================== -->
@@ -357,7 +412,9 @@
     <script src="./js/components_js/hero.js"></script>
     <script src="./js/components_js/gallery.js"></script>
     <script src="./js/components_js/doctors_card.js"></script>
-    <script src="./js/components_js//FAQ__Comments.js"></script>
+    <script src="./js/components_js/FAQ__Comments.js"></script>
+    <script src="./js/components_js/equipment_showcase.js"></script>
+
 
 </body>
 
