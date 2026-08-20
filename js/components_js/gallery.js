@@ -42,11 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 <article class="c-gallery-card">
                     <figure class="c-gallery-card__figure">
                         <div class="c-gallery-card__img-box">
-                            <img class="c-gallery-card__img" src="${item.beforeImg}" alt="قبل از درمان ${item.title}" loading="lazy" decoding="async" draggable="false">
+                            <img class="c-gallery-card__img" src="${item.beforeImg}" alt="قبل از درمان ${item.title}" decoding="async" draggable="false">
                             <span class="c-gallery-card__label">قبل</span>
                         </div>
                         <div class="c-gallery-card__img-box">
-                            <img class="c-gallery-card__img" src="${item.afterImg}" alt="بعد از درمان ${item.title}" loading="lazy" decoding="async" draggable="false">
+                            <img class="c-gallery-card__img" src="${item.afterImg}" alt="بعد از درمان ${item.title}" decoding="async" draggable="false">
                             <span class="c-gallery-card__label">بعد</span>
                         </div>
                     </figure>

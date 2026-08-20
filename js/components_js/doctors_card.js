@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     <div class="c-doctor-card__avatar-wrapper">
                         <figure class="c-doctor-card__avatar-box">
-                            <img class="c-doctor-card__avatar" src="${doc.avatar}" alt="${doc.name}" loading="lazy" decoding="async">
+                            <img class="c-doctor-card__avatar" src="${doc.avatar}" alt="${doc.name}" decoding="async">
                         </figure>
                         <div class="c-doctor-card__rating">
                             <span class="c-doctor-card__star">★</span>
