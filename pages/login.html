@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+
+<body>
+
+    <main class="auth-container">
+        <!-- Sign Up Section -->
+        <section class="auth-card" id="signup-section">
+            <h1 class="auth-title">ثبت‌نام</h1>
+            <form class="auth-form" id="signup-form" novalidate>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signup-name">نام</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="signup-name" name="name" placeholder="علی" autocomplete="given-name">
+                            <span class="status-icon"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-family">نام خانوادگی</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="signup-family" name="family" placeholder="محمدی"
+                                autocomplete="family-name">
+                            <span class="status-icon"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signup-age">سن</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="signup-age" name="age" placeholder="۱۸" min="1" max="120">
+                            <span class="status-icon"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-phone">شماره همراه</label>
+                        <div class="input-wrapper">
+                            <input type="tel" id="signup-phone" name="phone" value="09" maxlength="11">
+                            <span class="status-icon"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="signup-gender">جنسیت</label>
+                    <div class="input-wrapper">
+                        <select id="signup-gender" name="gender">
+                            <option value="" disabled selected>انتخاب کنید</option>
+                            <option value="male">مرد</option>
+                            <option value="female">زن</option>
+                            <option value="other">سایر</option>
+                        </select>
+                        <span class="status-icon"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="signup-email">ایمیل</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="signup-email" name="email" placeholder="example@mail.com"
+                            autocomplete="email">
+                        <span class="status-icon"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="signup-password">کلمه عبور</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="signup-password" name="password" placeholder="••••••••"
+                            autocomplete="new-password">
+                        <button type="button" class="password-toggle" aria-label="Toggle Password Visibility">
+                            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                        </button>
+                        <span class="status-icon"></span>
+                    </div>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="signup-remember" name="remember">
+                        <span class="checkmark"></span>
+                        <span class="label-text">مرا به خاطر بسپار</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-primary">ثبت اطلاعات</button>
+
+                <div class="auth-footer">
+                    <button type="button" class="btn-link" id="show-signin">حساب کاربری دارم</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Sign In Section -->
+        <section class="auth-card is-hidden" id="signin-section">
+            <h1 class="auth-title">ورود به حساب</h1>
+            <form class="auth-form" id="signin-form" novalidate>
+                <div class="form-group">
+                    <label for="signin-email">ایمیل</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="signin-email" name="email" placeholder="example@mail.com"
+                            autocomplete="email">
+                        <span class="status-icon"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="signin-password">کلمه عبور</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="signin-password" name="password" placeholder="••••••••"
+                            autocomplete="current-password">
+                        <button type="button" class="password-toggle" aria-label="Toggle Password Visibility">
+                            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                        </button>
+                        <span class="status-icon"></span>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="signin-remember" name="remember">
+                        <span class="checkmark"></span>
+                        <span class="label-text">مرا به خاطر بسپار</span>
+                    </label>
+                    <a href="#" class="forgot-link">فراموشی کلمه عبور</a>
+                </div>
+
+                <button type="submit" class="btn-primary">ورود</button>
+
+                <div class="auth-footer">
+                    <button type="button" class="btn-link" id="show-signup">ایجاد حساب کاربری جدید</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <script src="../js/pages_js/login.js"></script>
+    <script src="../js/utils_js/validation.js"></script>
+</body>
+
+</html>
