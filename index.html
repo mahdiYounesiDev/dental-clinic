@@ -36,7 +36,7 @@
             <nav class="c-navbar" id="js-navbar">
                 <ul class="c-navbar__list">
                     <li class="c-navbar__item">
-                        <a href="#" class="c-navbar__link c-navbar__link--active">نوبت ها</a>
+                        <a href="#" class="c-navbar__link c-navbar__link--active" id="js-nav-appointments">نوبت ها</a>
                     </li>
                     <li class="c-navbar__item">
                         <a href="#" class="c-navbar__link">خدمات</a>
@@ -673,6 +673,107 @@
     </footer>
 
 
+    <!-- Modal 1: Services & Doctors List -->
+    <dialog id="js-appointment-modal" class="c-modal" aria-labelledby="modal-title-1">
+        <div class="c-modal__container">
+            <header class="c-modal__header">
+                <h2 id="modal-title-1" class="c-modal__title">انتخاب خدمت و پزشک معالج</h2>
+                <button type="button" class="c-modal__close js-modal-close" aria-label="Close modal">&times;</button>
+            </header>
+            <div class="c-modal__body">
+                <ul class="c-appointment-list" id="js-appointment-services-list">
+                    <!-- Rendered dynamically via JavaScript -->
+                </ul>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Modal 2: Calendar & Day Selection -->
+    <dialog id="js-calendar-modal" class="c-modal" aria-labelledby="modal-title-2">
+        <div class="c-modal__container">
+            <header class="c-modal__header">
+                <button type="button" class="c-modal__back" id="js-calendar-back" aria-label="Back">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <h2 id="modal-title-2" class="c-modal__title">انتخاب روز ویزیت</h2>
+                <button type="button" class="c-modal__close js-modal-close" aria-label="Close modal">&times;</button>
+            </header>
+            <div class="c-modal__body">
+                <div class="c-calendar-header">
+                    <button type="button" id="js-prev-month" class="c-calendar__nav-btn" aria-label="Previous Month">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <span id="js-calendar-month-label" class="c-calendar__month-label">اردیبهشت ۱۴۰۵</span>
+                    <button type="button" id="js-next-month" class="c-calendar__nav-btn" aria-label="Next Month">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+                <div class="c-calendar-weekdays">
+                    <span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span>
+                </div>
+                <div class="c-calendar-grid" id="js-calendar-days-grid">
+                    <!-- Grid injected via JS -->
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Modal 3: Time Slot & Patient Details Form -->
+    <dialog id="js-time-modal" class="c-modal" aria-labelledby="modal-title-3">
+        <div class="c-modal__container">
+            <header class="c-modal__header">
+                <button type="button" class="c-modal__back" id="js-time-back" aria-label="Back">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <h2 id="modal-title-3" class="c-modal__title">تکمیل اطلاعات و رزرو نوبت</h2>
+                <button type="button" class="c-modal__close js-modal-close" aria-label="Close modal">&times;</button>
+            </header>
+
+            <form class="c-modal__body c-booking-form" id="js-booking-form">
+                <div class="c-booking-summary" id="js-booking-summary">
+                    <!-- Summary Injected via JS -->
+                </div>
+
+                <fieldset class="c-booking-form__section">
+                    <legend class="c-booking-form__legend">انتخاب ساعت ویزیت</legend>
+                    <div class="c-time-slots" id="js-time-slots-grid">
+                        <!-- Slots rendered via JS -->
+                    </div>
+                </fieldset>
+
+                <fieldset class="c-booking-form__section">
+                    <legend class="c-booking-form__legend">اطلاعات بیمار و مدارک</legend>
+
+                    <div class="c-booking-form__field">
+                        <label for="booking-name" class="c-booking-form__label">نام و نام خانوادگی *</label>
+                        <input type="text" id="booking-name" class="c-booking-form__input" required
+                            placeholder="مثال: علی محمدی">
+                    </div>
+
+                    <div class="c-booking-form__field">
+                        <label for="booking-phone" class="c-booking-form__label">شماره همراه *</label>
+                        <input type="tel" id="booking-phone" class="c-booking-form__input" required
+                            placeholder="۰۹۱۲۳۴۵۶۷۸۹">
+                    </div>
+
+                    <div class="c-booking-form__field">
+                        <label for="booking-notes" class="c-booking-form__label">توضیحات تکمیلی یا علت مراجعه</label>
+                        <textarea id="booking-notes" class="c-booking-form__textarea" rows="3"
+                            placeholder="اگر بیماری خاص یا سابقه‌ای دارید ذکر کنید..."></textarea>
+                    </div>
+
+                    <div class="c-booking-form__field">
+                        <label for="booking-file" class="c-booking-form__label">بارگذاری عکس یا آزمایش (اختیاری)</label>
+                        <input type="file" id="booking-file" class="c-booking-form__file" accept="image/*,.pdf">
+                    </div>
+                </fieldset>
+
+                <button type="submit" class="c-booking-form__submit">ثبت نهایی و رزرو نوبت</button>
+            </form>
+        </div>
+    </dialog>
+
+
     <!-- ==================== Scripts ==================== -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="./js/components_js/nav_menu.js"></script>
@@ -684,7 +785,7 @@
     <script src="./js/components_js/FAQ__Comments.js"></script>
     <script src="./js/components_js/equipment_showcase.js"></script>
     <script src="./js/components_js/footer.js"></script>
-
+    <script src="./js/components_js/appointment_modal.js"></script>
 
 </body>
 
