@@ -1,0 +1,137 @@
+/* ==================== Clinic Stats & Features ==================== */
+
+.c-stats {
+    padding: 30px 0;
+    background-color: #f8fafc;
+    position: relative;
+    margin-top: 40px;
+    z-index: 10;
+}
+
+.c-stats__container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.c-stats__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    background: #ffffff;
+    border: 1px solid #eaeef4;
+    border-radius: 24px;
+    padding: 28px 32px;
+    box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.05);
+}
+
+.c-stats__item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+}
+
+/* جداکننده بین آیتم‌ها */
+.c-stats__item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 40px;
+    background-color: #e2e8f0;
+}
+
+.c-stats__icon-wrapper {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    background: #f0f9ff;
+    border: 1px solid rgba(0, 119, 192, 0.12);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary, #0077c0);
+    transition: all 0.3s ease;
+}
+
+.c-stats__icon-wrapper svg {
+    width: 26px;
+    height: 26px;
+}
+
+.c-stats__item:hover .c-stats__icon-wrapper {
+    background: var(--color-primary, #0077c0);
+    color: #ffffff;
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 119, 192, 0.2);
+}
+
+.c-stats__content {
+    display: flex;
+    flex-direction: column;
+}
+
+.c-stats__number-group {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+
+.c-stats__number,
+.c-stats__text {
+    font-family: "Title", sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.c-stats__plus,
+.c-stats__percent {
+    font-family: "Title", sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-primary, #0077c0);
+    margin-right: 2px;
+}
+
+.c-stats__label {
+    font-size: 13.5px;
+    color: #64748b;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .c-stats__grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 32px;
+    }
+
+    .c-stats__item:nth-child(2)::after {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .c-stats {
+        margin-top: 0;
+        padding: 40px 0 20px;
+    }
+
+    .c-stats__grid {
+        grid-template-columns: 1fr;
+        padding: 24px 20px;
+        gap: 24px;
+    }
+
+    .c-stats__item::after {
+        display: none !important;
+    }
+}
