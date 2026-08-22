@@ -95,12 +95,24 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     </div>
 
-                    <a href="#appointment" class="c-doctor-card__btn">
+                    <a href="#appointment" class="c-doctor-card__btn js-doctor-book-btn" data-doctor-name="${doc.name}">
                         <span>رزرو نوبت ویزیت</span>
                     </a>
                 </div>
             </article>
         `).join('');
+
+        gridWrapper.addEventListener('click', (e) => {
+            const btn = e.target.closest('.js-doctor-book-btn');
+            if (!btn) return;
+
+            e.preventDefault();
+            const doctorName = btn.dataset.doctorName;
+
+            if (window.AppointmentModal && typeof window.AppointmentModal.openForDoctor === 'function') {
+                window.AppointmentModal.openForDoctor(doctorName);
+            }
+        });
     }
 
     renderDoctors(doctorsData);

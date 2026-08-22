@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p class="c-services__card-desc">${service.desc}</p>
                 </div>
                 <div class="c-services__card-footer">
-                    <a href="${service.link}" class="c-services__card-link">
+                    <a href="${service.link}" class="c-services__card-link js-service-book-btn" data-service-id="${service.id}">
                         <span>مشاهده جزئیات و نوبت‌دهی</span>
                         <div class="c-services__link-icon">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
@@ -75,5 +75,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </article>
         `).join('');
+
+        servicesGrid.addEventListener('click', (e) => {
+            const btn = e.target.closest('.js-service-book-btn');
+            if (!btn) return;
+
+            e.preventDefault();
+            const serviceId = btn.dataset.serviceId;
+
+            if (window.AppointmentModal && typeof window.AppointmentModal.openForService === 'function') {
+                window.AppointmentModal.openForService(serviceId);
+            }
+        });
     }
 });
