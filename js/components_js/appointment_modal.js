@@ -1,9 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // =========================================================
-    // Services and Doctors Mock Data
-    // =========================================================
-
     const servicesData = [
         {
             id: 1,
@@ -37,105 +33,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     ];
 
-
-    // =========================================================
-    // Available Time Slots Data
-    // =========================================================
-
     const timeSlotsData = [
-        {
-            time: '۰۹:۰۰ - ۱۰:۰۰',
-            available: true
-        },
-        {
-            time: '۱۰:۰۰ - ۱۱:۰۰',
-            available: false
-        },
-        {
-            time: '۱۱:۰۰ - ۱۲:۰۰',
-            available: true
-        },
-        {
-            time: '۱۶:۰۰ - ۱۷:۰۰',
-            available: true
-        },
-        {
-            time: '۱۷:۰۰ - ۱۸:۰۰',
-            available: false
-        },
-        {
-            time: '۱۸:۰۰ - ۱۹:۰۰',
-            available: true
-        }
+        { time: '۰۹:۰۰ - ۱۰:۰۰', available: true },
+        { time: '۱۰:۰۰ - ۱۱:۰۰', available: false },
+        { time: '۱۱:۰۰ - ۱۲:۰۰', available: true },
+        { time: '۱۶:۰۰ - ۱۷:۰۰', available: true },
+        { time: '۱۷:۰۰ - ۱۸:۰۰', available: false },
+        { time: '۱۸:۰۰ - ۱۹:۰۰', available: true }
     ];
-
-
-    // =========================================================
-    // Persian Months
-    // =========================================================
 
     const persianMonths = [
-        'فروردین',
-        'اردیبهشت',
-        'خرداد',
-        'تیر',
-        'مرداد',
-        'شهریور',
-        'مهر',
-        'آبان',
-        'آذر',
-        'دی',
-        'بهمن',
-        'اسفند'
+        'فروردین', 'اردیبهشت', 'خرداد', 'تیر',
+        'مرداد', 'شهریور', 'مهر', 'آبان',
+        'آذر', 'دی', 'بهمن', 'اسفند'
     ];
-
-
-    // =========================================================
-    // Current Real Persian Date
-    // 30 Mordad 1405 - Friday
-    // =========================================================
 
     const currentRealYear = 1405;
     const currentRealMonth = 4;
     const currentRealDay = 30;
 
-
-    // =========================================================
-    // Calendar State
-    // =========================================================
-
     let calendarYear = currentRealYear;
     let calendarMonth = currentRealMonth;
-
-
-    // =========================================================
-    // Persian Weekday
-    //
-    // 0 = Saturday
-    // 1 = Sunday
-    // 2 = Monday
-    // 3 = Tuesday
-    // 4 = Wednesday
-    // 5 = Thursday
-    // 6 = Friday
-    //
-    // 1 Mordad 1405 = Wednesday = 4
-    // =========================================================
 
     const baseYear = 1405;
     const baseMonth = 4;
     const baseMonthStartDay = 5;
 
-    // =========================================================
-    // Fully Booked Days
-    // =========================================================
-
     const fullyBookedDays = [];
-
-
-    // =========================================================
-    // Reservation State
-    // =========================================================
 
     let bookingState = {
         service: null,
@@ -144,48 +68,21 @@ document.addEventListener('DOMContentLoaded', () => {
         timeSlot: null
     };
 
+    let userAppointments = [];
 
-    // =========================================================
-    // DOM Elements
-    // =========================================================
-
-    const appointmentModal =
-        document.getElementById('js-appointment-modal');
-
-    const calendarModal =
-        document.getElementById('js-calendar-modal');
-
-    const timeModal =
-        document.getElementById('js-time-modal');
-
-    const servicesListContainer =
-        document.getElementById('js-appointment-services-list');
-
-    const calendarDaysGrid =
-        document.getElementById('js-calendar-days-grid');
-
-    const calendarMonthLabel =
-        document.getElementById('js-calendar-month-label');
-
-    const prevMonthBtn =
-        document.getElementById('js-prev-month');
-
-    const nextMonthBtn =
-        document.getElementById('js-next-month');
-
-    const timeSlotsGrid =
-        document.getElementById('js-time-slots-grid');
-
-    const bookingSummary =
-        document.getElementById('js-booking-summary');
-
-    const bookingForm =
-        document.getElementById('js-booking-form');
-
-
-    // =========================================================
-    // Calendar Helper Functions
-    // =========================================================
+    const appointmentModal = document.getElementById('js-appointment-modal');
+    const calendarModal = document.getElementById('js-calendar-modal');
+    const timeModal = document.getElementById('js-time-modal');
+    const myAppointmentsModal = document.getElementById('js-my-appointments-modal');
+    const servicesListContainer = document.getElementById('js-appointment-services-list');
+    const calendarDaysGrid = document.getElementById('js-calendar-days-grid');
+    const calendarMonthLabel = document.getElementById('js-calendar-month-label');
+    const prevMonthBtn = document.getElementById('js-prev-month');
+    const nextMonthBtn = document.getElementById('js-next-month');
+    const timeSlotsGrid = document.getElementById('js-time-slots-grid');
+    const bookingSummary = document.getElementById('js-booking-summary');
+    const bookingForm = document.getElementById('js-booking-form');
+    const myAppointmentsList = document.getElementById('js-my-appointments-list');
 
     function isPersianLeapYear(year) {
         const leapYears = [
@@ -202,19 +99,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return isPersianLeapYear(year) ? 30 : 29;
     }
 
-    function getPersianYearDays(year) {
-        return isPersianLeapYear(year) ? 366 : 365;
-    }
-
     function getMonthStartDay(year, month) {
         let startDay = baseMonthStartDay;
         let currentYear = baseYear;
         let currentMonth = baseMonth;
 
-        while (
-            currentYear < year ||
-            (currentYear === year && currentMonth < month)
-        ) {
+        while (currentYear < year || (currentYear === year && currentMonth < month)) {
             const daysInCurrentMonth = getPersianMonthDays(currentYear, currentMonth);
             startDay = (startDay + daysInCurrentMonth) % 7;
             currentMonth++;
@@ -225,10 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        while (
-            currentYear > year ||
-            (currentYear === year && currentMonth > month)
-        ) {
+        while (currentYear > year || (currentYear === year && currentMonth > month)) {
             currentMonth--;
             if (currentMonth < 0) {
                 currentMonth = 11;
@@ -246,73 +133,72 @@ document.addEventListener('DOMContentLoaded', () => {
         return String(value).replace(/\d/g, digit => numbers[digit]);
     }
 
+    function renderMyAppointments() {
+        if (!myAppointmentsList) return;
 
-    // =========================================================
-    // Trigger Modals (اتصال دکمه‌ها به پاپ‌آپ)
-    // =========================================================
-
-    const openFirstModal = (e) => {
-        if (e) {
-            e.preventDefault();
+        if (userAppointments.length === 0) {
+            myAppointmentsList.innerHTML = `
+                <div style="text-align: center; padding: 30px 10px;">
+                    <i class="far fa-calendar-times" style="font-size: 48px; color: #a0aec0; margin-bottom: 15px;"></i>
+                    <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">شما هیچ نوبت فعالی ندارید</h4>
+                    <p style="font-size: 13px; color: #718096;">برای ثبت نوبت می‌توانید از بخش خدمات یا پزشکان اقدام کنید.</p>
+                </div>
+            `;
+        } else {
+            myAppointmentsList.innerHTML = userAppointments.map(app => `
+                <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-bottom: 12px; background: #f8fafc;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <strong style="color: #2d3748; font-size: 15px;">${app.service}</strong>
+                        <span style="background: #e6fffa; color: #234e52; font-size: 12px; padding: 3px 8px; border-radius: 6px; font-weight: 600;">${app.status}</span>
+                    </div>
+                    <div style="font-size: 13px; color: #4a5568; line-height: 1.8;">
+                        <div><i class="fas fa-user-md" style="margin-left: 6px; color: #3182ce;"></i> پزشک: <strong>${app.doctor}</strong></div>
+                        <div><i class="far fa-calendar-alt" style="margin-left: 6px; color: #3182ce;"></i> تاریخ: ${app.date}</div>
+                        <div><i class="far fa-clock" style="margin-left: 6px; color: #3182ce;"></i> ساعت: ${app.time}</div>
+                    </div>
+                </div>
+            `).join('');
         }
-
-        renderServices(servicesData);
-
-        if (appointmentModal) {
-            appointmentModal.showModal();
-        }
-    };
-
-    // ۱. دکمه نوبت‌ها در نوبار اصلی
-    const navAppointmentsBtn = document.getElementById('js-nav-appointments');
-    if (navAppointmentsBtn) {
-        navAppointmentsBtn.addEventListener('click', openFirstModal);
     }
 
-    // ۲. همه دکمه‌های «سریع نوبت بگیر» (شامل Hero و سایر بخش‌ها)
+    const openFirstModal = (e) => {
+        if (e) e.preventDefault();
+        renderServices(servicesData);
+        if (appointmentModal) appointmentModal.showModal();
+    };
+
+    const navAppointmentsBtn = document.getElementById('js-nav-appointments');
+    if (navAppointmentsBtn) {
+        navAppointmentsBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            renderMyAppointments();
+            if (myAppointmentsModal) myAppointmentsModal.showModal();
+        });
+    }
+
     const heroBookingBtns = document.querySelectorAll('.c-hero-card__btn, .js-hero-booking');
     heroBookingBtns.forEach(btn => {
         btn.addEventListener('click', openFirstModal);
     });
 
-
-    // =========================================================
-    // Close Modals
-    // =========================================================
-
-    document
-        .querySelectorAll('.js-modal-close')
-        .forEach(btn => {
-            btn.addEventListener('click', () => {
-                if (appointmentModal) appointmentModal.close();
-                if (calendarModal) calendarModal.close();
-                if (timeModal) timeModal.close();
-            });
+    document.querySelectorAll('.js-modal-close').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (appointmentModal) appointmentModal.close();
+            if (calendarModal) calendarModal.close();
+            if (timeModal) timeModal.close();
+            if (myAppointmentsModal) myAppointmentsModal.close();
         });
+    });
 
+    document.getElementById('js-calendar-back')?.addEventListener('click', () => {
+        calendarModal.close();
+        appointmentModal.showModal();
+    });
 
-    // =========================================================
-    // Back Buttons
-    // =========================================================
-
-    document
-        .getElementById('js-calendar-back')
-        ?.addEventListener('click', () => {
-            calendarModal.close();
-            appointmentModal.showModal();
-        });
-
-    document
-        .getElementById('js-time-back')
-        ?.addEventListener('click', () => {
-            timeModal.close();
-            calendarModal.showModal();
-        });
-
-
-    // =========================================================
-    // 1. Render Services
-    // =========================================================
+    document.getElementById('js-time-back')?.addEventListener('click', () => {
+        timeModal.close();
+        calendarModal.showModal();
+    });
 
     function renderServices(dataToRender = servicesData) {
         if (!servicesListContainer) return;
@@ -321,50 +207,36 @@ document.addEventListener('DOMContentLoaded', () => {
             .map(item => `
                 <li class="c-appointment-item">
                     <div class="c-appointment-item__info">
-                        <h3 class="c-appointment-item__title">
-                            ${item.title}
-                        </h3>
+                        <h3 class="c-appointment-item__title">${item.title}</h3>
                         <p class="c-appointment-item__doctor">
                             <i class="fas fa-user-md"></i>
                             ${item.doctor}
                         </p>
                     </div>
 
-                    <button
-                        type="button"
-                        class="c-appointment-item__btn"
-                        data-id="${item.id}"
-                    >
+                    <button type="button" class="c-appointment-item__btn" data-id="${item.id}">
                         <span>انتخاب و نوبت‌گیری</span>
                         <i class="fas fa-chevron-left"></i>
                     </button>
                 </li>
-            `)
-            .join('');
+            `).join('');
 
-        servicesListContainer
-            .querySelectorAll('.c-appointment-item__btn')
-            .forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const serviceId = parseInt(e.currentTarget.dataset.id, 10);
-                    const selected = servicesData.find(service => service.id === serviceId);
+        servicesListContainer.querySelectorAll('.c-appointment-item__btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const serviceId = parseInt(e.currentTarget.dataset.id, 10);
+                const selected = servicesData.find(service => service.id === serviceId);
 
-                    if (!selected) return;
+                if (!selected) return;
 
-                    bookingState.service = selected.title;
-                    bookingState.doctor = selected.doctor;
+                bookingState.service = selected.title;
+                bookingState.doctor = selected.doctor;
 
-                    appointmentModal.close();
-                    renderCalendar();
-                    calendarModal.showModal();
-                });
+                appointmentModal.close();
+                renderCalendar();
+                calendarModal.showModal();
             });
+        });
     }
-
-
-    // =========================================================
-    // Global Window Methods for External Triggers
-    // =========================================================
 
     window.AppointmentModal = {
         openForService: (serviceIdStr) => {
@@ -387,19 +259,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-
-    // =========================================================
-    // 2. Render Calendar
-    // =========================================================
-
     function renderCalendar() {
         if (!calendarDaysGrid || !calendarMonthLabel) return;
 
-        calendarMonthLabel.textContent =
-            `${persianMonths[calendarMonth]} ${toPersianNumber(calendarYear)}`;
+        calendarMonthLabel.textContent = `${persianMonths[calendarMonth]} ${toPersianNumber(calendarYear)}`;
 
-        const isCurrentOrPastMonth =
-            (calendarYear < currentRealYear) ||
+        const isCurrentOrPastMonth = (calendarYear < currentRealYear) ||
             (calendarYear === currentRealYear && calendarMonth <= currentRealMonth);
 
         if (prevMonthBtn) {
@@ -416,13 +281,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         for (let day = 1; day <= totalDays; day++) {
-            const isPast =
-                (calendarYear < currentRealYear) ||
+            const isPast = (calendarYear < currentRealYear) ||
                 (calendarYear === currentRealYear && calendarMonth < currentRealMonth) ||
                 (calendarYear === currentRealYear && calendarMonth === currentRealMonth && day < currentRealDay);
 
-            const isFullyBooked =
-                !isPast &&
+            const isFullyBooked = !isPast &&
                 calendarYear === currentRealYear &&
                 calendarMonth === currentRealMonth &&
                 fullyBookedDays.includes(day);
@@ -442,13 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             daysHTML += `
-                <button
-                    type="button"
-                    class="c-calendar-day ${statusClass}"
-                    ${disabledAttr}
-                    title="${titleAttr}"
-                    data-day="${day}"
-                >
+                <button type="button" class="c-calendar-day ${statusClass}" ${disabledAttr} title="${titleAttr}" data-day="${day}">
                     <span>${toPersianNumber(day)}</span>
                 </button>
             `;
@@ -456,26 +313,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         calendarDaysGrid.innerHTML = daysHTML;
 
-        calendarDaysGrid
-            .querySelectorAll('.c-calendar-day:not([disabled]):not(.c-calendar-day--empty)')
-            .forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const day = parseInt(e.currentTarget.dataset.day, 10);
+        calendarDaysGrid.querySelectorAll('.c-calendar-day:not([disabled]):not(.c-calendar-day--empty)').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const day = parseInt(e.currentTarget.dataset.day, 10);
 
-                    bookingState.date =
-                        `${toPersianNumber(day)} ${persianMonths[calendarMonth]} ${toPersianNumber(calendarYear)}`;
+                bookingState.date = `${toPersianNumber(day)} ${persianMonths[calendarMonth]} ${toPersianNumber(calendarYear)}`;
 
-                    calendarModal.close();
-                    renderTimeSlots();
-                    timeModal.showModal();
-                });
+                calendarModal.close();
+                renderTimeSlots();
+                timeModal.showModal();
             });
+        });
     }
-
-
-    // =========================================================
-    // Calendar Navigation - Next & Previous
-    // =========================================================
 
     if (nextMonthBtn) {
         nextMonthBtn.addEventListener('click', () => {
@@ -490,8 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (prevMonthBtn) {
         prevMonthBtn.addEventListener('click', () => {
-            const isCurrentOrPastMonth =
-                (calendarYear < currentRealYear) ||
+            const isCurrentOrPastMonth = (calendarYear < currentRealYear) ||
                 (calendarYear === currentRealYear && calendarMonth <= currentRealMonth);
 
             if (!isCurrentOrPastMonth) {
@@ -504,11 +352,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-
-    // =========================================================
-    // 3. Render Time Slots
-    // =========================================================
 
     function renderTimeSlots() {
         if (!timeSlotsGrid || !bookingSummary) return;
@@ -528,40 +371,23 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
 
-        timeSlotsGrid.innerHTML = timeSlotsData
-            .map(slot => `
-                <button
-                    type="button"
-                    class="c-time-slot-btn ${!slot.available ? 'c-time-slot-btn--disabled' : ''}"
-                    ${!slot.available ? 'disabled' : ''}
-                    data-time="${slot.time}"
-                >
-                    <i class="far fa-clock"></i>
-                    <span>${slot.time}</span>
-                </button>
-            `)
-            .join('');
+        timeSlotsGrid.innerHTML = timeSlotsData.map(slot => `
+            <button type="button" class="c-time-slot-btn ${!slot.available ? 'c-time-slot-btn--disabled' : ''}" ${!slot.available ? 'disabled' : ''} data-time="${slot.time}">
+                <i class="far fa-clock"></i>
+                <span>${slot.time}</span>
+            </button>
+        `).join('');
 
         bookingState.timeSlot = null;
 
-        timeSlotsGrid
-            .querySelectorAll('.c-time-slot-btn:not(.c-time-slot-btn--disabled)')
-            .forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    timeSlotsGrid
-                        .querySelectorAll('.c-time-slot-btn')
-                        .forEach(button => button.classList.remove('c-time-slot-btn--active'));
-
-                    e.currentTarget.classList.add('c-time-slot-btn--active');
-                    bookingState.timeSlot = e.currentTarget.dataset.time;
-                });
+        timeSlotsGrid.querySelectorAll('.c-time-slot-btn:not(.c-time-slot-btn--disabled)').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                timeSlotsGrid.querySelectorAll('.c-time-slot-btn').forEach(button => button.classList.remove('c-time-slot-btn--active'));
+                e.currentTarget.classList.add('c-time-slot-btn--active');
+                bookingState.timeSlot = e.currentTarget.dataset.time;
             });
+        });
     }
-
-
-    // =========================================================
-    // Submit Booking Form
-    // =========================================================
 
     if (bookingForm) {
         bookingForm.addEventListener('submit', (e) => {
@@ -572,23 +398,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            alert(`
-نوبت شما با موفقیت رزرو شد!
+            userAppointments.push({
+                id: Date.now(),
+                service: bookingState.service,
+                doctor: bookingState.doctor,
+                date: bookingState.date,
+                time: bookingState.timeSlot,
+                status: 'تایید شده'
+            });
 
-خدمت: ${bookingState.service}
-پزشک: ${bookingState.doctor}
-تاریخ: ${bookingState.date}
-ساعت: ${bookingState.timeSlot}
-            `);
+            alert(`نوبت شما با موفقیت رزرو شد!`);
 
             bookingForm.reset();
-            bookingState = {
-                service: null,
-                doctor: null,
-                date: null,
-                timeSlot: null
-            };
-
+            bookingState = { service: null, doctor: null, date: null, timeSlot: null };
             timeModal.close();
         });
     }
