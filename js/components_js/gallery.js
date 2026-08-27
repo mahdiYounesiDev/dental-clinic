@@ -5,29 +5,29 @@ document.addEventListener('DOMContentLoaded', () => {
             id: 1,
             title: 'ترمیم کامل خط لبخند',
             desc: 'اصلاح ناهماهنگی و فرم دندان‌ها با تکنیک کامپوزیت ونیر.',
-            beforeImg: '../../assets/images/b1.jpg',
-            afterImg: '../../assets/images/a1.jpg'
+            beforeImg: '../../assets/images/gallery/b1.webp',
+            afterImg: '../../assets/images/gallery/a1.webp'
         },
         {
             id: 2,
             title: 'بلیچینگ و سفیدکردن',
             desc: 'رفع تیرگی و زردی دندان‌ها تنها در یک جلسه با لیزر.',
-            beforeImg: '../../assets/images/b2.jpg',
-            afterImg: '../../assets/images/a2.jpg'
+            beforeImg: '../../assets/images/gallery/b2.webp',
+            afterImg: '../../assets/images/gallery/a2.webp'
         },
         {
             id: 3,
             title: 'ایمپلنت تخصصی',
             desc: 'جایگزینی دندان از دست رفته بدون آسیب به دندان‌های مجاور.',
-            beforeImg: '../../assets/images/b3.jpg',
-            afterImg: '../../assets/images/a3.jpg'
+            beforeImg: '../../assets/images/gallery/b3.webp',
+            afterImg: '../../assets/images/gallery/a3.webp'
         },
         {
             id: 4,
             title: 'لمینت سرامیکی',
             desc: 'اصلاح طرح لبخند به سبک طبیعی با ماندگاری بالا.',
-            beforeImg: '../../assets/images/a1.jpg',
-            afterImg: '../../assets/images/a4.jpg'
+            beforeImg: '../../assets/images/gallery/a1.webp',
+            afterImg: '../../assets/images/gallery/a4.webp'
         }
     ];
 

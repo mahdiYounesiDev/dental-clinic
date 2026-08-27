@@ -7,42 +7,42 @@ const equipmentData = [
         title: 'اسکنر داخل دهانی سه بعدی (Intraoral Scanner)',
         desc: 'جایگزین قالب‌گیری سنتی با قابلیت اسکن دیجیتال و ثبت تصویر ۳D از فک و دندان‌ها در چند ثانیه، با بالاترین دقت جهت ساخت روکش و ایمپلنت.',
         spec: 'تکنولوژی CAD/CAM | ساخت سوئیس (۲۰۲۵)',
-        img: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80'
+        img: '../../assets/images/equipments/Intraoral Scanner_11zon.webp'
     },
     {
         id: 2,
         title: 'لیزر دندان‌پزشکی کم‌توان و پرتوان (Dental Laser)',
         desc: 'ابزار پیشرفته جهت جراحی‌های بدون خونریزی و درد لثه، سفید کردن تخصصی دندان‌ها (بلیچینگ) و ضدعفونی‌سازی عمیق کانال ریشه.',
         spec: 'طول موج دوگانه | جراحی و زیبایی',
-        img: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=800&q=80'
+        img: '../../assets/images/equipments/Dental Laser_11zon.webp'
     },
     {
         id: 3,
         title: 'میکروسکوپ تخصصی درمان ریشه (Endodontic Microscope)',
         desc: 'ارائه‌دهنده بزرگنمایی تا ۳۰ برابر به همراه نور خنک LED برای تشخیص کانال‌های پنهان ریشه و انجام عصب‌کشی‌های بسیار پیچیده.',
         spec: 'اپتیک Zeiss آلمان | سیستم زوم پیوسته',
-        img: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=800&q=80'
+        img: '../../assets/images/equipments/Endodontic Microscope_11zon.webp'
     },
     {
         id: 4,
         title: 'دستگاه اسکیلر اولتراسونیک پیئزوالکتریک',
         desc: 'جرم‌گیری فوق‌پیشرفته و بدون آسیب به مینای دندان با نوسانات امواج صوتی و سیستم آبرسانی هوشمند جهت کاهش حساسیست دندان.',
         spec: 'فرکانس ۳۲ کیلوهرتز | مد انحصاری Soft',
-        img: 'https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=800&q=80'
+        img: '../../assets/images/equipments/Piezoelectric ultrasonic scaler_11zon.webp'
     },
     {
         id: 5,
         title: 'موتور ایمپلنت و جراحی هوشمند (Physiodispenser)',
         desc: 'دستگاه کنترل هوشمند گشتاور و سرعت برای سوراخ‌کاری استخوان فک و کاشت دقیق پایه‌های ایمپلنت بدون ایجاد آسیب حرارتی.',
         spec: 'گشتاور ۸۰ نیوتن‌سانتی‌متر | صفحه لمسی',
-        img: 'https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&w=800&q=80'
+        img: '../../assets/images/equipments/Physiodispenser_11zon.webp'
     },
     {
         id: 6,
         title: 'دستگاه روتاری و اپکس‌لوکیتور ترکیبی',
         desc: 'سیستم هوشمند پاک‌سازی کانال ریشه با قابلیت اندازه‌گیری هم‌زمان طول ریشه و متوقف‌سازی خودکار جهت جلوگیری از انحراف فایل.',
         spec: 'موتور بی‌سیم Brushless | تکنولوژی هوش مصنوعی',
-        img: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80'
+        img: '../../assets/images/equipments/Combined rotary and apex locator unit_11zon.jpeg'
     }
 ];
 
