@@ -1,7 +1,6 @@
-/* ==================== Application Logic & Persian UI ==================== */
+const API_URL = 'http://localhost:3000';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // DOM Elements
     const signupSection = document.getElementById('signup-section');
     const signinSection = document.getElementById('signin-section');
     const signupForm = document.getElementById('signup-form');
@@ -10,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const showSignupBtn = document.getElementById('show-signup');
     const phoneInput = document.getElementById('signup-phone');
 
-    // Section Toggling
     showSigninBtn.addEventListener('click', () => {
         signupSection.classList.add('is-hidden');
         signinSection.classList.remove('is-hidden');
@@ -23,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
         clearFormErrors(signinForm);
     });
 
-    // Auto Prefix & Max Length Enforcer for Iranian Phone Format
     phoneInput.addEventListener('input', (e) => {
         let value = window.validator.toEnglishDigits(e.target.value).replace(/\D/g, '');
 
@@ -40,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
         e.target.value = value;
     });
 
-    // Setup Realtime Validation for Inputs
     const attachRealtimeValidation = (form) => {
         const inputs = form.querySelectorAll('input:not([type="checkbox"]), select');
 
@@ -65,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
     attachRealtimeValidation(signupForm);
     attachRealtimeValidation(signinForm);
 
-    // Render Error UI with RTL Tooltip Bubble
     function showErrorState(input, message) {
         const wrapper = input.closest('.input-wrapper');
         wrapper.classList.remove('is-valid');
@@ -80,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
         tooltip.textContent = message;
     }
 
-    // Render Valid UI State
     function showSuccessState(input) {
         const wrapper = input.closest('.input-wrapper');
         wrapper.classList.remove('is-invalid');
@@ -92,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Clear Errors
     function clearFormErrors(form) {
         const wrappers = form.querySelectorAll('.input-wrapper');
         wrappers.forEach(w => {
@@ -104,8 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
         inputs.forEach(i => delete i.dataset.touched);
     }
 
-    // Sign Up Form Submission
-    signupForm.addEventListener('submit', (e) => {
+    // Sign Up Handler
+    signupForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const inputs = signupForm.querySelectorAll('input:not([type="checkbox"]), select');
         let isFormValid = true;
@@ -124,38 +117,68 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isFormValid) return;
 
         const email = document.getElementById('signup-email').value.trim();
-        const existingUsers = JSON.parse(localStorage.getItem('app_users') || '[]');
 
-        if (existingUsers.some(user => user.email === email)) {
-            showErrorState(document.getElementById('signup-email'), 'این ایمیل قبلاً ثبت شده است');
-            return;
+        try {
+            // Check if email is already registered
+            const checkResponse = await fetch(`${API_URL}/users?userEmail=${encodeURIComponent(email)}`);
+            const existingUsers = await checkResponse.json();
+
+            if (existingUsers.length > 0) {
+                showErrorState(document.getElementById('signup-email'), 'این ایمیل قبلاً ثبت شده است');
+                return;
+            }
+
+            // Create new user object according to db.json schema
+            const newUser = {
+                id: `usr-${Date.now()}`,
+                userCreatedAt: new Date().toISOString(),
+                role: "user",
+                userName: document.getElementById('signup-name').value.trim(),
+                userFamily: document.getElementById('signup-family').value.trim(),
+                userAge: document.getElementById('signup-age').value.trim(),
+                userPhone: document.getElementById('signup-phone').value.trim(),
+                userGender: document.getElementById('signup-gender').value,
+                userEmail: email,
+                userPassword: document.getElementById('signup-password').value,
+                userAppointmentIds: []
+            };
+
+            // Post new user to json-server
+            const saveResponse = await fetch(`${API_URL}/users`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newUser)
+            });
+
+            if (saveResponse.ok) {
+                const sessionUser = {
+                    id: newUser.id,
+                    userName: newUser.userName,
+                    userFamily: newUser.userFamily,
+                    userEmail: newUser.userEmail,
+                    role: newUser.role
+                };
+                localStorage.setItem('currentUser', JSON.stringify(sessionUser));
+
+                signupForm.reset();
+                clearFormErrors(signupForm);
+
+                // Redirect to main application page
+                window.location.href = '../../index.html';
+            } else {
+                alert('Server error while saving user data.');
+            }
+
+        } catch (error) {
+            console.error('Error during signup:', error);
+            alert('Failed to connect to the server.');
         }
-
-        // Save User with Metadata
-        const newUser = {
-            userId: crypto.randomUUID(),
-            createdAt: new Date().toISOString(),
-            role: "user",
-            name: document.getElementById('signup-name').value.trim(),
-            family: document.getElementById('signup-family').value.trim(),
-            age: document.getElementById('signup-age').value.trim(),
-            phone: document.getElementById('signup-phone').value.trim(),
-            gender: document.getElementById('signup-gender').value,
-            email: email,
-            password: document.getElementById('signup-password').value
-        };
-
-        existingUsers.push(newUser);
-        localStorage.setItem('app_users', JSON.stringify(existingUsers));
-
-        alert('ثبت‌نام با موفقیت انجام شد! اکنون وارد شوید.');
-        signupForm.reset();
-        clearFormErrors(signupForm);
-        showSigninBtn.click();
     });
 
-    // Sign In Form Submission
-    signinForm.addEventListener('submit', (e) => {
+    // Sign In Handler
+    signinForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const emailInput = document.getElementById('signin-email');
         const passInput = document.getElementById('signin-password');
@@ -168,21 +191,77 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!emailStatus.isValid || !passStatus.isValid) return;
 
-        const existingUsers = JSON.parse(localStorage.getItem('app_users') || '[]');
-        const foundUser = existingUsers.find(u => u.email === emailInput.value.trim());
+        const emailValue = emailInput.value.trim();
+        const passValue = passInput.value;
 
-        if (!foundUser) {
-            showErrorState(emailInput, 'حساب کاربری یافت نشد');
-            return;
+        try {
+            // Fetch user by email
+            const response = await fetch(`${API_URL}/users?userEmail=${encodeURIComponent(emailValue)}`);
+            const users = await response.json();
+
+            if (users.length === 0) {
+                showErrorState(emailInput, 'حساب کاربری با این ایمیل یافت نشد');
+                return;
+            }
+
+            const foundUser = users[0];
+
+            // Verify password
+            if (foundUser.userPassword !== passValue) {
+                showErrorState(passInput, 'کلمه عبور اشتباه است');
+                return;
+            }
+
+            // Store current user session
+            const sessionUser = {
+                id: foundUser.id,
+                userName: foundUser.userName,
+                userFamily: foundUser.userFamily,
+                userEmail: foundUser.userEmail,
+                role: foundUser.role
+            };
+            localStorage.setItem('currentUser', JSON.stringify(sessionUser));
+
+            signinForm.reset();
+            clearFormErrors(signinForm);
+
+            // Redirect to main application page
+            window.location.href = '../../index.html';
+
+        } catch (error) {
+            console.error('Error during signin:', error);
+            alert('Failed to connect to the server.');
         }
-
-        if (foundUser.password !== passInput.value) {
-            showErrorState(passInput, 'کلمه عبور اشتباه است');
-            return;
-        }
-
-        alert(`خوش آمدید، ${foundUser.name || 'کاربر گرامی'}!`);
-        signinForm.reset();
-        clearFormErrors(signinForm);
     });
 });
+
+
+// Password Visibility Toggle Logic
+    const toggleButtons = document.querySelectorAll('.password-toggle');
+
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            const wrapper = button.closest('.input-wrapper');
+            const input = wrapper.querySelector('input');
+            const eyeIcon = button.querySelector('.eye-icon');
+
+            if (!input) return;
+
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+
+            // تغییر آیکون چشم (اضافه/حذف خط مورب روی چشم)
+            if (isPassword) {
+                eyeIcon.innerHTML = `
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                `;
+            } else {
+                eyeIcon.innerHTML = `
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                `;
+            }
+        });
+    });

@@ -1,0 +1,146 @@
+{
+  "services": [
+    {
+      "id": "srv-1",
+      "serviceDoctorId": "doc-1",
+      "serviceName": "ترمیم و پر کردن دندان",
+      "serviceDescription": "ترمیم دندان‌های آسیب‌دیده با کامپوزیت یا آمالگام",
+      "serviceAppointmentIds": [
+        "app-1",
+        "app-2"
+      ]
+    },
+    {
+      "id": "srv-2",
+      "serviceDoctorId": "doc-2",
+      "serviceName": "جرم‌گیری و بروفینگ",
+      "serviceDescription": "پاکسازی عمقی جرم دندان و جرم‌گیری تخصصی",
+      "serviceAppointmentIds": [
+        "app-3"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "usr-1",
+      "userCreatedAt": "2026-08-01T09:00:00Z",
+      "role": "user",
+      "userName": "مهدی",
+      "userFamily": "یونسی",
+      "userPhone": "09121112233",
+      "userEmail": "mahdi@example.com",
+      "userPassword": "hashed_password_1",
+      "userAppointmentIds": [
+        "app-1"
+      ]
+    },
+    {
+      "id": "usr-1788077784281",
+      "userCreatedAt": "2026-08-30T08:16:24.281Z",
+      "role": "user",
+      "userName": "Mahdi",
+      "userFamily": "Younesi",
+      "userAge": "23",
+      "userPhone": "09119626309",
+      "userGender": "male",
+      "userEmail": "imahdiyounesi@gmail.com",
+      "userPassword": "11223344",
+      "userAppointmentIds": []
+    },
+    {
+      "id": "usr-1788109942625",
+      "userCreatedAt": "2026-08-30T17:12:22.625Z",
+      "role": "user",
+      "userName": "علی",
+      "userFamily": "دارلوی",
+      "userAge": "22",
+      "userPhone": "09011809769",
+      "userGender": "male",
+      "userEmail": "Ali@gmail.com",
+      "userPassword": "11223344",
+      "userAppointmentIds": []
+    }
+  ],
+  "doctors": [
+    {
+      "id": "doc-1",
+      "doctorCreatedAt": "2026-01-10T08:00:00Z",
+      "role": "doctor",
+      "doctorName": "علیرضا",
+      "doctorFamily": "موسوی",
+      "doctorPhone": "09127778899",
+      "doctorEmail": "dr.mousavi@example.com",
+      "doctorPassword": "doc_password_123",
+      "doctorDegree": "متخصص ترمیمی و زیبایی",
+      "doctorServices": [
+        "srv-1"
+      ],
+      "doctorSpecializations": [
+        "ترمیم زیبایی",
+        "اصلاح طرح ابتسام"
+      ],
+      "doctorWorkExperience": 10,
+      "doctorAppointmentIds": [
+        "app-1",
+        "app-2"
+      ]
+    },
+    {
+      "id": "doc-2",
+      "doctorCreatedAt": "2026-02-15T11:30:00Z",
+      "role": "doctor",
+      "doctorName": "مریم",
+      "doctorFamily": "کاظمی",
+      "doctorPhone": "09123334455",
+      "doctorEmail": "dr.kazemi@example.com",
+      "doctorPassword": "doc_password_456",
+      "doctorDegree": "جراح و متخصص بیماری‌های لثه",
+      "doctorServices": [
+        "srv-2"
+      ],
+      "doctorSpecializations": [
+        "جراحی لثه",
+        "جرم‌گیری پیشرفته"
+      ],
+      "doctorWorkExperience": 6,
+      "doctorAppointmentIds": [
+        "app-3"
+      ]
+    }
+  ],
+  "appointments": [
+    {
+      "id": "app-1",
+      "doctorId": "doc-1",
+      "serviceId": "srv-1",
+      "userId": "usr-1",
+      "date": "2026-09-01",
+      "startTime": "09:00",
+      "endTime": "09:30",
+      "status": "booked",
+      "createdAt": "2026-08-20T10:00:00Z"
+    },
+    {
+      "id": "app-2",
+      "doctorId": "doc-1",
+      "serviceId": "srv-1",
+      "userId": null,
+      "date": "2026-09-01",
+      "startTime": "09:30",
+      "endTime": "10:00",
+      "status": "available",
+      "createdAt": "2026-08-20T10:00:00Z"
+    },
+    {
+      "id": "app-3",
+      "doctorId": "doc-2",
+      "serviceId": "srv-2",
+      "userId": null,
+      "date": "2026-09-01",
+      "startTime": "10:00",
+      "endTime": "10:30",
+      "status": "available",
+      "createdAt": "2026-08-21T11:15:00Z"
+    }
+  ]
+}

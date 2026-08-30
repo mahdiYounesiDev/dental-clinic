@@ -1,38 +1,79 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const headerToggle = document.getElementById('js-header-toggle');
-    const navbarMenu = document.getElementById('js-navbar');
-    const navLinks = document.querySelectorAll('.c-navbar__link');
+    // ==================== 1. Password Visibility Toggle Logic ====================
+    const togglePasswordBtn = document.getElementById('js-toggle-password');
+    const passwordInput = document.getElementById('js-password-input');
+    const eyeIcon = document.getElementById('js-eye-icon');
 
-    // باز و بستن منوی موبایل
-    if (headerToggle && navbarMenu) {
-        headerToggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            headerToggle.classList.toggle('c-header__toggle--active');
-            navbarMenu.classList.toggle('c-navbar--open');
-        });
+    if (togglePasswordBtn && passwordInput) {
+        togglePasswordBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // جلوگیری از ارسال احتمالی فرم
 
-        // بستن منو با کلیک بیرون از آن
-        document.addEventListener('click', (e) => {
-            if (navbarMenu.classList.contains('c-navbar--open')) {
-                if (!navbarMenu.contains(e.target) && !headerToggle.contains(e.target)) {
-                    headerToggle.classList.remove('c-header__toggle--active');
-                    navbarMenu.classList.remove('c-navbar--open');
+            // برسی نوع فعلی فیلد
+            const isPassword = passwordInput.getAttribute('type') === 'password';
+
+            // سوییچ بین password و text
+            passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+
+            // تغییر آیکون چشم (کلاس‌های FontAwesome)
+            if (eyeIcon) {
+                if (isPassword) {
+                    eyeIcon.classList.remove('fa-eye');
+                    eyeIcon.classList.add('fa-eye-slash');
+                } else {
+                    eyeIcon.classList.remove('fa-eye-slash');
+                    eyeIcon.classList.add('fa-eye');
                 }
             }
         });
     }
 
-    // مدیریت وضعیت فعال بودن آیتم‌های منو (Active State)
-    navLinks.forEach(link => {
-        link.addEventListener('click', function () {
-            navLinks.forEach(item => item.classList.remove('c-navbar__link--active'));
-            this.classList.add('c-navbar__link--active');
+    // ==================== 2. Navbar & Profile User Session ====================
+    const userBtn = document.getElementById('js-user-btn');
+    const userNameDisplay = document.getElementById('js-user-name-display');
+    const userDropdown = document.getElementById('js-user-dropdown');
+    const dropdownFullname = document.getElementById('js-dropdown-fullname');
+    const dropdownEmail = document.getElementById('js-dropdown-email');
+    const logoutBtn = document.getElementById('js-logout-btn');
 
-            // بستن خودکار منوی موبایل پس از انتخاب لینک
-            if (navbarMenu && navbarMenu.classList.contains('c-navbar--open')) {
-                headerToggle.classList.remove('c-header__toggle--active');
-                navbarMenu.classList.remove('c-navbar--open');
-            }
+    const currentUserRaw = localStorage.getItem('currentUser');
+    let currentUser = null;
+
+    try {
+        currentUser = currentUserRaw ? JSON.parse(currentUserRaw) : null;
+    } catch (err) {
+        console.error('Error parsing user session data:', err);
+    }
+
+    if (currentUser && currentUser.userName) {
+        userNameDisplay.textContent = currentUser.userName;
+        if (dropdownFullname) dropdownFullname.textContent = `${currentUser.userName} ${currentUser.userFamily || ''}`.trim();
+        if (dropdownEmail) dropdownEmail.textContent = currentUser.userEmail || '';
+
+        userBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userDropdown.classList.toggle('is-hidden');
         });
+    } else {
+        userNameDisplay.textContent = 'ورود / ثبت‌نام';
+        userBtn.addEventListener('click', () => {
+            window.location.href = './pages/login.html';
+        });
+    }
+
+    // بستن منوی کشویی هنگام کلیک بیرون
+    document.addEventListener('click', (e) => {
+        if (userDropdown && !userDropdown.classList.contains('is-hidden')) {
+            if (!userDropdown.contains(e.target) && !userBtn.contains(e.target)) {
+                userDropdown.classList.add('is-hidden');
+            }
+        }
     });
+
+    // دکمه خروج
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('currentUser');
+            window.location.reload();
+        });
+    }
 });

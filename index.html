@@ -16,66 +16,80 @@
 
 <body>
 
-    <!-- ==================== Header Section ==================== -->
-    <header class="c-header-wrapper">
-        <div class="c-header">
-            <!-- Brand & Mobile Toggle -->
-            <div class="c-header__right">
-                <button class="c-header__toggle" id="js-header-toggle" aria-label="Toggle menu">
-                    <span class="c-header__toggle-line"></span>
-                    <span class="c-header__toggle-line"></span>
-                    <span class="c-header__toggle-line"></span>
-                </button>
+<!-- ==================== Header Section ==================== -->
+<header class="c-header-wrapper">
+    <div class="c-header">
+        <!-- Brand & Mobile Toggle -->
+        <div class="c-header__right">
+            <button class="c-header__toggle" id="js-header-toggle" aria-label="Toggle menu">
+                <span class="c-header__toggle-line"></span>
+                <span class="c-header__toggle-line"></span>
+                <span class="c-header__toggle-line"></span>
+            </button>
 
-                <a href="./index.html" class="c-logo">
-                    <span class="c-logo__text">لمی دنت</span>
-                </a>
-            </div>
-
-            <!-- Navigation Links -->
-            <nav class="c-navbar" id="js-navbar">
-                <ul class="c-navbar__list">
-                    <li class="c-navbar__item">
-                        <a href="#" class="c-navbar__link c-navbar__link--active" id="js-nav-appointments">نوبت ها</a>
-                    </li>
-                    <li class="c-navbar__item">
-                        <a href="#services" class="c-navbar__link">خدمات</a>
-                    </li>
-                    <li class="c-navbar__item">
-                        <a href="#doctorsSection" class="c-navbar__link">پزشکان</a>
-                    </li>
-                    <li class="c-navbar__item">
-                        <a href="#gallerySection" class="c-navbar__link">گالری</a>
-                    </li>
-                    <li class="c-navbar__item">
-                        <a href="#commentsAndFAQ" class="c-navbar__link">نظرات و سوالات</a>
-                    </li>
-                    <li class="c-navbar__item">
-                        <a href="#" class="c-navbar__link">مقالات (بزودی)</a>
-                    </li>
-                    <li class="c-navbar__item c-navbar__item--mobile-only">
-                        <a href="#" class="c-navbar__link">پروفایل</a>
-                    </li>
-                </ul>
-            </nav>
-
-            <!-- Social Links & Profile -->
-            <div class="c-actions">
-                <a href="#" class="c-actions__icon" aria-label="Instagram">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="#" class="c-actions__icon" aria-label="Twitter">
-                    <i class="fab fa-twitter"></i>
-                </a>
-                <a href="#" class="c-actions__icon" aria-label="Facebook">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-                <a href="./pages/login.html" class="c-actions__profile" aria-label="Profile">
-                    <i class="fas fa-user-circle"></i>
-                </a>
-            </div>
+            <a href="./index.html" class="c-logo">
+                <span class="c-logo__text">لمی دنت</span>
+            </a>
         </div>
-    </header>
+
+        <!-- Navigation Links -->
+        <nav class="c-navbar" id="js-navbar">
+            <ul class="c-navbar__list">
+                <li class="c-navbar__item">
+                    <a href="#" class="c-navbar__link c-navbar__link--active" id="js-nav-appointments">نوبت ها</a>
+                </li>
+                <li class="c-navbar__item">
+                    <a href="#services" class="c-navbar__link">خدمات</a>
+                </li>
+                <li class="c-navbar__item">
+                    <a href="#doctorsSection" class="c-navbar__link">پزشکان</a>
+                </li>
+                <li class="c-navbar__item">
+                    <a href="#gallerySection" class="c-navbar__link">گالری</a>
+                </li>
+                <li class="c-navbar__item">
+                    <a href="#commentsAndFAQ" class="c-navbar__link">نظرات و سوالات</a>
+                </li>
+
+                <!-- User Profile Menu Item -->
+                <li class="c-navbar__item c-navbar__item--user" id="js-user-menu-wrapper">
+                    <button type="button" class="c-user-btn" id="js-user-btn">
+                        <svg class="c-user-btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span class="c-user-btn__name" id="js-user-name-display">ورود / ثبت‌نام</span>
+                    </button>
+
+                    <!-- Dropdown Menu (Logged In State) -->
+                    <div class="c-user-dropdown is-hidden" id="js-user-dropdown">
+                        <div class="c-user-dropdown__header">
+                            <span class="c-user-dropdown__fullname" id="js-dropdown-fullname"></span>
+                            <span class="c-user-dropdown__email" id="js-dropdown-email"></span>
+                        </div>
+                        <div class="c-user-dropdown__divider"></div>
+                        <button type="button" class="c-user-dropdown__logout" id="js-logout-btn">
+                            خروج از حساب
+                        </button>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Social Links -->
+        <div class="c-actions">
+            <a href="#" class="c-actions__icon" aria-label="Instagram">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="c-actions__icon" aria-label="Twitter">
+                <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="c-actions__icon" aria-label="Facebook">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+        </div>
+    </div>
+</header>
 
     <!-- ==================== Hero Section ==================== -->
     <section class="c-hero">

@@ -248,3 +248,127 @@
         display: none;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+.c-navbar__item--user {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.c-user-btn {
+    display: flex;
+    flex-direction: row; /* چیدمان افقی اسم و آیکون کنار هم */
+    align-items: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--color-white);
+    gap: 8px;
+    padding: var(--fs-xs) var(--fs-sm);
+    border-radius: var(--radius-sm);
+    transition: background-color 0.25s ease;
+}
+
+.c-user-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.c-user-btn__icon {
+    width: 20px;
+    height: 20px;
+}
+
+.c-user-btn__name {
+    font-family: "Text", sans-serif;
+    font-size: var(--fs-sm);
+    font-weight: 500;
+}
+
+.c-user-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    background-color: var(--color-white);
+    border-radius: var(--radius-md);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    padding: 12px;
+    min-width: 200px;
+    z-index: 1050;
+    color: var(--color-dark);
+}
+
+.c-user-dropdown.is-hidden {
+    display: none;
+}
+
+.c-user-dropdown__header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: right;
+}
+
+.c-user-dropdown__fullname {
+    font-family: "Button", sans-serif;
+    font-size: var(--fs-sm);
+    color: var(--color-dark);
+}
+
+.c-user-dropdown__email {
+    font-family: "TextRegular", sans-serif;
+    font-size: var(--fs-xs);
+    color: #666666;
+    word-break: break-all;
+}
+
+.c-user-dropdown__divider {
+    height: 1px;
+    background-color: #eeeeee;
+    margin: 10px 0;
+}
+
+.c-user-dropdown__logout {
+    width: 100%;
+    padding: 8px;
+    background-color: #fff0f0;
+    color: #e53935;
+    border: 1px solid #ffcdd2;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-family: "Button", sans-serif;
+    font-size: var(--fs-xs);
+    transition: all 0.2s ease;
+}
+
+.c-user-dropdown__logout:hover {
+    background-color: #ffe0e0;
+}
+
+/* اصلاح استایل در حالت موبایل */
+@media screen and (max-width: 991px) {
+    .c-user-btn {
+        color: var(--color-dark);
+        width: 100%;
+        justify-content: flex-start;
+        padding: 12px var(--fs-md);
+    }
+
+    .c-user-dropdown {
+        position: static;
+        box-shadow: none;
+        border: 1px solid #eeeeee;
+        margin-top: 5px;
+        width: 100%;
+    }
+}
