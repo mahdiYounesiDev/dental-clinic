@@ -2,44 +2,36 @@
 
 class FormValidator {
     constructor() {
-        // Core Regular Expressions
         this.emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         this.phoneRegex = /^09\d{9}$/;
     }
 
-    // Convert Persian Numbers to English
     toEnglishDigits(str) {
         return str.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
     }
 
-    // Validate Required Empty Fields
     validateRequired(value) {
         return value.trim() !== '';
     }
 
-    // Validate Email Format
     validateEmail(email) {
         return this.emailRegex.test(email.trim());
     }
 
-    // Validate Phone Number
     validatePhone(phone) {
         const cleanPhone = this.toEnglishDigits(phone.trim());
         return this.phoneRegex.test(cleanPhone);
     }
 
-    // Validate Password Min Length
     validatePassword(password) {
         return password.length >= 8;
     }
 
-    // Validate Age Range
     validateAge(age) {
         const numAge = parseInt(this.toEnglishDigits(age), 10);
         return !isNaN(numAge) && numAge >= 1 && numAge <= 120;
     }
 
-    // Dynamic Single Field Validation Rules (Persian Messages)
     validateField(inputElement) {
         const name = inputElement.name;
         const value = this.toEnglishDigits(inputElement.value);
@@ -56,7 +48,6 @@ class FormValidator {
                     result = { isValid: false, message: 'ساختار ایمیل معتبر نیست' };
                 }
                 break;
-
             case 'phone':
                 if (!value.startsWith('09')) {
                     result = { isValid: false, message: 'شماره باید با ۰۹ شروع شود' };
@@ -66,26 +57,22 @@ class FormValidator {
                     result = { isValid: false, message: 'شماره همراه معتبر نیست' };
                 }
                 break;
-
             case 'password':
                 if (!this.validatePassword(value)) {
                     result = { isValid: false, message: 'کلمه عبور باید حداقل ۸ کاراکتر باشد' };
                 }
                 break;
-
             case 'age':
                 if (!this.validateAge(value)) {
                     result = { isValid: false, message: 'سن باید بین ۱ تا ۱۲۰ سال باشد' };
                 }
                 break;
-
             case 'name':
             case 'family':
                 if (value.trim().length < 2) {
                     result = { isValid: false, message: 'حداقل باید ۲ کاراکتر باشد' };
                 }
                 break;
-
             case 'gender':
                 if (!value) {
                     result = { isValid: false, message: 'لطفا جنسیت را انتخاب کنید' };
@@ -97,5 +84,4 @@ class FormValidator {
     }
 }
 
-// Instantiate Global Validator
 window.validator = new FormValidator();

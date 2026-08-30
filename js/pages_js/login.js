@@ -1,5 +1,3 @@
-const API_URL = 'http://localhost:3000';
-
 document.addEventListener('DOMContentLoaded', () => {
     const signupSection = document.getElementById('signup-section');
     const signinSection = document.getElementById('signin-section');
@@ -8,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const showSigninBtn = document.getElementById('show-signin');
     const showSignupBtn = document.getElementById('show-signup');
     const phoneInput = document.getElementById('signup-phone');
+
 
     showSigninBtn.addEventListener('click', () => {
         signupSection.classList.add('is-hidden');
@@ -21,38 +20,59 @@ document.addEventListener('DOMContentLoaded', () => {
         clearFormErrors(signinForm);
     });
 
-    phoneInput.addEventListener('input', (e) => {
-        let value = window.validator.toEnglishDigits(e.target.value).replace(/\D/g, '');
 
-        if (value.length > 0 && !value.startsWith('0')) {
-            value = '09' + value;
-        } else if (value.length > 1 && !value.startsWith('09')) {
-            value = '09' + value.substring(2);
-        }
+    if (phoneInput) {
+        phoneInput.addEventListener('input', (e) => {
+            let value = window.validator.toEnglishDigits(e.target.value).replace(/\D/g, '');
+            if (value.length > 0 && !value.startsWith('0')) {
+                value = '09' + value;
+            } else if (value.length > 1 && !value.startsWith('09')) {
+                value = '09' + value.substring(2);
+            }
+            if (value.length > 11) value = value.slice(0, 11);
+            e.target.value = value;
+        });
+    }
 
-        if (value.length > 11) {
-            value = value.slice(0, 11);
-        }
+    const toggleButtons = document.querySelectorAll('.password-toggle');
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            const wrapper = button.closest('.input-wrapper');
+            const input = wrapper ? wrapper.querySelector('input') : null;
+            const eyeIcon = button.querySelector('.eye-icon');
 
-        e.target.value = value;
+            if (!input || !eyeIcon) return;
+
+            const isPassword = input.type === 'password';
+            input.type = isPassword ? 'text' : 'password';
+
+            if (isPassword) {
+                eyeIcon.innerHTML = `
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                `;
+            } else {
+                eyeIcon.innerHTML = `
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                `;
+            }
+        });
     });
+
 
     const attachRealtimeValidation = (form) => {
         const inputs = form.querySelectorAll('input:not([type="checkbox"]), select');
-
         inputs.forEach(input => {
             const handleValidation = () => {
                 if (input.value.trim() === '' && input.dataset.touched !== 'true') return;
                 input.dataset.touched = 'true';
 
                 const status = window.validator.validateField(input);
-                if (status.isValid) {
-                    showSuccessState(input);
-                } else {
-                    showErrorState(input, status.message);
-                }
+                if (status.isValid) showSuccessState(input);
+                else showErrorState(input, status.message);
             };
-
             input.addEventListener('input', handleValidation);
             input.addEventListener('blur', handleValidation);
         });
@@ -79,11 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const wrapper = input.closest('.input-wrapper');
         wrapper.classList.remove('is-invalid');
         wrapper.classList.add('is-valid');
-
         const tooltip = wrapper.querySelector('.error-tooltip');
-        if (tooltip) {
-            tooltip.remove();
-        }
+        if (tooltip) tooltip.remove();
     }
 
     function clearFormErrors(form) {
@@ -97,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         inputs.forEach(i => delete i.dataset.touched);
     }
 
-    // Sign Up Handler
+
     signupForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const inputs = signupForm.querySelectorAll('input:not([type="checkbox"]), select');
@@ -119,16 +136,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = document.getElementById('signup-email').value.trim();
 
         try {
-            // Check if email is already registered
-            const checkResponse = await fetch(`${API_URL}/users?userEmail=${encodeURIComponent(email)}`);
-            const existingUsers = await checkResponse.json();
-
-            if (existingUsers.length > 0) {
+            const isEmailTaken = await window.authService.checkEmailExists(email);
+            if (isEmailTaken) {
                 showErrorState(document.getElementById('signup-email'), 'این ایمیل قبلاً ثبت شده است');
                 return;
             }
 
-            // Create new user object according to db.json schema
             const newUser = {
                 id: `usr-${Date.now()}`,
                 userCreatedAt: new Date().toISOString(),
@@ -143,41 +156,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 userAppointmentIds: []
             };
 
-            // Post new user to json-server
-            const saveResponse = await fetch(`${API_URL}/users`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newUser)
-            });
+            await window.authService.registerUser(newUser);
 
-            if (saveResponse.ok) {
-                const sessionUser = {
-                    id: newUser.id,
-                    userName: newUser.userName,
-                    userFamily: newUser.userFamily,
-                    userEmail: newUser.userEmail,
-                    role: newUser.role
-                };
-                localStorage.setItem('currentUser', JSON.stringify(sessionUser));
+            const sessionUser = {
+                id: newUser.id,
+                userName: newUser.userName,
+                userFamily: newUser.userFamily,
+                userEmail: newUser.userEmail,
+                role: newUser.role
+            };
+            localStorage.setItem('currentUser', JSON.stringify(sessionUser));
 
-                signupForm.reset();
-                clearFormErrors(signupForm);
-
-                // Redirect to main application page
-                window.location.href = '../../index.html';
-            } else {
-                alert('Server error while saving user data.');
-            }
+            signupForm.reset();
+            clearFormErrors(signupForm);
+            window.location.href = '../index.html';
 
         } catch (error) {
             console.error('Error during signup:', error);
-            alert('Failed to connect to the server.');
+            alert('اتصال به سرور برقرار نشد.');
         }
     });
 
-    // Sign In Handler
     signinForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const emailInput = document.getElementById('signin-email');
@@ -195,24 +194,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const passValue = passInput.value;
 
         try {
-            // Fetch user by email
-            const response = await fetch(`${API_URL}/users?userEmail=${encodeURIComponent(emailValue)}`);
-            const users = await response.json();
+            const foundUser = await window.authService.getUserByEmail(emailValue);
 
-            if (users.length === 0) {
+            if (!foundUser) {
                 showErrorState(emailInput, 'حساب کاربری با این ایمیل یافت نشد');
                 return;
             }
 
-            const foundUser = users[0];
-
-            // Verify password
             if (foundUser.userPassword !== passValue) {
                 showErrorState(passInput, 'کلمه عبور اشتباه است');
                 return;
             }
 
-            // Store current user session
             const sessionUser = {
                 id: foundUser.id,
                 userName: foundUser.userName,
@@ -224,44 +217,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             signinForm.reset();
             clearFormErrors(signinForm);
-
-            // Redirect to main application page
-            window.location.href = '../../index.html';
+            window.location.href = '../index.html';
 
         } catch (error) {
             console.error('Error during signin:', error);
-            alert('Failed to connect to the server.');
+            alert('اتصال به سرور برقرار نشد.');
         }
     });
 });
-
-
-// Password Visibility Toggle Logic
-    const toggleButtons = document.querySelectorAll('.password-toggle');
-
-    toggleButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            const wrapper = button.closest('.input-wrapper');
-            const input = wrapper.querySelector('input');
-            const eyeIcon = button.querySelector('.eye-icon');
-
-            if (!input) return;
-
-            const isPassword = input.type === 'password';
-            input.type = isPassword ? 'text' : 'password';
-
-            // تغییر آیکون چشم (اضافه/حذف خط مورب روی چشم)
-            if (isPassword) {
-                eyeIcon.innerHTML = `
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                    <line x1="1" y1="1" x2="23" y2="23"></line>
-                `;
-            } else {
-                eyeIcon.innerHTML = `
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                    <circle cx="12" cy="12" r="3" />
-                `;
-            }
-        });
-    });
