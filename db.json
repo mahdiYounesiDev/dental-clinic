@@ -4,7 +4,7 @@
       "id": "srv-1",
       "serviceDoctorId": "doc-1",
       "serviceName": "ترمیم و پر کردن دندان",
-      "serviceDescription": "ترمیم دندان‌های آسیب‌دیده با کامپوزیت یا آمالگام",
+      "serviceDescription": "ترمیم دندان‌های آسیب‌دیده با کامپوزیت یا آمالگام و اصلاح فرم دندان.",
       "serviceAppointmentIds": [
         "app-1",
         "app-2"
@@ -14,10 +14,17 @@
       "id": "srv-2",
       "serviceDoctorId": "doc-2",
       "serviceName": "جرم‌گیری و بروفینگ",
-      "serviceDescription": "پاکسازی عمقی جرم دندان و جرم‌گیری تخصصی",
+      "serviceDescription": "پاکسازی عمقی جرم دندان، جرم‌گیری تخصصی و سفیدسازی سطحی.",
       "serviceAppointmentIds": [
         "app-3"
       ]
+    },
+    {
+      "id": "srv-3",
+      "serviceDoctorId": "doc-3",
+      "serviceName": "ارتودنسی نامرئی",
+      "serviceDescription": "مرتب‌سازی تخصصی دندان‌ها بدون نیاز به سیم‌کشی‌های فلزی جلب توجه‌کننده.",
+      "serviceAppointmentIds": []
     }
   ],
   "users": [
@@ -27,7 +34,9 @@
       "role": "user",
       "userName": "مهدی",
       "userFamily": "یونسی",
+      "userAge": "23",
       "userPhone": "09121112233",
+      "userGender": "male",
       "userEmail": "mahdi@example.com",
       "userPassword": "hashed_password_1",
       "userAppointmentIds": [
@@ -72,6 +81,7 @@
       "doctorEmail": "dr.mousavi@example.com",
       "doctorPassword": "doc_password_123",
       "doctorDegree": "متخصص ترمیمی و زیبایی",
+      "avatarUrl": "./assets/images/doctors/p2.webp",
       "doctorServices": [
         "srv-1"
       ],
@@ -95,6 +105,7 @@
       "doctorEmail": "dr.kazemi@example.com",
       "doctorPassword": "doc_password_456",
       "doctorDegree": "جراح و متخصص بیماری‌های لثه",
+      "avatarUrl": "./assets/images/doctors/p2.webp",
       "doctorServices": [
         "srv-2"
       ],
@@ -106,6 +117,27 @@
       "doctorAppointmentIds": [
         "app-3"
       ]
+    },
+    {
+      "id": "doc-3",
+      "doctorCreatedAt": "2026-03-20T09:00:00Z",
+      "role": "doctor",
+      "doctorName": "امیرحسین",
+      "doctorFamily": "رضایی",
+      "doctorPhone": "09125556677",
+      "doctorEmail": "dr.rezai@example.com",
+      "doctorPassword": "doc_password_789",
+      "doctorDegree": "متخصص ارتودنسی و ناهنجاری فک",
+      "avatarUrl": "./assets/images/doctors/p3.webp",
+      "doctorServices": [
+        "srv-3"
+      ],
+      "doctorSpecializations": [
+        "ارتودنسی نامرئی",
+        "اصلاح فک"
+      ],
+      "doctorWorkExperience": 8,
+      "doctorAppointmentIds": []
     }
   ],
   "appointments": [
