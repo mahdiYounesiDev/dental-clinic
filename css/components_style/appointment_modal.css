@@ -385,3 +385,9 @@
   transform: translateY(-1px);
   box-shadow: 0 8px 22px rgba(80, 216, 144, 0.45);
 }
+.c-calendar-day--today {
+    background-color: #3182ce !important;
+    color: #ffffff !important;
+    font-weight: bold;
+    border-radius: 8px;
+}

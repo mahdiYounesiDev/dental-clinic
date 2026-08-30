@@ -142,37 +142,19 @@
   ],
   "appointments": [
     {
-      "id": "app-1",
-      "doctorId": "doc-1",
-      "serviceId": "srv-1",
-      "userId": "usr-1",
-      "date": "2026-09-01",
-      "startTime": "09:00",
-      "endTime": "09:30",
-      "status": "booked",
-      "createdAt": "2026-08-20T10:00:00Z"
-    },
-    {
-      "id": "app-2",
-      "doctorId": "doc-1",
-      "serviceId": "srv-1",
-      "userId": null,
-      "date": "2026-09-01",
-      "startTime": "09:30",
-      "endTime": "10:00",
-      "status": "available",
-      "createdAt": "2026-08-20T10:00:00Z"
-    },
-    {
-      "id": "app-3",
-      "doctorId": "doc-2",
-      "serviceId": "srv-2",
-      "userId": null,
-      "date": "2026-09-01",
-      "startTime": "10:00",
-      "endTime": "10:30",
-      "status": "available",
-      "createdAt": "2026-08-21T11:15:00Z"
+      "id": "1788121092080",
+      "userId": "usr-1788077784281",
+      "service": "ارتودنسی نامرئی",
+      "serviceName": "ارتودنسی نامرئی",
+      "doctor": "دکتر امیرحسین رضایی",
+      "doctorName": "دکتر امیرحسین رضایی",
+      "doctorId": "doc-3",
+      "date": "۸ شهریور ۱۴۰۵",
+      "appointmentDate": "۸ شهریور ۱۴۰۵",
+      "time": "۰۹:۰۰ - ۱۰:۰۰",
+      "appointmentTime": "۰۹:۰۰ - ۱۰:۰۰",
+      "status": "تایید شده",
+      "createdAt": "2026-08-30T20:18:12.080Z"
     }
   ]
 }

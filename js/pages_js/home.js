@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const servicesGrid = document.getElementById('js-services-grid');
     const doctorsGrid = document.getElementById('js-doctors-grid');
 
+    // ۱. رندر لیست خدمات
     const renderServices = async () => {
         if (!servicesGrid) return;
         try {
@@ -36,6 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
+    // ۲. رندر لیست پزشکان
     const renderDoctors = async () => {
         if (!doctorsGrid) return;
         try {
@@ -97,5 +99,38 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
+    // ۳. بارگذاری هم‌زمان داده‌ها
     await Promise.all([renderServices(), renderDoctors()]);
+
+    // ۴. مدیریت کلیک روی دکمه‌های خدمات (Event Delegation)
+    if (servicesGrid) {
+        servicesGrid.addEventListener('click', (e) => {
+            const btn = e.target.closest('.js-service-book-btn');
+            if (!btn) return;
+
+            e.preventDefault();
+            const serviceId = btn.dataset.serviceId;
+
+            if (window.AppointmentModal && typeof window.AppointmentModal.openForService === 'function') {
+                window.AppointmentModal.openForService(serviceId);
+            }
+        });
+    }
+
+    // ۵. مدیریت کلیک روی دکمه‌های پزشکان (Event Delegation)
+    if (doctorsGrid) {
+        doctorsGrid.addEventListener('click', (e) => {
+            const btn = e.target.closest('.js-doctor-book-btn');
+            if (!btn) return;
+
+            e.preventDefault();
+            const doctorId = btn.dataset.doctorId;
+            const card = btn.closest('.c-doctor-card');
+            const doctorName = card ? card.querySelector('.c-doctor-card__name')?.textContent.trim() : 'پزشک منتخب';
+
+            if (window.AppointmentModal && typeof window.AppointmentModal.openForDoctor === 'function') {
+                window.AppointmentModal.openForDoctor(doctorName, doctorId);
+            }
+        });
+    }
 });
