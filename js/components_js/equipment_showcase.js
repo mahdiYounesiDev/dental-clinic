@@ -102,4 +102,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial render call
     renderEquipmentThumbs();
+    updateActiveEquipment(1);
 });

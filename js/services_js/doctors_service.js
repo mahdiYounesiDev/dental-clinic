@@ -1,20 +1,16 @@
+import { supabase } from '../utils_js/supabaseClient.js';
+
 class DoctorsService {
-    constructor() {
-        this.apiUrl = 'http://localhost:3000';
-    }
-
-    // Fetch all registered doctors
     async getAllDoctors() {
-        const response = await fetch(`${this.apiUrl}/doctors`);
-        if (!response.ok) throw new Error('Failed to fetch doctors');
-        return await response.json();
+        const { data, error } = await supabase.from('doctors').select('*');
+        if (error) throw new Error(error.message);
+        return data;
     }
 
-    // Fetch single doctor details by ID
     async getDoctorById(doctorId) {
-        const response = await fetch(`${this.apiUrl}/doctors/${doctorId}`);
-        if (!response.ok) throw new Error('Doctor not found');
-        return await response.json();
+        const { data, error } = await supabase.from('doctors').select('*').eq('id', doctorId).single();
+        if (error) throw new Error('Doctor not found');
+        return data;
     }
 }
 

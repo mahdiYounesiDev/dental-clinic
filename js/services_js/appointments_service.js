@@ -1,39 +1,28 @@
-class AppointmentsService {
-    constructor() {
-        this.apiUrl = 'http://localhost:3000';
-    }
+import { supabase } from '../utils_js/supabaseClient.js';
 
+class AppointmentsService {
     async getAllAppointments() {
-        const response = await fetch(`${this.apiUrl}/appointments`);
-        if (!response.ok) throw new Error('Failed to fetch appointments');
-        return await response.json();
+        const { data, error } = await supabase.from('appointments').select('*');
+        if (error) throw new Error(error.message);
+        return data;
     }
 
     async getUserAppointments(userId) {
-        const response = await fetch(`${this.apiUrl}/appointments?userId=${userId}`);
-        if (!response.ok) throw new Error('Failed to fetch user appointments');
-        return await response.json();
+        const { data, error } = await supabase.from('appointments').select('*').eq('userId', userId);
+        if (error) throw new Error(error.message);
+        return data;
     }
 
     async createAppointment(appointmentData) {
-        const response = await fetch(`${this.apiUrl}/appointments`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(appointmentData)
-        });
-
-        if (!response.ok) throw new Error('Failed to create appointment');
-        return await response.json();
+        const { data, error } = await supabase.from('appointments').insert([appointmentData]).select();
+        if (error) throw new Error(error.message);
+        return data[0];
     }
 
     async cancelAppointment(appointmentId) {
-        const response = await fetch(`${this.apiUrl}/appointments/${appointmentId}`, {
-            method: 'DELETE'
-        });
-        if (!response.ok) throw new Error('Failed to cancel appointment');
-        return await response.json();
+        const { data, error } = await supabase.from('appointments').delete().eq('id', appointmentId).select();
+        if (error) throw new Error(error.message);
+        return data[0];
     }
 }
 

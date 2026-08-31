@@ -1,30 +1,38 @@
-const API_URL = 'http://localhost:3000';
+import { supabase } from '../utils_js/supabaseClient.js';
 
 class AuthService {
+    // بررسی وجود ایمیل
     async checkEmailExists(email) {
-        const response = await fetch(`${API_URL}/users?userEmail=${encodeURIComponent(email)}`);
-        if (!response.ok) throw new Error('خطا در برقراری ارتباط با سرور');
-        const users = await response.json();
-        return users.length > 0;
+        const { data, error } = await supabase
+            .from('users')
+            .select('id')
+            .eq('userEmail', email);
+
+        if (error) throw new Error('خطا در برقراری ارتباط با سرور');
+        return data.length > 0;
     }
 
-    // new signup
+    // ثبت‌نام کاربر جدید
     async registerUser(userData) {
-        const response = await fetch(`${API_URL}/users`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(userData)
-        });
-        if (!response.ok) throw new Error('خطا در ذخیره اطلاعات کاربر');
-        return await response.json();
+        const { data, error } = await supabase
+            .from('users')
+            .insert([userData])
+            .select();
+
+        if (error) throw new Error('خطا در ذخیره اطلاعات کاربر: ' + error.message);
+        return data[0];
     }
 
-    // get user
+    // دریافت اطلاعات کاربر با ایمیل
     async getUserByEmail(email) {
-        const response = await fetch(`${API_URL}/users?userEmail=${encodeURIComponent(email)}`);
-        if (!response.ok) throw new Error('خطا در برقراری ارتباط با سرور');
-        const users = await response.json();
-        return users.length > 0 ? users[0] : null;
+        const { data, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('userEmail', email)
+            .maybeSingle();
+
+        if (error) throw new Error('خطا در برقراری ارتباط با سرور');
+        return data;
     }
 }
 

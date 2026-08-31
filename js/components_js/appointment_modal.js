@@ -93,10 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (window.appointmentsService && typeof window.appointmentsService.getAllAppointments === 'function') {
                 serverAppointments = await window.appointmentsService.getAllAppointments();
             } else {
-                const res = await fetch('http://localhost:3000/appointments');
-                if (res.ok) {
-                    serverAppointments = await res.json();
-                }
+                serverAppointments = [];
             }
         } catch (err) {
             console.error('خطا در دریافت نوبت‌ها از سرور:', err);
@@ -153,17 +150,21 @@ document.addEventListener('DOMContentLoaded', () => {
         return String(value).replace(/\d/g, digit => numbers[digit]);
     }
 
+    // لغو نوبت با استفاده از cancelAppointment
     async function deleteAppointment(appointmentId) {
         if (!confirm('آیا از لغو این نوبت اطمینان دارید؟')) return;
 
         try {
-            await fetch(`http://localhost:3000/appointments/${appointmentId}`, {
-                method: 'DELETE'
-            });
-            await renderMyAppointments();
+            if (window.appointmentsService && typeof window.appointmentsService.cancelAppointment === 'function') {
+                await window.appointmentsService.cancelAppointment(appointmentId);
+                alert('نوبت با موفقیت لغو شد.');
+                await renderMyAppointments();
+            } else {
+                alert('سرویس نوبت‌دهی در دسترس نیست.');
+            }
         } catch (err) {
             console.error('خطا در حذف نوبت:', err);
-            alert('خطا در حذف نوبت از سرور.');
+            alert('خطا در حذف نوبت: ' + err.message);
         }
     }
 
@@ -174,7 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
         myAppointmentsList.style.overflowY = 'auto';
         myAppointmentsList.style.paddingLeft = '5px';
 
-        await fetchServerAppointments();
         const currentUser = getCurrentUser();
 
         if (!currentUser) {
@@ -187,13 +187,17 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const userAppointments = serverAppointments.filter(app => {
-            const matchId = currentUser.id && String(app.userId) === String(currentUser.id);
-            const matchUsername = currentUser.username && (app.userUsername === currentUser.username || app.username === currentUser.username);
-            return matchId || matchUsername;
-        });
+        try {
+            if (window.appointmentsService && typeof window.appointmentsService.getUserAppointments === 'function') {
+                serverAppointments = await window.appointmentsService.getUserAppointments(currentUser.id);
+            } else {
+                await fetchServerAppointments();
+            }
+        } catch (err) {
+            console.error('خطا در دریافت نوبت‌های کاربر:', err);
+        }
 
-        if (userAppointments.length === 0) {
+        if (!serverAppointments || serverAppointments.length === 0) {
             myAppointmentsList.innerHTML = `
                 <div style="text-align: center; padding: 30px 10px;">
                     <i class="far fa-calendar-times" style="font-size: 48px; color: #a0aec0; margin-bottom: 15px;"></i>
@@ -202,19 +206,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
         } else {
-            myAppointmentsList.innerHTML = userAppointments.map(app => `
+            myAppointmentsList.innerHTML = serverAppointments.map(app => `
                 <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-bottom: 12px; background: #f8fafc; position: relative;">
                     <button type="button" class="js-delete-appointment" data-id="${app.id}" title="لغو نوبت" style="position: absolute; left: 12px; top: 12px; background: transparent; border: none; color: #e53e3e; font-size: 18px; cursor: pointer; padding: 2px 6px; border-radius: 4px;">
                         <i class="fas fa-times"></i>
                     </button>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-left: 25px;">
-                        <strong style="color: #2d3748; font-size: 15px;">${app.service || app.serviceName}</strong>
+                        <strong style="color: #2d3748; font-size: 15px;">${app.serviceName || app.service}</strong>
                         <span style="background: #e6fffa; color: #234e52; font-size: 12px; padding: 3px 8px; border-radius: 6px; font-weight: 600;">${app.status || 'تایید شده'}</span>
                     </div>
                     <div style="font-size: 13px; color: #4a5568; line-height: 1.8;">
-                        <div><i class="fas fa-user-md" style="margin-left: 6px; color: #3182ce;"></i> پزشک: <strong>${app.doctor || app.doctorName}</strong></div>
-                        <div><i class="far fa-calendar-alt" style="margin-left: 6px; color: #3182ce;"></i> تاریخ: ${app.date || app.appointmentDate}</div>
-                        <div><i class="far fa-clock" style="margin-left: 6px; color: #3182ce;"></i> ساعت: ${app.time || app.appointmentTime}</div>
+                        <div><i class="fas fa-user-md" style="margin-left: 6px; color: #3182ce;"></i> پزشک: <strong>${app.doctorName || app.doctor}</strong></div>
+                        <div><i class="far fa-calendar-alt" style="margin-left: 6px; color: #3182ce;"></i> تاریخ: ${app.appointmentDate || app.date}</div>
+                        <div><i class="far fa-clock" style="margin-left: 6px; color: #3182ce;"></i> ساعت: ${app.appointmentTime || app.time}</div>
                     </div>
                 </div>
             `).join('');
@@ -256,7 +260,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (calendarModal) calendarModal.showModal();
     });
 
-    // رندر تمام خدمات با نام پزشکان مرتبط
     function renderServicesList(servicesArray) {
         if (!servicesListContainer) return;
 
@@ -304,11 +307,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (window.servicesService && typeof window.servicesService.getAllServices === 'function') {
                     services = await window.servicesService.getAllServices();
                 } else {
-                    const res = await fetch('http://localhost:3000/services');
-                    if (res.ok) services = await res.json();
+                    services = [
+                        { id: '1', serviceName: 'ایمپلنت تخصصی دندان', doctorName: 'دکتر رضا محمدی' },
+                        { id: '2', serviceName: 'طراحی تخصصی لبخند', doctorName: 'دکتر سارا احمدی' },
+                        { id: '3', serviceName: 'ارتودنسی و تراز دندان', doctorName: 'دکتر مریم کاظمی' }
+                    ];
                 }
 
-                // اگر serviceIdStr داده شده بود فقط همان را باز کن، در غیر این صورت تمام ۶ سرویس را نشان بده
                 if (serviceIdStr) {
                     const foundService = services.find(s => String(s.id) === String(serviceIdStr));
                     if (foundService) {
@@ -339,11 +344,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (window.servicesService && typeof window.servicesService.getAllServices === 'function') {
                     services = await window.servicesService.getAllServices();
                 } else {
-                    const res = await fetch('http://localhost:3000/services');
-                    if (res.ok) services = await res.json();
+                    services = [
+                        { id: '1', serviceName: 'ویزیت و مشاوره تخصصی', doctorName: doctorName }
+                    ];
                 }
 
-                // فیلتر خدمات فقط برای همان پزشک انتخاب شده
                 const docServices = services.filter(s => String(s.doctorId) === String(doctorId) || s.doctorName === doctorName);
 
                 if (docServices.length > 0) {
@@ -392,8 +397,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 (calendarYear === currentRealYear && calendarMonth === currentRealMonth && day < currentRealDay);
 
             const bookedTimesForDay = serverAppointments.filter(app => {
-                const appDate = app.date || app.appointmentDate;
-                const appDoc = app.doctor || app.doctorName;
+                const appDate = app.appointmentDate || app.date;
+                const appDoc = app.doctorName || app.doctor;
                 return appDate === formattedDateStr && (!bookingState.doctor || appDoc === bookingState.doctor);
             });
 
@@ -486,11 +491,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const reservedTimes = serverAppointments
             .filter(app => {
-                const appDate = app.date || app.appointmentDate;
-                const appDoc = app.doctor || app.doctorName;
+                const appDate = app.appointmentDate || app.date;
+                const appDoc = app.doctorName || app.doctor;
                 return appDate === bookingState.date && (!bookingState.doctor || appDoc === bookingState.doctor);
             })
-            .map(app => app.time || app.appointmentTime);
+            .map(app => app.appointmentTime || app.time);
 
         timeSlotsGrid.innerHTML = defaultTimeSlots.map(timeStr => {
             const isReserved = reservedTimes.includes(timeStr);
@@ -529,41 +534,29 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const payload = {
-                id: String(Date.now()),
+                id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
                 userId: currentUser.id || null,
-                userUsername: currentUser.username || null,
-                service: bookingState.service,
                 serviceName: bookingState.service,
-                doctor: bookingState.doctor,
                 doctorName: bookingState.doctor,
                 doctorId: bookingState.doctorId || null,
-                date: bookingState.date,
                 appointmentDate: bookingState.date,
-                time: bookingState.timeSlot,
                 appointmentTime: bookingState.timeSlot,
-                status: 'تایید شده',
-                createdAt: new Date().toISOString()
+                status: 'تایید شده'
             };
 
             try {
                 if (window.appointmentsService && typeof window.appointmentsService.createAppointment === 'function') {
                     await window.appointmentsService.createAppointment(payload);
+                    alert(`نوبت شما با موفقیت ثبت شد!`);
+                    bookingForm.reset();
+                    bookingState = { service: null, doctor: null, doctorId: null, date: null, timeSlot: null };
+                    if (timeModal) timeModal.close();
                 } else {
-                    await fetch('http://localhost:3000/appointments', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
+                    alert('سرویس ثبت نوبت فعال نیست.');
                 }
-
-                alert(`نوبت شما با موفقیت ثبت شد!`);
-                bookingForm.reset();
-                bookingState = { service: null, doctor: null, doctorId: null, date: null, timeSlot: null };
-                if (timeModal) timeModal.close();
-
             } catch (err) {
                 console.error('خطا در ثبت نوبت:', err);
-                alert('خطایی در ارتباط با سرور رخ داد.');
+                alert('خطا در ثبت نوبت: ' + err.message);
             }
         });
     }
