@@ -385,83 +385,10 @@
                     </div>
 
                     <!-- Comments List -->
-                    <div class="c-comments__list" id="js-comments-grid" role="feed" aria-busy="false">
-
-                        <article class="c-comment-card">
-                            <header class="c-comment-card__header">
-                                <div class="c-comment-card__user">
-                                    <div class="c-comment-card__avatar"><span>ع</span></div>
-                                    <div class="c-comment-card__info">
-                                        <h3 class="c-comment-card__author">علی محمدی</h3>
-                                        <time class="c-comment-card__time">۱۰ دقیقه پیش</time>
-                                    </div>
-                                </div>
-                            </header>
-                            <div class="c-comment-card__body">
-                                <p>رفتار کادر درمانی بسیار محترمانه بود و روند دریافت نوبت هم خیلی سریع انجام شد.</p>
-                            </div>
-                        </article>
-
-                        <article class="c-comment-card">
-                            <header class="c-comment-card__header">
-                                <div class="c-comment-card__user">
-                                    <div class="c-comment-card__avatar"><span>س</span></div>
-                                    <div class="c-comment-card__info">
-                                        <h3 class="c-comment-card__author">سارا احمدی</h3>
-                                        <time class="c-comment-card__time">۳۰ دقیقه پیش</time>
-                                    </div>
-                                </div>
-                            </header>
-                            <div class="c-comment-card__body">
-                                <p>پزشک با حوصله تمام مدارک من را بررسی کردند و توضیحات کاملی ارائه دادند.</p>
-                            </div>
-                        </article>
-
-                        <article class="c-comment-card">
-                            <header class="c-comment-card__header">
-                                <div class="c-comment-card__user">
-                                    <div class="c-comment-card__avatar"><span>ر</span></div>
-                                    <div class="c-comment-card__info">
-                                        <h3 class="c-comment-card__author">رضا حسینی</h3>
-                                        <time class="c-comment-card__time">۱ ساعت پیش</time>
-                                    </div>
-                                </div>
-                            </header>
-                            <div class="c-comment-card__body">
-                                <p>محیط مطب بسیار تمیز و مرتب بود. فقط معطلی کوتاهی قبل از ورود داشتیم.</p>
-                            </div>
-                        </article>
-
-                        <article class="c-comment-card">
-                            <header class="c-comment-card__header">
-                                <div class="c-comment-card__user">
-                                    <div class="c-comment-card__avatar"><span>م</span></div>
-                                    <div class="c-comment-card__info">
-                                        <h3 class="c-comment-card__author">مریم کاظمی</h3>
-                                        <time class="c-comment-card__time">۲ ساعت پیش</time>
-                                    </div>
-                                </div>
-                            </header>
-                            <div class="c-comment-card__body">
-                                <p>سیستم ثبت نوبت آنلاین خیلی به من کمک کرد تا زمانم تلف نشود.</p>
-                            </div>
-                        </article>
-
-                        <article class="c-comment-card">
-                            <header class="c-comment-card__header">
-                                <div class="c-comment-card__user">
-                                    <div class="c-comment-card__avatar"><span>ا</span></div>
-                                    <div class="c-comment-card__info">
-                                        <h3 class="c-comment-card__author">امیر رضایی</h3>
-                                        <time class="c-comment-card__time">۳ ساعت پیش</time>
-                                    </div>
-                                </div>
-                            </header>
-                            <div class="c-comment-card__body">
-                                <p>کیفیت خدمات و پاسخگویی پشتیبانی عالی بود. ممنون از تیم خوبتون.</p>
-                            </div>
-                        </article>
-
+                    <!-- کد قبلی (کامنت‌های نمونه سخت‌افزاری) را پاک کنید -->
+                    <div id="js-comments-grid" class="c-comments__grid">
+                        <!-- یک نشانگر بارگذاری ساده یا اسکلتون قرار دهید -->
+                        <div class="c-comments__loading">در حال بارگذاری نظرات...</div>
                     </div>
                 </section>
 
@@ -802,9 +729,10 @@
     <script src="./js/components_js/hero.js"></script>
     <script src="./js/components_js/stats_bar.js"></script>
     <script src="./js/components_js/gallery.js"></script>
-    <script src="./js/components_js/FAQ__Comments.js"></script>
+
     <script src="./js/components_js/equipment_showcase.js"></script>
     <script src="./js/components_js/footer.js"></script>
+    <script type="module" src="./js/components_js/FAQ__Comments.js"></script>
 
     <!-- API Services (تغییر به type="module" جهت استفاده از import/export با Supabase) -->
     <script type="module" src="./js/services_js/services_service.js"></script>
@@ -812,6 +740,7 @@
     <script type="module" src="./js/services_js/auth_service.js"></script>
     <script type="module" src="./js/services_js/appointments_service.js"></script>
     <script type="module" src="./js/utils_js/custom_error_modal.js"></script>
+    <script type="module" src="./js/services_js/comments_service.js"></script>
 
     <!-- UI Components depending on Services -->
     <script type="module" src="./js/components_js/appointment_modal.js"></script>

@@ -1,107 +1,97 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const faqData = [
-        {
-            id: 1,
-            question: 'چگونه می‌توانم نوبت حضوری ثبت کنم؟',
-            answer: 'شما می‌توانید از طریق کارت پزشک مربوطه روی دکمه رزرو نوبت کلیک کرده و زمان مورد نظر خود را انتخاب کنید.',
-            isOpen: true
-        },
-        {
-            id: 2,
-            question: 'آیا امکان لغو یا تغییر زمان نوبت وجود دارد؟',
-            answer: 'بله، تا ۲۴ ساعت قبل از زمان ویزیت می‌توانید از پنل کاربری اقدام به لغو یا تغییر نوبت نمایید.',
-            isOpen: false
-        },
-        {
-            id: 3,
-            question: 'مدارک پزشکی را چگونه ارسال کنم؟',
-            answer: 'در هنگام ثبت نوبت و یا از طریق بخش پیام‌های پنل کاربری امکان آپلود پرونده پزشکی وجود دارد.',
-            isOpen: false
-        }
-    ];
+import { fetchComments, createComment } from '../services_js/comments_service.js';
 
-    const commentsData = [
-        {
-            id: 1,
-            author: 'علی محمدی',
-            avatarText: 'ع',
-            time: '۱۰ دقیقه پیش',
-            text: 'رفتار کادر درمانی بسیار محترمانه بود و روند دریافت نوبت هم خیلی سریع انجام شد.'
-        },
-        {
-            id: 2,
-            author: 'سارا احمدی',
-            avatarText: 'س',
-            time: '۳۰ دقیقه پیش',
-            text: 'پزشک با حوصله تمام مدارک من را بررسی کردند و توضیحات کاملی ارائه دادند.'
-        },
-        {
-            id: 3,
-            author: 'رضا حسینی',
-            avatarText: 'ر',
-            time: '۱ ساعت پیش',
-            text: 'محیط مطب بسیار تمیز و مرتب بود. فقط معطلی کوتاهی قبل از ورود داشتیم.'
-        },
-        {
-            id: 4,
-            author: 'مریم کاظمی',
-            avatarText: 'م',
-            time: '۲ ساعت پیش',
-            text: 'سیستم ثبت نوبت آنلاین خیلی به من کمک کرد تا زمانم تلف نشود.'
-        },
-        {
-            id: 5,
-            author: 'امیر رضایی',
-            avatarText: 'ا',
-            time: '۳ ساعت پیش',
-            text: 'کیفیت خدمات و پاسخگویی پشتیبانی عالی بود. ممنون از تیم خوبتون.'
-        }
-    ];
-
-    const faqGridWrapper = document.getElementById('js-faq-grid');
+document.addEventListener('DOMContentLoaded', async () => {
     const commentsGridWrapper = document.getElementById('js-comments-grid');
+    const commentForm = document.getElementById('js-comment-form');
+    const commentInput = document.getElementById('comment-text');
 
-    function renderFaq(items) {
-        if (!faqGridWrapper) return;
-
-        faqGridWrapper.innerHTML = items.map(item => `
-            <details class="c-faq__item" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question" ${item.isOpen ? 'open' : ''}>
-                <summary class="c-faq__question" itemprop="name">
-                    <span class="c-faq__question-text">${item.question}</span>
-                    <span class="c-faq__icon-box" aria-hidden="true">
-                        <span class="c-faq__icon"></span>
-                    </span>
-                </summary>
-                <div class="c-faq__answer" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-                    <p itemprop="text">${item.answer}</p>
-                </div>
-            </details>
-        `).join('');
+    function formatTime(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('fa-IR', { hour: '2-digit', minute: '2-digit' });
     }
 
     function renderComments(comments) {
         if (!commentsGridWrapper) return;
 
-        commentsGridWrapper.innerHTML = comments.map(comment => `
-            <article class="c-comment-card">
-                <header class="c-comment-card__header">
-                    <div class="c-comment-card__user">
-                        <div class="c-comment-card__avatar">
-                            <span>${comment.avatarText}</span>
+        if (!comments || comments.length === 0) {
+            commentsGridWrapper.innerHTML = '<p class="c-comments__empty">هنوز نظری ثبت نشده است. اولین نفر باشید!</p>';
+            return;
+        }
+
+        commentsGridWrapper.innerHTML = comments.map(comment => {
+            const avatarChar = comment.author_name ? comment.author_name.charAt(0) : 'ک';
+            return `
+                <article class="c-comment-card">
+                    <header class="c-comment-card__header">
+                        <div class="c-comment-card__user">
+                            <div class="c-comment-card__avatar">
+                                <span>${avatarChar}</span>
+                            </div>
+                            <div class="c-comment-card__info">
+                                <h3 class="c-comment-card__author">${comment.author_name}</h3>
+                                <time class="c-comment-card__time">${formatTime(comment.created_at)}</time>
+                            </div>
                         </div>
-                        <div class="c-comment-card__info">
-                            <h3 class="c-comment-card__author">${comment.author}</h3>
-                            <time class="c-comment-card__time">${comment.time}</time>
-                        </div>
+                    </header>
+                    <div class="c-comment-card__body">
+                        <p>${comment.content}</p>
                     </div>
-                </header>
-                <div class="c-comment-card__body">
-                    <p>${comment.text}</p>
-                </div>
-            </article>
-        `).join('');
+                </article>
+            `;
+        }).join('');
     }
 
-    renderFaq(faqData);
-    renderComments(commentsData);
+    async function loadComments() {
+        try {
+            const comments = await fetchComments();
+            renderComments(comments);
+        } catch (err) {
+            console.error('خطا در دریافت نظرات:', err);
+        }
+    }
+
+    // دریافت ایمیل کاربر لاگین‌شده از localStorage
+    function getCurrentUserEmail() {
+        const storedUser = localStorage.getItem('currentUser');
+        if (storedUser) {
+            try {
+                const parsedUser = JSON.parse(storedUser);
+                if (parsedUser && parsedUser.userEmail) {
+                    return parsedUser.userEmail;
+                }
+            } catch (e) {
+                console.error('خطا در خواندن اطلاعات کاربر:', e);
+            }
+        }
+        return localStorage.getItem('userEmail');
+    }
+
+    if (commentForm) {
+        commentForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const text = commentInput.value.trim();
+            if (!text) return;
+
+            // استخراج ایمیل کاربر از شیء currentUser
+            const userEmail = getCurrentUserEmail();
+
+            const submitBtn = commentForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+
+            try {
+                // ارسال متن و ایمیل به comments_service
+                await createComment(text, userEmail);
+                commentInput.value = '';
+                await loadComments();
+            } catch (err) {
+                alert(err.message || 'خطایی در ثبت نظر رخ داد.');
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+    }
+
+    await loadComments();
 });
