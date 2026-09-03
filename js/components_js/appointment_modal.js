@@ -24,10 +24,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function checkUserAuth() {
+    async function checkUserAuth() {
         const user = getCurrentUser();
         if (!user) {
-            alert('لطفاً ابتدا وارد حساب کاربری خود شوید یا ثبت‌نام کنید.');
+            if (window.customModal) {
+                await window.customModal.alert('احراز هویت', 'لطفاً ابتدا وارد حساب کاربری خود شوید یا ثبت‌نام کنید.');
+            } else {
+                alert('لطفاً ابتدا وارد حساب کاربری خود شوید یا ثبت‌نام کنید.');
+            }
             return false;
         }
         return true;
@@ -152,19 +156,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // لغو نوبت با استفاده از cancelAppointment
     async function deleteAppointment(appointmentId) {
-        if (!confirm('آیا از لغو این نوبت اطمینان دارید؟')) return;
+        let isConfirmed = false;
+
+        if (window.customModal) {
+            const res = await window.customModal.confirm('لغو نوبت', 'آیا از لغو این نوبت اطمینان دارید؟');
+            isConfirmed = (res === 'confirm');
+        } else {
+            isConfirmed = confirm('آیا از لغو این نوبت اطمینان دارید؟');
+        }
+
+        if (!isConfirmed) return;
 
         try {
             if (window.appointmentsService && typeof window.appointmentsService.cancelAppointment === 'function') {
                 await window.appointmentsService.cancelAppointment(appointmentId);
-                alert('نوبت با موفقیت لغو شد.');
+
+                if (window.customModal) {
+                    await window.customModal.alert('موفقیت', 'نوبت با موفقیت لغو شد.');
+                } else {
+                    alert('نوبت با موفقیت لغو شد.');
+                }
+
                 await renderMyAppointments();
             } else {
-                alert('سرویس نوبت‌دهی در دسترس نیست.');
+                if (window.customModal) {
+                    await window.customModal.alert('خطا', 'سرویس نوبت‌دهی در دسترس نیست.');
+                } else {
+                    alert('سرویس نوبت‌دهی در دسترس نیست.');
+                }
             }
         } catch (err) {
             console.error('خطا در حذف نوبت:', err);
-            alert('خطا در حذف نوبت: ' + err.message);
+            if (window.customModal) {
+                await window.customModal.alert('خطا', 'خطا در حذف نوبت: ' + err.message);
+            } else {
+                alert('خطا در حذف نوبت: ' + err.message);
+            }
         }
     }
 
@@ -285,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         servicesListContainer.querySelectorAll('.c-appointment-item__btn').forEach(btn => {
             btn.addEventListener('click', async (e) => {
-                if (!checkUserAuth()) return;
+                if (!(await checkUserAuth())) return;
 
                 const targetBtn = e.currentTarget;
                 bookingState.service = targetBtn.dataset.title;
@@ -300,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.AppointmentModal = {
         openForService: async (serviceIdStr) => {
-            if (!checkUserAuth()) return;
+            if (!(await checkUserAuth())) return;
 
             try {
                 let services = [];
@@ -334,7 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
 
         openForDoctor: async (doctorName, doctorId) => {
-            if (!checkUserAuth()) return;
+            if (!(await checkUserAuth())) return;
 
             bookingState.doctorId = doctorId;
             bookingState.doctor = doctorName;
@@ -524,12 +551,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const currentUser = getCurrentUser();
             if (!currentUser) {
-                alert('برای ثبت نوبت باید ابتدا وارد حساب کاربری خود شوید.');
+                if (window.customModal) {
+                    await window.customModal.alert('احراز هویت', 'برای ثبت نوبت باید ابتدا وارد حساب کاربری خود شوید.');
+                } else {
+                    alert('برای ثبت نوبت باید ابتدا وارد حساب کاربری خود شوید.');
+                }
                 return;
             }
 
             if (!bookingState.timeSlot) {
-                alert('لطفاً یک ساعت کاری خالی را انتخاب کنید.');
+                if (window.customModal) {
+                    await window.customModal.alert('انتخاب زمان', 'لطفاً یک ساعت کاری خالی را انتخاب کنید.');
+                } else {
+                    alert('لطفاً یک ساعت کاری خالی را انتخاب کنید.');
+                }
                 return;
             }
 
@@ -547,16 +582,30 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 if (window.appointmentsService && typeof window.appointmentsService.createAppointment === 'function') {
                     await window.appointmentsService.createAppointment(payload);
-                    alert(`نوبت شما با موفقیت ثبت شد!`);
+
+                    if (window.customModal) {
+                        await window.customModal.alert('موفقیت', 'نوبت شما با موفقیت ثبت شد!');
+                    } else {
+                        alert('نوبت شما با موفقیت ثبت شد!');
+                    }
+
                     bookingForm.reset();
                     bookingState = { service: null, doctor: null, doctorId: null, date: null, timeSlot: null };
                     if (timeModal) timeModal.close();
                 } else {
-                    alert('سرویس ثبت نوبت فعال نیست.');
+                    if (window.customModal) {
+                        await window.customModal.alert('خطا', 'سرویس ثبت نوبت فعال نیست.');
+                    } else {
+                        alert('سرویس ثبت نوبت فعال نیست.');
+                    }
                 }
             } catch (err) {
                 console.error('خطا در ثبت نوبت:', err);
-                alert('خطا در ثبت نوبت: ' + err.message);
+                if (window.customModal) {
+                    await window.customModal.alert('خطا', 'خطا در ثبت نوبت: ' + err.message);
+                } else {
+                    alert('خطا در ثبت نوبت: ' + err.message);
+                }
             }
         });
     }

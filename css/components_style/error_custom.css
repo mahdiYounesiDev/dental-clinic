@@ -1,0 +1,121 @@
+/* ==================== Custom System Alert & Confirm Modal ==================== */
+#c-custom-modal.c-modal {
+    border: none;
+    border-radius: var(--radius-2xl, 24px);
+    padding: 0;
+    max-width: 380px; /* ابعاد متوسط و استاندارد UI/UX */
+    width: 88%;
+    background: var(--color-white, #ffffff);
+    box-shadow: 0 20px 40px -10px rgba(29, 36, 43, 0.22), 0 0 0 1px rgba(0, 0, 0, 0.04);
+    direction: rtl;
+    margin: auto;
+    overflow: hidden;
+    animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+#c-custom-modal::backdrop {
+    background: rgba(29, 36, 43, 0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+#c-custom-modal .c-modal__container {
+    padding: 28px 20px 20px;
+    text-align: center;
+}
+
+/* آیکون مدرن با پلت رنگی شما */
+#c-custom-modal .c-modal__icon-wrap {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background-color: rgba(255, 126, 103, 0.12); /* ترکیب با --color-accent */
+    color: var(--color-accent, #FF7E67);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    box-shadow: 0 8px 18px rgba(255, 126, 103, 0.18);
+}
+
+/* تایپوگرافی با فونت‌های پروژه */
+#c-custom-modal .c-modal__title {
+    margin: 0 0 8px 0;
+    font-family: "Title", sans-serif;
+    font-size: var(--fs-xl, 1.25rem);
+    color: var(--color-dark, #1D242B);
+    line-height: 1.3;
+}
+
+#c-custom-modal .c-modal__message {
+    margin: 0 0 22px 0;
+    font-family: "TextRegular", sans-serif;
+    font-size: var(--fs-sm, 0.875rem);
+    color: #52606D;
+    line-height: 1.65;
+}
+
+/* دکمه‌ها با فونت Button و رنگ‌های برند */
+#c-custom-modal .c-modal__actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+#c-custom-modal .c-modal__btn {
+    padding: 10px 16px;
+    border-radius: var(--radius-lg, 12px);
+    border: none;
+    font-family: "Button", sans-serif;
+    font-size: var(--fs-sm, 0.875rem);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#c-custom-modal .c-modal__btn--confirm {
+    background-color: var(--color-primary, #0077C0);
+    color: var(--color-white, #ffffff);
+    box-shadow: 0 4px 12px rgba(0, 119, 192, 0.22);
+}
+
+#c-custom-modal .c-modal__btn--confirm:hover {
+    background-color: #0063a1;
+    transform: translateY(-1px);
+}
+
+#c-custom-modal .c-modal__btn--deny {
+    background-color: var(--color-accent, #FF7E67);
+    color: var(--color-white, #ffffff);
+    box-shadow: 0 4px 12px rgba(255, 126, 103, 0.22);
+}
+
+#c-custom-modal .c-modal__btn--deny:hover {
+    background-color: #e56b55;
+    transform: translateY(-1px);
+}
+
+#c-custom-modal .c-modal__btn--cancel {
+    background-color: var(--color-sky, #C7EEFF);
+    color: var(--color-dark, #1D242B);
+}
+
+#c-custom-modal .c-modal__btn--cancel:hover {
+    background-color: #b0e3fc;
+}
