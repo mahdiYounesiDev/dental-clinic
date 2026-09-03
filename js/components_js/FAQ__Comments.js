@@ -42,15 +42,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function loadComments() {
+        if (!commentsGridWrapper) return;
+        commentsGridWrapper.innerHTML = '<p class="c-comments__loading">در حال دریافت نظرات...</p>';
+
         try {
             const comments = await fetchComments();
             renderComments(comments);
         } catch (err) {
             console.error('خطا در دریافت نظرات:', err);
+            commentsGridWrapper.innerHTML = '<p class="c-comments__error">خطا در بارگذاری نظرات.</p>';
         }
     }
 
-    // دریافت ایمیل کاربر لاگین‌شده از localStorage
     function getCurrentUserEmail() {
         const storedUser = localStorage.getItem('currentUser');
         if (storedUser) {
@@ -74,19 +77,32 @@ document.addEventListener('DOMContentLoaded', async () => {
             const text = commentInput.value.trim();
             if (!text) return;
 
-            // استخراج ایمیل کاربر از شیء currentUser
             const userEmail = getCurrentUserEmail();
+
+            // بررسی ورود کاربر قبل از ارسال فرم
+            if (!userEmail) {
+                if (window.customModal) {
+                    await window.customModal.alert('احراز هویت', 'لطفاً ابتدا وارد حساب کاربری خود شوید یا ثبت‌نام کنید.');
+                } else {
+                    alert('لطفاً ابتدا وارد حساب کاربری خود شوید یا ثبت‌نام کنید.');
+                }
+                return;
+            }
 
             const submitBtn = commentForm.querySelector('button[type="submit"]');
             submitBtn.disabled = true;
 
             try {
-                // ارسال متن و ایمیل به comments_service
                 await createComment(text, userEmail);
                 commentInput.value = '';
                 await loadComments();
             } catch (err) {
-                alert(err.message || 'خطایی در ثبت نظر رخ داد.');
+                const errorMessage = err.message || 'خطایی در ثبت نظر رخ داد.';
+                if (window.customModal) {
+                    await window.customModal.alert('خطا در ثبت نظر', errorMessage);
+                } else {
+                    alert(errorMessage);
+                }
             } finally {
                 submitBtn.disabled = false;
             }
