@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const showSignupBtn = document.getElementById('show-signup');
     const phoneInput = document.getElementById('signup-phone');
 
-    // Toggle between Sign In and Sign Up views
     if (showSigninBtn && showSignupBtn && signupSection && signinSection) {
         showSigninBtn.addEventListener('click', () => {
             signupSection.classList.add('is-hidden');
@@ -22,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Format phone number input dynamically
     if (phoneInput) {
         phoneInput.addEventListener('input', (e) => {
             let value = window.validator.toEnglishDigits(e.target.value).replace(/\D/g, '');
@@ -36,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Toggle password visibility
     const toggleButtons = document.querySelectorAll('.password-toggle');
     toggleButtons.forEach(button => {
         button.addEventListener('click', (e) => {
@@ -64,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Attach real-time validation to form inputs
     const attachRealtimeValidation = (form) => {
         if (!form) return;
         const inputs = form.querySelectorAll('input:not([type="checkbox"]), select');
@@ -88,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
     attachRealtimeValidation(signupForm);
     attachRealtimeValidation(signinForm);
 
-    // UI Helpers for Validation States
     function showErrorState(input, message) {
         const wrapper = input.closest('.input-wrapper');
         if (!wrapper) return;
@@ -125,7 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
         inputs.forEach(i => delete i.dataset.touched);
     }
 
-    // Handle Registration Submission
     if (signupForm) {
         signupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -168,14 +162,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 const user = await window.authService.registerUser(registrationPayload);
+                const metadata = user?.user_metadata || {};
 
-                // Store session data immediately upon successful registration
                 const sessionUser = {
                     id: user.id,
-                    userName: nameValue,
-                    userFamily: familyValue,
+                    userName: metadata.name || nameValue,
+                    userFamily: metadata.family || familyValue,
                     userEmail: user.email,
-                    role: 'user'
+                    role: metadata.role || 'user'
                 };
 
                 localStorage.setItem('currentUser', JSON.stringify(sessionUser));
@@ -185,14 +179,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = '../index.html';
             } catch (error) {
                 console.error('Registration failed:', error);
-                showErrorState(document.getElementById('signup-email'), error.message || 'خطا در ثبت‌نام');
+                showErrorState(document.getElementById('signup-email'), error.message || 'Error during registration');
             } finally {
                 submitBtn.disabled = false;
             }
         });
     }
 
-    // Handle Login Submission
     if (signinForm) {
         signinForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -215,8 +208,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 const user = await window.authService.loginUser(emailValue, passValue);
-
-                // Extract profile data safely injected by auth_service
                 const profile = user.profile || {};
 
                 const sessionUser = {
@@ -231,10 +222,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 signinForm.reset();
                 clearFormErrors(signinForm);
 
-                window.location.href = '../index.html';
+                // Role-based routing
+                switch (sessionUser.role) {
+                    case 'secretary':
+                        window.location.href = '../pages/secretary.html';
+                        break;
+                    case 'doctor':
+                        window.location.href = '../pages/doctor.html';
+                        break;
+                    case 'admin':
+                        // Assuming admin has a dedicated panel later, falling back to secretary for now
+                        window.location.href = '../pages/secretary.html';
+                        break;
+                    default:
+                        window.location.href = '../index.html';
+                }
+
             } catch (error) {
                 console.error('Login failed:', error);
-                showErrorState(passInput, 'ایمیل یا کلمه عبور اشتباه است');
+                showErrorState(passInput, 'Invalid email or password');
             } finally {
                 submitBtn.disabled = false;
             }

@@ -28,9 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const user = getCurrentUser();
         if (!user) {
             if (window.customModal) {
-                await window.customModal.alert('Authentication', 'Please login or register first to book an appointment.');
-            } else {
-                alert('Please login or register first to book an appointment.');
+                await window.customModal.alert('احراز هویت', 'لطفاً ابتدا وارد حساب کاربری خود شوید یا ثبت‌نام کنید.');
             }
             return false;
         }
@@ -100,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 serverAppointments = [];
             }
         } catch (err) {
-            console.error('Fetch appointments error:', err);
             serverAppointments = [];
         }
     }
@@ -160,8 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.customModal) {
             const res = await window.customModal.confirm('لغو نوبت', 'آیا از لغو این نوبت اطمینان دارید؟');
             isConfirmed = (res === 'confirm');
-        } else {
-            isConfirmed = confirm('Are you sure you want to cancel this appointment?');
         }
 
         if (!isConfirmed) return;
@@ -172,16 +167,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (window.customModal) {
                     await window.customModal.alert('موفقیت', 'نوبت با موفقیت لغو شد.');
-                } else {
-                    alert('Appointment cancelled successfully.');
                 }
-
                 await renderMyAppointments();
-            } else {
-                throw new Error('Service unavailable');
             }
         } catch (err) {
-            console.error('Delete error:', err);
             if (window.customModal) {
                 await window.customModal.alert('خطا', 'خطا در حذف نوبت: ' + err.message);
             }
@@ -213,9 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 await fetchServerAppointments();
             }
-        } catch (err) {
-            console.error('Fetch user appointments error:', err);
-        }
+        } catch (err) {}
 
         if (!serverAppointments || serverAppointments.length === 0) {
             myAppointmentsList.innerHTML = `
@@ -348,9 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 renderServicesList(services);
                 if (appointmentModal) appointmentModal.showModal();
-            } catch (err) {
-                console.error('Fetch services error:', err);
-            }
+            } catch (err) {}
         },
         openForDoctor: async (doctorName, doctorId) => {
             if (!(await checkUserAuth())) return;
@@ -368,9 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     renderServicesList([{ id: 1, serviceName: 'ویزیت و مشاوره تخصصی', doctorName: doctorName }]);
                 }
                 if (appointmentModal) appointmentModal.showModal();
-            } catch (err) {
-                console.error(err);
-            }
+            } catch (err) {}
         }
     };
 
@@ -531,14 +514,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!bookingState.timeSlot) {
                 if (window.customModal) {
-                    await window.customModal.alert('Time Selection', 'لطفاً یک ساعت کاری خالی را انتخاب کنید.');
+                    await window.customModal.alert('انتخاب زمان', 'لطفاً یک ساعت کاری خالی را انتخاب کنید.');
                 }
                 return;
             }
 
+            const patientNameInput = document.getElementById('booking-name');
+            const patientPhoneInput = document.getElementById('booking-phone');
+            const patientNotesInput = document.getElementById('booking-notes');
+
             const payload = {
                 id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
                 userId: currentUser.id || null,
+                patient_name: patientNameInput ? patientNameInput.value.trim() : currentUser.userName,
+                patient_phone: patientPhoneInput ? patientPhoneInput.value.trim() : '',
+                patient_notes: patientNotesInput ? patientNotesInput.value.trim() : '',
                 serviceName: bookingState.service,
                 doctorName: bookingState.doctor,
                 doctorId: bookingState.doctorId || null,
@@ -561,7 +551,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (timeModal) timeModal.close();
                 }
             } catch (err) {
-                console.error('Booking error:', err);
                 if (window.customModal) {
                     await window.customModal.alert('خطا', 'خطا در ثبت نوبت: ' + err.message);
                 }
