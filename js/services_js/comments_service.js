@@ -1,5 +1,9 @@
 import { supabase } from '../utils_js/supabaseClient.js';
 
+/**
+ * Fetch all comments ordered by newest first.
+ * @returns {Promise<Array>}
+ */
 export async function fetchComments() {
     const { data, error } = await supabase
         .from('comments')
@@ -13,34 +17,42 @@ export async function fetchComments() {
     return data;
 }
 
+/**
+ * Submit a new comment linked to the active user.
+ * @param {string} content
+ * @param {string} userEmail
+ * @returns {Promise<Object>}
+ */
 export async function createComment(content, userEmail) {
     if (!userEmail) {
         throw new Error('برای ثبت نظر باید ابتدا وارد حساب کاربری خود شوید.');
     }
 
-    // ۱. دریافت اطلاعات کاربر مستقیماً از جدول users
-    const { data: userData, error: userError } = await supabase
-        .from('users')
-        .select('*')
-        .eq('userEmail', userEmail)
-        .maybeSingle();
+    let authorName = userEmail.split('@')[0];
+    let userId = null;
 
-    if (userError || !userData) {
-        throw new Error('کاربر یافت نشد. لطفا مجددا وارد شوید.');
+    const storedUserRaw = localStorage.getItem('currentUser');
+    if (storedUserRaw) {
+        try {
+            const parsed = JSON.parse(storedUserRaw);
+            if (parsed.userName) {
+                authorName = `${parsed.userName} ${parsed.userFamily || ''}`.trim();
+            }
+            if (parsed.id) {
+                userId = parsed.id;
+            }
+        } catch (err) {
+            console.error('Failed to parse current user:', err);
+        }
     }
 
-    const authorName = userData.fullName || userData.userName || userData.userEmail.split('@')[0];
-
-    // ۲. ثبت نظر در جدول comments
-    // نکته: اگر ستون user_id الزام اجباری (NOT NULL) ندارد، آن را ارسال نکنید یا ایمیل را ذخیره کنید
     const commentPayload = {
         content: content,
         author_name: authorName
     };
 
-    // در صورتی که ساختار id شما در جدول users از نوع UUID استاندارد است آن را بفرستید
-    if (userData.id && !userData.id.startsWith('usr-')) {
-        commentPayload.user_id = userData.id;
+    if (userId) {
+        commentPayload.user_id = userId;
     }
 
     const { data, error } = await supabase
@@ -48,6 +60,9 @@ export async function createComment(content, userEmail) {
         .insert([commentPayload])
         .select();
 
-    if (error) throw error;
+    if (error) {
+        throw new Error(error.message);
+    }
+
     return data[0];
 }

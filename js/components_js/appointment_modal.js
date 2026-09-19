@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-
     const persianMonths = [
         'فروردین', 'اردیبهشت', 'خرداد', 'تیر',
         'مرداد', 'شهریور', 'مهر', 'آبان',
@@ -17,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getCurrentUser() {
         try {
-            const userStr = localStorage.getItem('currentUser') || localStorage.getItem('user') || localStorage.getItem('loggedInUser');
+            const userStr = localStorage.getItem('currentUser') || localStorage.getItem('user');
             return userStr ? JSON.parse(userStr) : null;
         } catch (e) {
             return null;
@@ -100,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 serverAppointments = [];
             }
         } catch (err) {
-            console.error('خطا در دریافت نوبت‌ها از سرور:', err);
+            console.error('Failed to fetch appointments:', err);
             serverAppointments = [];
         }
     }
@@ -154,7 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return String(value).replace(/\d/g, digit => numbers[digit]);
     }
 
-    // لغو نوبت با استفاده از cancelAppointment
     async function deleteAppointment(appointmentId) {
         let isConfirmed = false;
 
@@ -178,15 +176,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 await renderMyAppointments();
-            } else {
-                if (window.customModal) {
-                    await window.customModal.alert('خطا', 'سرویس نوبت‌دهی در دسترس نیست.');
-                } else {
-                    alert('سرویس نوبت‌دهی در دسترس نیست.');
-                }
             }
         } catch (err) {
-            console.error('خطا در حذف نوبت:', err);
+            console.error('Failed to cancel appointment:', err);
             if (window.customModal) {
                 await window.customModal.alert('خطا', 'خطا در حذف نوبت: ' + err.message);
             } else {
@@ -221,14 +213,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 await fetchServerAppointments();
             }
         } catch (err) {
-            console.error('خطا در دریافت نوبت‌های کاربر:', err);
+            console.error('Failed to get user appointments:', err);
         }
 
         if (!serverAppointments || serverAppointments.length === 0) {
             myAppointmentsList.innerHTML = `
                 <div style="text-align: center; padding: 30px 10px;">
                     <i class="far fa-calendar-times" style="font-size: 48px; color: #a0aec0; margin-bottom: 15px;"></i>
-                    <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">هیچ نوبت فعالی برای ${currentUser.fullName || currentUser.username || 'شما'} ثبت نشده است</h4>
+                    <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">هیچ نوبت فعالی برای شما ثبت نشده است</h4>
                     <p style="font-size: 13px; color: #718096;">برای ثبت نوبت می‌توانید از بخش خدمات اقدام کنید.</p>
                 </div>
             `;
@@ -333,19 +325,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 let services = [];
                 if (window.servicesService && typeof window.servicesService.getAllServices === 'function') {
                     services = await window.servicesService.getAllServices();
-                } else {
-                    services = [
-                        { id: '1', serviceName: 'ایمپلنت تخصصی دندان', doctorName: 'دکتر رضا محمدی' },
-                        { id: '2', serviceName: 'طراحی تخصصی لبخند', doctorName: 'دکتر سارا احمدی' },
-                        { id: '3', serviceName: 'ارتودنسی و تراز دندان', doctorName: 'دکتر مریم کاظمی' }
-                    ];
                 }
 
-                if (serviceIdStr) {
+                if (serviceIdStr && services.length > 0) {
                     const foundService = services.find(s => String(s.id) === String(serviceIdStr));
                     if (foundService) {
-                        bookingState.service = foundService.serviceName || foundService.title;
-                        bookingState.doctor = foundService.doctorName || foundService.doctor || 'پزشک متخصص';
+                        bookingState.service = foundService.serviceName;
+                        bookingState.doctor = foundService.doctorName || 'پزشک متخصص';
                         await renderCalendar();
                         if (calendarModal) calendarModal.showModal();
                         return;
@@ -354,9 +340,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 renderServicesList(services);
                 if (appointmentModal) appointmentModal.showModal();
-
             } catch (err) {
-                console.error('خطا در دریافت لیست خدمات:', err);
+                console.error('Failed to open modal for service:', err);
             }
         },
 
@@ -370,10 +355,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 let services = [];
                 if (window.servicesService && typeof window.servicesService.getAllServices === 'function') {
                     services = await window.servicesService.getAllServices();
-                } else {
-                    services = [
-                        { id: '1', serviceName: 'ویزیت و مشاوره تخصصی', doctorName: doctorName }
-                    ];
                 }
 
                 const docServices = services.filter(s => String(s.doctorId) === String(doctorId) || s.doctorName === doctorName);
@@ -386,7 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (appointmentModal) appointmentModal.showModal();
             } catch (err) {
-                console.error(err);
+                console.error('Failed to open modal for doctor:', err);
             }
         }
     };
@@ -568,16 +549,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
+            // Populate both legacy short keys and verbose keys to ensure zero NULL columns
             const payload = {
-                id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
-                userId: currentUser.id || null,
+                userId: currentUser.id,
+                service: bookingState.service,
                 serviceName: bookingState.service,
+                doctor: bookingState.doctor,
                 doctorName: bookingState.doctor,
                 doctorId: bookingState.doctorId || null,
+                date: bookingState.date,
                 appointmentDate: bookingState.date,
+                time: bookingState.timeSlot,
                 appointmentTime: bookingState.timeSlot,
-                status: 'تایید شده'
+                status: 'تایید شده',
+                createdAt: new Date().toISOString()
             };
+
+            const submitButton = bookingForm.querySelector('.c-booking-form__submit');
+            if (submitButton) submitButton.disabled = true;
 
             try {
                 if (window.appointmentsService && typeof window.appointmentsService.createAppointment === 'function') {
@@ -592,22 +581,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     bookingForm.reset();
                     bookingState = { service: null, doctor: null, doctorId: null, date: null, timeSlot: null };
                     if (timeModal) timeModal.close();
-                } else {
-                    if (window.customModal) {
-                        await window.customModal.alert('خطا', 'سرویس ثبت نوبت فعال نیست.');
-                    } else {
-                        alert('سرویس ثبت نوبت فعال نیست.');
-                    }
                 }
             } catch (err) {
-                console.error('خطا در ثبت نوبت:', err);
+                console.error('Booking submission error:', err);
                 if (window.customModal) {
                     await window.customModal.alert('خطا', 'خطا در ثبت نوبت: ' + err.message);
                 } else {
                     alert('خطا در ثبت نوبت: ' + err.message);
                 }
+            } finally {
+                if (submitButton) submitButton.disabled = false;
             }
         });
     }
-
 });

@@ -96,7 +96,7 @@
     <section class="c-hero">
         <!-- Hero Background Video -->
         <div class="c-hero__video-wrapper">
-            <video class="c-hero__video" autoplay muted loop playsinline preload="metadata" decoding="async">
+            <video class="c-hero__video" autoplay muted loop playsinline preload="metadata">
                 <source src="./assets/videos/Dentist_hero.webm" type="video/webm">
                 <source src="./assets/videos/Dentist_hero.mp4" type="video/mp4">
             </video>
@@ -111,7 +111,7 @@
                 <p class="c-hero-card__desc">
                     لبخندی سالم، زیبا و ماندگار؛ با تخصص، تکنولوژی و مراقبتی که شایسته شماست.
                 </p>
-                <a href="#" class="c-hero-card__btn">سریع نوبت بگیر</a>
+                <a href="#services" class="c-hero-card__btn">سریع نوبت بگیر</a>
             </div>
 
             <!-- Floating Action Buttons -->
@@ -124,7 +124,6 @@
             </a>
         </div>
     </section>
-
 
     <!-- ==================== Clinic Stats & Features Section ==================== -->
     <section class="c-stats" id="stats">
@@ -207,12 +206,9 @@
         </div>
     </section>
 
-
     <!-- ==================== Services Section ==================== -->
     <section class="c-services" id="services">
         <div class="c-services__container">
-
-            <!-- Section Header -->
             <div class="c-services__header">
                 <div class="c-services__badge">
                     <span class="c-services__badge-dot"></span>
@@ -224,26 +220,20 @@
                 </p>
             </div>
 
-            <!-- Services Grid -->
-            <div class="c-services__grid" id="js-services-grid">
-                <!-- Cards Rendered via JS -->
-            </div>
-
+            <!-- Services Grid rendered via home.js -->
+            <div class="c-services__grid" id="js-services-grid"></div>
         </div>
     </section>
-
 
     <!-- ==================== Gallery Section ==================== -->
     <section class="c-gallery" id="gallerySection" aria-labelledby="gallery-title">
         <div class="c-gallery__container">
-            <!-- Gallery Header -->
             <header class="c-gallery__header">
                 <div class="c-gallery__title-group">
                     <span class="c-gallery__badge">نمونه کارها</span>
                     <h2 id="gallery-title" class="c-gallery__title">گالری قبل و بعد درمان</h2>
                 </div>
 
-                <!-- Navigation Controls -->
                 <div class="c-gallery__actions">
                     <nav class="c-gallery__nav" aria-label="Slider Controls">
                         <button class="c-gallery__nav-btn js-gallery-prev" aria-label="Previous Slide">
@@ -264,95 +254,62 @@
                 </div>
             </header>
 
-            <!-- Swiper Slider Container -->
             <div class="swiper js-gallery-slider c-gallery-slider">
-                <div class="swiper-wrapper" id="js-gallery-wrapper">
-                    <!-- Slides injected dynamically via JavaScript -->
-                </div>
+                <div class="swiper-wrapper" id="js-gallery-wrapper"></div>
                 <div class="swiper-pagination c-gallery__pagination"></div>
             </div>
         </div>
     </section>
 
-
     <!-- ==================== Doctors Section ==================== -->
     <section class="c-doctors" id="doctorsSection">
         <div class="c-doctors__container">
-
             <header class="c-doctors__header">
                 <span class="c-doctors__badge">تیم متخصص ما</span>
                 <h2 class="c-doctors__title">پزشکان و متخصصان کلینیک</h2>
             </header>
 
-            <div class="c-doctors__grid" id="js-doctors-grid">
-                <!-- Dynamic JS injection -->
-            </div>
-
+            <!-- Doctors Grid rendered via home.js -->
+            <div class="c-doctors__grid" id="js-doctors-grid"></div>
         </div>
     </section>
-
-
 
     <!-- ==================== FAQ and Comments Section ==================== -->
     <section class="c-interaction" id="commentsAndFAQ" aria-label="FAQ and Comments Section">
         <div class="c-interaction__container">
-
             <div class="c-interaction__grid">
 
                 <!-- FAQ Section -->
-                <section class="c-faq" aria-labelledby="faq-heading" itemscope itemtype="https://schema.org/FAQPage">
+                <section class="c-faq" aria-labelledby="faq-heading">
                     <header class="c-faq__header">
                         <span class="c-faq__badge">پاسخ به ابهامات</span>
                         <h2 id="faq-heading" class="c-faq__title">سوالات پرتکرار</h2>
                     </header>
 
                     <div class="c-faq__list" id="js-faq-grid">
-
-                        <details class="c-faq__item" itemscope itemprop="mainEntity"
-                            itemtype="https://schema.org/Question" open>
-                            <summary class="c-faq__question" itemprop="name">
+                        <details class="c-faq__item" open>
+                            <summary class="c-faq__question">
                                 <span class="c-faq__question-text">چگونه می‌توانم نوبت حضوری ثبت کنم؟</span>
                                 <span class="c-faq__icon-box" aria-hidden="true">
                                     <span class="c-faq__icon"></span>
                                 </span>
                             </summary>
-                            <div class="c-faq__answer" itemscope itemprop="acceptedAnswer"
-                                itemtype="https://schema.org/Answer">
-                                <p itemprop="text">شما می‌توانید از طریق کارت پزشک مربوطه روی دکمه رزرو نوبت کلیک کرده و
-                                    زمان مورد نظر خود را انتخاب کنید.</p>
+                            <div class="c-faq__answer">
+                                <p>شما می‌توانید از طریق کارت پزشک مربوطه یا دکمه‌های خدمات، زمان مورد نظر خود را در تقویم انتخاب کنید.</p>
                             </div>
                         </details>
 
-                        <details class="c-faq__item" itemscope itemprop="mainEntity"
-                            itemtype="https://schema.org/Question">
-                            <summary class="c-faq__question" itemprop="name">
-                                <span class="c-faq__question-text">آیا امکان لغو یا تغییر زمان نوبت وجود دارد؟</span>
+                        <details class="c-faq__item">
+                            <summary class="c-faq__question">
+                                <span class="c-faq__question-text">آیا امکان لغو نوبت وجود دارد؟</span>
                                 <span class="c-faq__icon-box" aria-hidden="true">
                                     <span class="c-faq__icon"></span>
                                 </span>
                             </summary>
-                            <div class="c-faq__answer" itemscope itemprop="acceptedAnswer"
-                                itemtype="https://schema.org/Answer">
-                                <p itemprop="text">بله، تا ۲۴ ساعت قبل از زمان ویزیت می‌توانید از پنل کاربری اقدام به
-                                    لغو یا تغییر نوبت نمایید.</p>
+                            <div class="c-faq__answer">
+                                <p>بله، با کلیک بر روی دکمه "نوبت‌ها" در هدر سایت می‌توانید لیست نوبت‌های خود را مشاهده و آنها را لغو نمایید.</p>
                             </div>
                         </details>
-
-                        <details class="c-faq__item" itemscope itemprop="mainEntity"
-                            itemtype="https://schema.org/Question">
-                            <summary class="c-faq__question" itemprop="name">
-                                <span class="c-faq__question-text">مدارک پزشکی را چگونه ارسال کنم؟</span>
-                                <span class="c-faq__icon-box" aria-hidden="true">
-                                    <span class="c-faq__icon"></span>
-                                </span>
-                            </summary>
-                            <div class="c-faq__answer" itemscope itemprop="acceptedAnswer"
-                                itemtype="https://schema.org/Answer">
-                                <p itemprop="text">در هنگام ثبت نوبت و یا از طریق بخش پیام‌های پنل کاربری امکان آپلود
-                                    پرونده پزشکی وجود دارد.</p>
-                            </div>
-                        </details>
-
                     </div>
                 </section>
 
@@ -363,7 +320,6 @@
                         <h2 id="comments-heading" class="c-comments__title">نظرات و تجربیات</h2>
                     </header>
 
-                    <!-- Comment Form Box -->
                     <div class="c-comments__form-wrapper">
                         <form class="c-comments__form" id="js-comment-form">
                             <div class="c-comments__field">
@@ -384,10 +340,7 @@
                         </form>
                     </div>
 
-                    <!-- Comments List -->
-                    <!-- کد قبلی (کامنت‌های نمونه سخت‌افزاری) را پاک کنید -->
-                    <div id="js-comments-grid" class="c-comments__grid">
-                        <!-- یک نشانگر بارگذاری ساده یا اسکلتون قرار دهید -->
+                    <div id="js-comments-grid" class="c-comments__list">
                         <div class="c-comments__loading">در حال بارگذاری نظرات...</div>
                     </div>
                 </section>
@@ -399,150 +352,61 @@
     <!-- ==================== Equipment Showcase Section ==================== -->
     <section class="c-equipment" id="equipment" aria-label="Equipment Showcase">
         <div class="c-equipment__container">
-
             <header class="c-equipment__header">
                 <span class="c-equipment__badge">تجهیزات</span>
                 <h2 class="c-equipment__title">تجهیزات تخصصی کلینیک</h2>
             </header>
 
             <div class="c-equipment__grid">
-
-                <!-- Main Preview Image (Right Side in RTL) -->
                 <div class="c-equipment__preview">
                     <div class="c-equipment__preview-frame">
                         <img id="js-equipment-main-img"
-                            src="https://via.placeholder.com/600x600/0077c0/ffffff?text=Equipment+1"
-                            alt="دستگاه لیزر پیشرفته" class="c-equipment__preview-img">
+                            src="./assets/images/equipments/Intraoral Scanner_11zon.webp"
+                            alt="تجهیزات کلینیک" class="c-equipment__preview-img">
                     </div>
                 </div>
 
-                <!-- Content and Thumbnails (Left Side in RTL) -->
                 <div class="c-equipment__content">
-
-                    <!-- Active Item Details -->
                     <article class="c-equipment__info">
-                        <h3 id="js-equipment-title" class="c-equipment__info-title">دستگاه لیزر پیشرفته</h3>
-                        <p id="js-equipment-desc" class="c-equipment__info-desc">
-                            این دستگاه با استفاده از آخرین تکنولوژی روز دنیا جهت درمان‌های تخصصی با بالاترین دقت و
-                            کمترین میزان آسیب به بافت استفاده می‌شود.
-                        </p>
-
+                        <h3 id="js-equipment-title" class="c-equipment__info-title">عنوان دستگاه</h3>
+                        <p id="js-equipment-desc" class="c-equipment__info-desc">توضیحات دستگاه...</p>
                         <footer class="c-equipment__info-footer">
                             <div class="c-equipment__price-group">
-                                <span class="c-equipment__price-label">وضعیت / برند:</span>
-                                <span id="js-equipment-spec" class="c-equipment__price-value">ساخت آلمان (۲۰۲۵)</span>
+                                <span class="c-equipment__price-label">مشخصات:</span>
+                                <span id="js-equipment-spec" class="c-equipment__price-value">...</span>
                             </div>
                         </footer>
                     </article>
 
-                    <!-- Thumbnails Grid -->
-                    <div class="c-equipment__thumbs" id="js-equipment-thumbs" role="region"
-                        aria-label="Equipment Selector">
-                        <!-- Dynamic rendering via JS -->
-                    </div>
-
+                    <div class="c-equipment__thumbs" id="js-equipment-thumbs"></div>
                 </div>
-
             </div>
-
         </div>
     </section>
 
     <!-- ==================== Footer Section ==================== -->
     <footer class="c-footer" role="contentinfo">
-        <!-- Top Decorative Glow -->
         <div class="c-footer__glow" aria-hidden="true"></div>
-
         <div class="c-footer__container">
-
-            <!-- Newsletter Callout Banner -->
-            <div class="c-footer__newsletter">
-                <div class="c-footer__newsletter-content">
-                    <h3 class="c-footer__newsletter-title">دریافت آخرین مقالات و تخفیف‌های ویژه</h3>
-                    <p class="c-footer__newsletter-desc">با عضویت در خبرنامه کلینیک، زودتر از بقیه از نوبت‌های کنسلی و
-                        کمپین‌ها باخبر شوید.</p>
-                </div>
-                <form class="c-footer__newsletter-form" action="#" method="POST">
-                    <div class="c-footer__input-group">
-                        <input type="email" class="c-footer__input" placeholder="آدرس ایمیل شما..." required
-                            aria-label="ایمیل جهت عضویت در خبرنامه">
-                        <button type="submit" class="c-footer__submit-btn">
-                            <span>عضویت</span>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
-                            </svg>
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Main Grid Links & Info -->
             <div class="c-footer__grid">
-
-                <!-- Brand Column -->
                 <div class="c-footer__col c-footer__col--brand">
-                    <a href="/" class="c-footer__logo" aria-label="صفحه اصلی کلینیک">
-                        <div class="c-footer__logo-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2.5">
-                                <path d="M12 2v20M2 12h20" />
-                            </svg>
-                        </div>
-                        <span class="c-footer__logo-text">دنتال کلینیک</span>
+                    <a href="./index.html" class="c-footer__logo">
+                        <span class="c-footer__logo-text">لمی دنت</span>
                     </a>
                     <p class="c-footer__desc">
-                        مرکز تخصصی دندان‌پزشکی دیجیتال و زیبایی. ارائه خدمات هوشمند با بالاترین استانداردهای جهانی.
+                        مرکز تخصصی دندان‌پزشکی دیجیتال و زیبایی. ارائه خدمات هوشمند با استانداردهای جهانی.
                     </p>
-                    <div class="c-footer__socials" aria-label="شبکه‌های اجتماعی">
-                        <a href="#" class="c-footer__social-btn" aria-label="Instagram">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                            </svg>
-                        </a>
-                        <a href="#" class="c-footer__social-btn" aria-label="Telegram">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <line x1="22" y1="2" x2="11" y2="13" />
-                                <polygon points="22 2 15 22 11 13 2 9 22 2" />
-                            </svg>
-                        </a>
-                        <a href="#" class="c-footer__social-btn" aria-label="WhatsApp">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path
-                                    d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-                            </svg>
-                        </a>
-                    </div>
                 </div>
 
-                <!-- Navigation Links -->
-                <nav class="c-footer__col" aria-label="دسترسی سریع">
+                <nav class="c-footer__col">
                     <h4 class="c-footer__title">دسترسی سریع</h4>
                     <ul class="c-footer__list">
                         <li><a href="#services" class="c-footer__link">خدمات تخصصی</a></li>
-                        <li><a href="#equipment" class="c-footer__link">تجهیزات مدرن</a></li>
                         <li><a href="#doctorsSection" class="c-footer__link">کادر پزشکی</a></li>
-                        <li><a href="#commentsAndFAQ" class="c-footer__link">سوالات متداول</a></li>
+                        <li><a href="#gallerySection" class="c-footer__link">گالری تصاویر</a></li>
                     </ul>
                 </nav>
 
-                <!-- Dental Services -->
-                <nav class="c-footer__col" aria-label="خدمات درمانی">
-                    <h4 class="c-footer__title">خدمات کلینیک</h4>
-                    <ul class="c-footer__list">
-                        <li><a href="#services" class="c-footer__link">ایمپلنت دیجیتال</a></li>
-                        <li><a href="#services" class="c-footer__link">طرح لبخند و کامپوزیت</a></li>
-                        <li><a href="#services" class="c-footer__link">ارتودنسی نامرئی</a></li>
-                        <li><a href="#services" class="c-footer__link">عصب‌کشی با میکروسکوپ</a></li>
-                    </ul>
-                </nav>
-
-                <!-- Live Status & Contact -->
                 <div class="c-footer__col c-footer__col--status">
                     <h4 class="c-footer__title">وضعیت پذیرش</h4>
                     <div class="c-footer__status-card">
@@ -552,73 +416,36 @@
                         </div>
                         <p class="c-footer__status-time">ساعات کاری: ۹:۰۰ الی ۲۰:۰۰</p>
                     </div>
-                    <ul class="c-footer__contact-list">
-                        <li class="c-footer__contact-item">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path
-                                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                            </svg>
-                            <a href="tel:02188888888" dir="ltr">۰۲۱ - ۸۸۸۸ ۸۸۸۸</a>
-                        </li>
-                        <li class="c-footer__contact-item">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                                <circle cx="12" cy="10" r="3" />
-                            </svg>
-                            <span>تهران، خیابان ولیعصر، نرسیده به ظفر</span>
-                        </li>
-                    </ul>
                 </div>
-
             </div>
 
-            <!-- Bottom Copyright & Back to Top -->
             <div class="c-footer__bottom">
-                <p class="c-footer__copyright">
-                    تمامی حقوق مادی و معنوی محفوظ است. © ۱۴۰۴
-                </p>
-                <div class="c-footer__actions">
-                    <a href="#" class="c-footer__legal-link">حریم خصوصی</a>
-                    <span class="c-footer__legal-divider">•</span>
-                    <a href="#" class="c-footer__legal-link">شرایط استفاده</a>
-
-                    <!-- Back To Top Button -->
-                    <button type="button" id="js-back-to-top" class="c-footer__back-top"
-                        aria-label="بازگشت به بالای صفحه">
-                        <svg class="c-footer__progress-circle" width="100%" height="100%" viewBox="-1 -1 102 102">
-                            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" />
-                        </svg>
-                        <svg class="c-footer__arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2.5">
-                            <path d="M18 15l-6-6-6 6" />
-                        </svg>
-                    </button>
-                </div>
+                <p class="c-footer__copyright">تمامی حقوق محفوظ است. © ۱۴۰۵</p>
+                <button type="button" id="js-back-to-top" class="c-footer__back-top" aria-label="بازگشت به بالا">
+                    <svg class="c-footer__progress-circle" width="100%" height="100%" viewBox="-1 -1 102 102">
+                        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" />
+                    </svg>
+                    <svg class="c-footer__arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M18 15l-6-6-6 6" />
+                    </svg>
+                </button>
             </div>
-
         </div>
     </footer>
 
-
-
-
-    <!-- My Appointments Modal (Dedicated for Navbar Button) -->
+    <!-- Modals Structure -->
     <dialog id="js-my-appointments-modal" class="c-modal">
-        <div class="c-modal__content">
-            <div class="c-modal__header">
+        <div class="c-modal__container">
+            <header class="c-modal__header">
                 <h3 class="c-modal__title">نوبت‌های فعال من</h3>
                 <button type="button" class="c-modal__close js-modal-close">&times;</button>
-            </div>
+            </header>
             <div class="c-modal__body">
                 <div id="js-my-appointments-list"></div>
             </div>
         </div>
     </dialog>
 
-
-    <!-- Modal 1: Services & Doctors List -->
     <dialog id="js-appointment-modal" class="c-modal" aria-labelledby="modal-title-1">
         <div class="c-modal__container">
             <header class="c-modal__header">
@@ -626,14 +453,11 @@
                 <button type="button" class="c-modal__close js-modal-close" aria-label="Close modal">&times;</button>
             </header>
             <div class="c-modal__body">
-                <ul class="c-appointment-list" id="js-appointment-services-list">
-                    <!-- Rendered dynamically via JavaScript -->
-                </ul>
+                <ul class="c-appointment-list" id="js-appointment-services-list"></ul>
             </div>
         </div>
     </dialog>
 
-    <!-- Modal 2: Calendar & Day Selection -->
     <dialog id="js-calendar-modal" class="c-modal" aria-labelledby="modal-title-2">
         <div class="c-modal__container">
             <header class="c-modal__header">
@@ -656,14 +480,11 @@
                 <div class="c-calendar-weekdays">
                     <span>ش</span><span>ی</span><span>د</span><span>س</span><span>چ</span><span>پ</span><span>ج</span>
                 </div>
-                <div class="c-calendar-grid" id="js-calendar-days-grid">
-                    <!-- Grid injected via JS -->
-                </div>
+                <div class="c-calendar-grid" id="js-calendar-days-grid"></div>
             </div>
         </div>
     </dialog>
 
-    <!-- Modal 3: Time Slot & Patient Details Form -->
     <dialog id="js-time-modal" class="c-modal" aria-labelledby="modal-title-3">
         <div class="c-modal__container">
             <header class="c-modal__header">
@@ -675,41 +496,28 @@
             </header>
 
             <form class="c-modal__body c-booking-form" id="js-booking-form">
-                <div class="c-booking-summary" id="js-booking-summary">
-                    <!-- Summary Injected via JS -->
-                </div>
+                <div class="c-booking-summary" id="js-booking-summary"></div>
 
                 <fieldset class="c-booking-form__section">
                     <legend class="c-booking-form__legend">انتخاب ساعت ویزیت</legend>
-                    <div class="c-time-slots" id="js-time-slots-grid">
-                        <!-- Slots rendered via JS -->
-                    </div>
+                    <div class="c-time-slots" id="js-time-slots-grid"></div>
                 </fieldset>
 
                 <fieldset class="c-booking-form__section">
                     <legend class="c-booking-form__legend">اطلاعات بیمار و مدارک</legend>
-
                     <div class="c-booking-form__field">
                         <label for="booking-name" class="c-booking-form__label">نام و نام خانوادگی *</label>
-                        <input type="text" id="booking-name" class="c-booking-form__input" required
-                            placeholder="مثال: علی محمدی">
+                        <input type="text" id="booking-name" class="c-booking-form__input" required placeholder="مثال: علی محمدی">
                     </div>
 
                     <div class="c-booking-form__field">
                         <label for="booking-phone" class="c-booking-form__label">شماره همراه *</label>
-                        <input type="tel" id="booking-phone" class="c-booking-form__input" required
-                            placeholder="۰۹۱۲۳۴۵۶۷۸۹">
+                        <input type="tel" id="booking-phone" class="c-booking-form__input" required placeholder="۰۹۱۲۳۴۵۶۷۸۹">
                     </div>
 
                     <div class="c-booking-form__field">
-                        <label for="booking-notes" class="c-booking-form__label">توضیحات تکمیلی یا علت مراجعه</label>
-                        <textarea id="booking-notes" class="c-booking-form__textarea" rows="3"
-                            placeholder="اگر بیماری خاص یا سابقه‌ای دارید ذکر کنید..."></textarea>
-                    </div>
-
-                    <div class="c-booking-form__field">
-                        <label for="booking-file" class="c-booking-form__label">بارگذاری عکس یا آزمایش (اختیاری)</label>
-                        <input type="file" id="booking-file" class="c-booking-form__file" accept="image/*,.pdf">
+                        <label for="booking-notes" class="c-booking-form__label">توضیحات تکمیلی</label>
+                        <textarea id="booking-notes" class="c-booking-form__textarea" rows="3" placeholder="علت مراجعه یا توضیحات..."></textarea>
                     </div>
                 </fieldset>
 
@@ -718,43 +526,31 @@
         </div>
     </dialog>
 
-
-
-
-
-
-    <!-- ==================== Scripts ==================== -->
+    <!-- Scripts Execution Order -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="./js/components_js/nav_menu.js"></script>
-    <script src="./js/components_js/hero.js"></script>
-    <script src="./js/components_js/stats_bar.js"></script>
-    <script src="./js/components_js/gallery.js"></script>
 
-    <script src="./js/components_js/equipment_showcase.js"></script>
-    <script src="./js/components_js/footer.js"></script>
-    <script type="module" src="./js/components_js/FAQ__Comments.js"></script>
+    <!-- Global Utilities & Modal -->
+    <script type="module" src="./js/utils_js/custom_error_modal.js"></script>
 
-    <!-- API Services (تغییر به type="module" جهت استفاده از import/export با Supabase) -->
+    <!-- Services -->
     <script type="module" src="./js/services_js/services_service.js"></script>
     <script type="module" src="./js/services_js/doctors_service.js"></script>
     <script type="module" src="./js/services_js/auth_service.js"></script>
     <script type="module" src="./js/services_js/appointments_service.js"></script>
-    <script type="module" src="./js/utils_js/custom_error_modal.js"></script>
     <script type="module" src="./js/services_js/comments_service.js"></script>
 
-    <!-- UI Components depending on Services -->
+    <!-- UI Components -->
+    <script src="./js/components_js/nav_menu.js"></script>
+    <script src="./js/components_js/hero.js"></script>
+    <script src="./js/components_js/stats_bar.js"></script>
+    <script src="./js/components_js/gallery.js"></script>
+    <script src="./js/components_js/equipment_showcase.js"></script>
+    <script src="./js/components_js/footer.js"></script>
+    <script type="module" src="./js/components_js/FAQ__Comments.js"></script>
     <script type="module" src="./js/components_js/appointment_modal.js"></script>
+
+    <!-- Entry Point -->
     <script type="module" src="./js/pages_js/home.js"></script>
 
-
 </body>
-
-</html>
-
-</body>
-
-</html>
-
-</body>
-
 </html>

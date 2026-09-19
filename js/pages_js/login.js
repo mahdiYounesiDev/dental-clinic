@@ -7,20 +7,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const showSignupBtn = document.getElementById('show-signup');
     const phoneInput = document.getElementById('signup-phone');
 
+    // Toggle between Sign In and Sign Up views
+    if (showSigninBtn && showSignupBtn && signupSection && signinSection) {
+        showSigninBtn.addEventListener('click', () => {
+            signupSection.classList.add('is-hidden');
+            signinSection.classList.remove('is-hidden');
+            clearFormErrors(signupForm);
+        });
 
-    showSigninBtn.addEventListener('click', () => {
-        signupSection.classList.add('is-hidden');
-        signinSection.classList.remove('is-hidden');
-        clearFormErrors(signupForm);
-    });
+        showSignupBtn.addEventListener('click', () => {
+            signinSection.classList.add('is-hidden');
+            signupSection.classList.remove('is-hidden');
+            clearFormErrors(signinForm);
+        });
+    }
 
-    showSignupBtn.addEventListener('click', () => {
-        signinSection.classList.add('is-hidden');
-        signupSection.classList.remove('is-hidden');
-        clearFormErrors(signinForm);
-    });
-
-
+    // Format phone number input dynamically
     if (phoneInput) {
         phoneInput.addEventListener('input', (e) => {
             let value = window.validator.toEnglishDigits(e.target.value).replace(/\D/g, '');
@@ -34,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Toggle password visibility
     const toggleButtons = document.querySelectorAll('.password-toggle');
     toggleButtons.forEach(button => {
         button.addEventListener('click', (e) => {
@@ -61,8 +64,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-
+    // Attach real-time validation to form inputs
     const attachRealtimeValidation = (form) => {
+        if (!form) return;
         const inputs = form.querySelectorAll('input:not([type="checkbox"]), select');
         inputs.forEach(input => {
             const handleValidation = () => {
@@ -70,8 +74,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 input.dataset.touched = 'true';
 
                 const status = window.validator.validateField(input);
-                if (status.isValid) showSuccessState(input);
-                else showErrorState(input, status.message);
+                if (status.isValid) {
+                    showSuccessState(input);
+                } else {
+                    showErrorState(input, status.message);
+                }
             };
             input.addEventListener('input', handleValidation);
             input.addEventListener('blur', handleValidation);
@@ -81,8 +88,10 @@ document.addEventListener('DOMContentLoaded', () => {
     attachRealtimeValidation(signupForm);
     attachRealtimeValidation(signinForm);
 
+    // UI Helpers for Validation States
     function showErrorState(input, message) {
         const wrapper = input.closest('.input-wrapper');
+        if (!wrapper) return;
         wrapper.classList.remove('is-valid');
         wrapper.classList.add('is-invalid');
 
@@ -97,6 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showSuccessState(input) {
         const wrapper = input.closest('.input-wrapper');
+        if (!wrapper) return;
         wrapper.classList.remove('is-invalid');
         wrapper.classList.add('is-valid');
         const tooltip = wrapper.querySelector('.error-tooltip');
@@ -104,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function clearFormErrors(form) {
+        if (!form) return;
         const wrappers = form.querySelectorAll('.input-wrapper');
         wrappers.forEach(w => {
             w.classList.remove('is-invalid', 'is-valid');
@@ -114,114 +125,119 @@ document.addEventListener('DOMContentLoaded', () => {
         inputs.forEach(i => delete i.dataset.touched);
     }
 
+    // Handle Registration Submission
+    if (signupForm) {
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const inputs = signupForm.querySelectorAll('input:not([type="checkbox"]), select');
+            let isFormValid = true;
 
-    signupForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const inputs = signupForm.querySelectorAll('input:not([type="checkbox"]), select');
-        let isFormValid = true;
+            inputs.forEach(input => {
+                input.dataset.touched = 'true';
+                const status = window.validator.validateField(input);
+                if (!status.isValid) {
+                    showErrorState(input, status.message);
+                    isFormValid = false;
+                } else {
+                    showSuccessState(input);
+                }
+            });
 
-        inputs.forEach(input => {
-            input.dataset.touched = 'true';
-            const status = window.validator.validateField(input);
-            if (!status.isValid) {
-                showErrorState(input, status.message);
-                isFormValid = false;
-            } else {
-                showSuccessState(input);
+            if (!isFormValid) return;
+
+            const nameValue = document.getElementById('signup-name').value.trim();
+            const familyValue = document.getElementById('signup-family').value.trim();
+            const ageValue = document.getElementById('signup-age').value.trim();
+            const phoneValue = document.getElementById('signup-phone').value.trim();
+            const genderValue = document.getElementById('signup-gender').value;
+            const emailValue = document.getElementById('signup-email').value.trim();
+            const passwordValue = document.getElementById('signup-password').value;
+
+            const registrationPayload = {
+                email: emailValue,
+                password: passwordValue,
+                name: nameValue,
+                family: familyValue,
+                age: ageValue,
+                phone: phoneValue,
+                gender: genderValue
+            };
+
+            const submitBtn = signupForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+
+            try {
+                const user = await window.authService.registerUser(registrationPayload);
+
+                // Store session data immediately upon successful registration
+                const sessionUser = {
+                    id: user.id,
+                    userName: nameValue,
+                    userFamily: familyValue,
+                    userEmail: user.email,
+                    role: 'user'
+                };
+
+                localStorage.setItem('currentUser', JSON.stringify(sessionUser));
+                signupForm.reset();
+                clearFormErrors(signupForm);
+
+                window.location.href = '../index.html';
+            } catch (error) {
+                console.error('Registration failed:', error);
+                showErrorState(document.getElementById('signup-email'), error.message || 'خطا در ثبت‌نام');
+            } finally {
+                submitBtn.disabled = false;
             }
         });
+    }
 
-        if (!isFormValid) return;
+    // Handle Login Submission
+    if (signinForm) {
+        signinForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const emailInput = document.getElementById('signin-email');
+            const passInput = document.getElementById('signin-password');
 
-        const email = document.getElementById('signup-email').value.trim();
+            const emailStatus = window.validator.validateField(emailInput);
+            const passStatus = window.validator.validateField(passInput);
 
-        try {
-            const isEmailTaken = await window.authService.checkEmailExists(email);
-            if (isEmailTaken) {
-                showErrorState(document.getElementById('signup-email'), 'این ایمیل قبلاً ثبت شده است');
-                return;
+            if (!emailStatus.isValid) showErrorState(emailInput, emailStatus.message);
+            if (!passStatus.isValid) showErrorState(passInput, passStatus.message);
+
+            if (!emailStatus.isValid || !passStatus.isValid) return;
+
+            const emailValue = emailInput.value.trim();
+            const passValue = passInput.value;
+
+            const submitBtn = signinForm.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+
+            try {
+                const user = await window.authService.loginUser(emailValue, passValue);
+
+                // Extract profile data safely injected by auth_service
+                const profile = user.profile || {};
+
+                const sessionUser = {
+                    id: user.id,
+                    userName: profile.name || user.email.split('@')[0],
+                    userFamily: profile.family || '',
+                    userEmail: user.email,
+                    role: profile.role || 'user'
+                };
+
+                localStorage.setItem('currentUser', JSON.stringify(sessionUser));
+                signinForm.reset();
+                clearFormErrors(signinForm);
+
+                window.location.href = '../index.html';
+            } catch (error) {
+                console.error('Login failed:', error);
+                showErrorState(passInput, 'ایمیل یا کلمه عبور اشتباه است');
+            } finally {
+                submitBtn.disabled = false;
             }
-
-            const newUser = {
-                id: `usr-${Date.now()}`,
-                userCreatedAt: new Date().toISOString(),
-                role: "user",
-                userName: document.getElementById('signup-name').value.trim(),
-                userFamily: document.getElementById('signup-family').value.trim(),
-                userAge: document.getElementById('signup-age').value.trim(),
-                userPhone: document.getElementById('signup-phone').value.trim(),
-                userGender: document.getElementById('signup-gender').value,
-                userEmail: email,
-                userPassword: document.getElementById('signup-password').value,
-                userAppointmentIds: []
-            };
-
-            await window.authService.registerUser(newUser);
-
-            const sessionUser = {
-                id: newUser.id,
-                userName: newUser.userName,
-                userFamily: newUser.userFamily,
-                userEmail: newUser.userEmail,
-                role: newUser.role
-            };
-            localStorage.setItem('currentUser', JSON.stringify(sessionUser));
-
-            signupForm.reset();
-            clearFormErrors(signupForm);
-            window.location.href = '../index.html';
-
-        } catch (error) {
-            console.error('Error during signup:', error);
-            alert('اتصال به سرور برقرار نشد.');
-        }
-    });
-
-    signinForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const emailInput = document.getElementById('signin-email');
-        const passInput = document.getElementById('signin-password');
-
-        const emailStatus = window.validator.validateField(emailInput);
-        const passStatus = window.validator.validateField(passInput);
-
-        if (!emailStatus.isValid) showErrorState(emailInput, emailStatus.message);
-        if (!passStatus.isValid) showErrorState(passInput, passStatus.message);
-
-        if (!emailStatus.isValid || !passStatus.isValid) return;
-
-        const emailValue = emailInput.value.trim();
-        const passValue = passInput.value;
-
-        try {
-            const foundUser = await window.authService.getUserByEmail(emailValue);
-
-            if (!foundUser) {
-                showErrorState(emailInput, 'حساب کاربری با این ایمیل یافت نشد');
-                return;
-            }
-
-            if (foundUser.userPassword !== passValue) {
-                showErrorState(passInput, 'کلمه عبور اشتباه است');
-                return;
-            }
-
-            const sessionUser = {
-                id: foundUser.id,
-                userName: foundUser.userName,
-                userFamily: foundUser.userFamily,
-                userEmail: foundUser.userEmail,
-                role: foundUser.role
-            };
-            localStorage.setItem('currentUser', JSON.stringify(sessionUser));
-
-            signinForm.reset();
-            clearFormErrors(signinForm);
-            window.location.href = '../index.html';
-
-        } catch (error) {
-            console.error('Error during signin:', error);
-            alert('اتصال به سرور برقرار نشد.');
-        }
-    });
+        });
+    }
 });
