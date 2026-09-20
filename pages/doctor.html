@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل پزشک | LumiDent</title>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body class="doctor-body">
+
+    <!-- Sidebar -->
+    <aside class="d-sidebar">
+        <div class="d-sidebar__logo">
+            <h2>LumiDent</h2>
+            <p>پنل اختصاصی پزشکان</p>
+        </div>
+        <nav class="d-sidebar__nav">
+            <a href="#" class="active"><i class="fas fa-calendar-check"></i> نوبت‌های من</a>
+            <a href="#" id="js-doctor-logout"><i class="fas fa-sign-out-alt" style="color: #ef4444;"></i> خروج از حساب</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="d-main">
+        <header class="d-header">
+            <div class="d-header__user" id="js-doctor-name">دکتر عزیز، خوش آمدید</div>
+        </header>
+
+        <section class="d-content">
+            <!-- Filters -->
+            <div class="d-filters-wrapper">
+                <div class="d-filters">
+                    <button class="d-btn-filter active" data-filter="all">همه بیماران من</button>
+                    <button class="d-btn-filter" data-filter="today">در انتظار ویزیت</button>
+                    <button class="d-btn-filter" data-filter="visited">ویزیت شده‌ها</button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="d-table-wrapper">
+                <table class="d-table">
+                    <thead>
+                        <tr>
+                            <th>مشخصات بیمار</th>
+                            <th>خدمت / علت مراجعه</th>
+                            <th>تاریخ و ساعت</th>
+                            <th>وضعیت</th>
+                            <th>عملیات (ویزیت/نسخه)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="js-doctor-appointments-tbody">
+                        <!-- Data injected by doctor.js -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+
+    <!-- Modal: Doctor Prescription / Notes -->
+    <dialog id="js-note-modal" class="c-modal">
+        <div class="c-modal__container">
+            <header class="c-modal__header">
+                <h2 class="c-modal__title">ثبت شرح‌حال و نسخه</h2>
+                <button type="button" class="c-modal__close js-modal-close">&times;</button>
+            </header>
+            <div class="c-modal__body">
+                <div style="margin-bottom: 15px; font-size: 13px; color: #475569;">
+                    بیمار: <strong id="js-note-patient-name" style="color: #0077c0;"></strong>
+                </div>
+                <textarea id="js-note-textarea" rows="6" placeholder="داروها، توصیه‌ها و شرح‌حال بیمار را اینجا تایپ کنید..." style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; font-family: 'TextRegular', sans-serif; font-size: 14px; resize: vertical; outline: none;"></textarea>
+                <button id="js-save-note-btn" class="d-btn-action note" style="width: 100%; justify-content: center; margin-top: 15px; padding: 10px;">ذخیره در پرونده</button>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Modal: Patient History -->
+    <dialog id="js-history-modal" class="c-modal">
+        <div class="c-modal__container">
+            <header class="c-modal__header">
+                <h2 class="c-modal__title">پرونده پزشکی بیمار</h2>
+                <button type="button" class="c-modal__close js-modal-close">&times;</button>
+            </header>
+            <div class="c-modal__body">
+                <div id="js-history-content">
+                    <!-- History will be injected here -->
+                    <div style="text-align:center; padding: 20px;">در حال بارگذاری پرونده...</div>
+                </div>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Scripts -->
+    <script type="module" src="../js/utils_js/custom_error_modal.js"></script>
+    <script type="module" src="../js/utils_js/supabaseClient.js"></script>
+    <script type="module" src="../js/services_js/auth_service.js"></script>
+    <script type="module" src="../js/services_js/appointments_service.js"></script>
+    <script type="module" src="../js/pages_js/doctor.js"></script>
+</body>
+</html>

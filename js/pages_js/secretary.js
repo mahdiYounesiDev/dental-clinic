@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const walkinModal = document.getElementById('js-walkin-modal');
     const historyModal = document.getElementById('js-history-modal');
     const historyContent = document.getElementById('js-history-content');
+    const tableWrapper = document.querySelector('.s-table-wrapper');
 
     let allAppointments = [];
     let doctorsList = [];
@@ -49,6 +50,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let calendarYear = currentRealYear;
     let calendarMonth = currentRealMonth;
 
+    // 1. Check Authentication & Role
     const userRaw = localStorage.getItem('currentUser');
     if (!userRaw) { window.location.href = '../pages/login.html'; return; }
     const user = JSON.parse(userRaw);
@@ -59,6 +61,42 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     document.getElementById('js-secretary-name').textContent = `${user.userName} | Admin`;
 
+    // 2. Drag to Scroll Logic for Table
+    function initDragToScroll(slider) {
+        if (!slider) return;
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        slider.addEventListener('mousedown', (e) => {
+            isDown = true;
+            slider.style.cursor = 'grabbing';
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+
+        slider.addEventListener('mouseleave', () => {
+            isDown = false;
+            slider.style.cursor = 'grab';
+        });
+
+        slider.addEventListener('mouseup', () => {
+            isDown = false;
+            slider.style.cursor = 'grab';
+        });
+
+        slider.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 1.5;
+            slider.scrollLeft = scrollLeft - walk;
+        });
+    }
+
+    initDragToScroll(tableWrapper);
+
+    // Logout
     logoutBtn.addEventListener('click', async (e) => {
         e.preventDefault();
         if (window.authService && typeof window.authService.logoutUser === 'function') {
@@ -68,6 +106,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = '../index.html';
     });
 
+    // Helpers
     function showToast(msg) {
         toast.textContent = msg;
         toast.classList.add('show');
@@ -86,6 +125,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return String(value).replace(/[۰-۹]/g, w => persianNumbers.indexOf(w));
     }
 
+    // 3. Fetch Data
     async function fetchData() {
         try {
             tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading data...</td></tr>';
@@ -234,6 +274,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 let statusClass = 'pending';
                 if (app.status === 'تایید شده') statusClass = 'approved';
                 if (app.status === 'رد شده' || app.status === 'کنسل شده') statusClass = 'rejected';
+                if (app.status === 'ویزیت شده') statusClass = 'visited';
+                if (app.status === 'عدم مراجعه') statusClass = 'noshow';
 
                 const patientName = app.patient_name || 'ثبت نشده';
                 const phoneStr = app.patient_phone || '';
@@ -279,7 +321,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 <button class="s-btn-action delete js-action-delete" data-id="${app.id}"><i class="fas fa-trash"></i> حذف</button>
                             ` : ''}
                         </div>
-                        ${notes ? `<div style="margin-top:8px; font-size:11px; color:#475569; background:#f1f5f9; padding:6px; border-radius:6px;"><i class="fas fa-info-circle"></i> ${notes}</div>` : ''}
+                        ${notes ? `<div style="margin-top:8px; font-size:11px; color:#475569; background:#f1f5f9; padding:6px; border-radius:6px; white-space:pre-wrap; word-break:break-word;"><i class="fas fa-info-circle"></i> ${notes}</div>` : ''}
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -386,6 +428,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div style="background:#f8fafc; padding:10px; border-radius:8px; margin-bottom:10px; border:1px solid #e2e8f0;">
                     <strong style="color:var(--color-primary)">${h.appointmentDate}</strong> - ${h.serviceName}<br>
                     <small>پزشک: ${h.doctorName} | وضعیت: ${h.status}</small>
+                    ${h.doctor_notes ? `<div style="background: #ffffff; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 13px; line-height:1.8; color: #1e293b; margin-top: 8px; white-space: pre-wrap; word-break: break-word; overflow-wrap: break-word;"><strong><i class="fas fa-prescription" style="color:#0077c0;"></i> نسخه / شرح‌حال ثبت شده:</strong> <br>${h.doctor_notes}</div>` : ''}
                 </div>`;
             });
         }
@@ -572,7 +615,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const docId = selectedOpt.dataset.id;
         const docName = selectedOpt.dataset.name;
 
-        // Relational filter based on doctor ID or exact name
         const docServices = allServices.filter(s =>
             String(s.doctorId) === String(docId) ||
             String(s.serviceDoctorId) === String(docId) ||
@@ -728,6 +770,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     doctorFilter.addEventListener('change', applyFilters);
     searchInput.addEventListener('input', applyFilters);
 
+    // 4. Supabase Realtime Subscription
     function setupRealtime() {
         supabase.channel('public:appointments')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, payload => {

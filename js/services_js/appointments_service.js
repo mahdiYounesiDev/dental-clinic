@@ -39,10 +39,22 @@ class AppointmentsService {
         return data[0];
     }
 
+    // متد آپدیت وضعیت توسط منشی و پزشک
     async updateAppointmentStatus(appointmentId, newStatus, secretaryNote = '') {
         const { data, error } = await supabase
             .from('appointments')
             .update({ status: newStatus, secretary_note: secretaryNote })
+            .eq('id', appointmentId)
+            .select();
+        if (error) throw new Error(error.message);
+        return data[0];
+    }
+
+    // 🔴 متد جدید و حیاتی برای پنل پزشک: ثبت یا ویرایش نسخه/شرح‌حال
+    async updateAppointmentNotes(appointmentId, notes) {
+        const { data, error } = await supabase
+            .from('appointments')
+            .update({ doctor_notes: notes })
             .eq('id', appointmentId)
             .select();
         if (error) throw new Error(error.message);
