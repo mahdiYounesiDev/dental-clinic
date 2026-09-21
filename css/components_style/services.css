@@ -1,233 +1,268 @@
-/* ==================== Ultra Modern Dental Services ==================== */
-
+/* ==================== Ultra-Premium & Compact Services ==================== */
 .c-services {
-    padding: 120px 0;
+    padding: 60px 0;
     background-color: #f8fafc;
     position: relative;
-    overflow: hidden;
-}
-
-/* Background Soft Glow Accents */
-.c-services::before {
-    content: '';
-    position: absolute;
-    top: 10%;
-    right: -5%;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba(0, 119, 192, 0.06) 0%, rgba(255, 255, 255, 0) 70%);
-    pointer-events: none;
 }
 
 .c-services__container {
     width: 100%;
-    max-width: 1280px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 0 24px;
-    position: relative;
-    z-index: 1;
+    padding: 0 20px;
 }
 
-/* Header */
 .c-services__header {
     text-align: center;
-    max-width: 680px;
-    margin: 0 auto 64px;
+    margin-bottom: 40px;
 }
 
 .c-services__badge {
-    display: inline-block;
-    font-family: "TextBold", sans-serif;
-    font-size: 12px;
-    line-height: 1.5;
-    color: var(--color-primary, #0077c0);
-    background: rgba(0, 119, 192, 0.08);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #e0f2fe;
+    color: var(--color-primary);
     padding: 6px 16px;
-    border: 1px solid rgba(0, 119, 192, 0.15);
-    border-radius: 9999px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
 }
 
 .c-services__badge-dot {
     width: 6px;
     height: 6px;
-    background-color: var(--color-primary, #0077c0);
+    background: var(--color-primary);
     border-radius: 50%;
 }
 
 .c-services__title {
     font-family: "Title", sans-serif;
-    font-size: 36px;
-    font-weight: 800;
-    color: #0f172a;
-    line-height: 1.3;
-    margin: 0 0 16px;
-    letter-spacing: -0.5px;
+    font-size: 28px;
+    color: var(--color-dark);
+    margin-bottom: 10px;
 }
 
 .c-services__subtitle {
-    font-size: 16px;
+    font-family: "TextRegular", sans-serif;
+    font-size: 14px;
     color: #64748b;
-    line-height: 1.8;
-    margin: 0;
+    max-width: 550px;
+    margin: 0 auto;
+    line-height: 1.7;
 }
 
-/* Grid Layout */
-.c-services__grid {
+/* شبکه کارت‌ها - فشرده و مناسب موبایل */
+.premium-services-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 32px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
 }
 
-/* Service Card */
-.c-services__card {
+/* کارت اصلی */
+.svc-card-pro {
     background: #ffffff;
-    border: 1px solid #eaeef4;
-    border-radius: 28px;
-    padding: 40px 32px 32px;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.03);
+    border: 1px solid #e2e8f0;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     position: relative;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 10px 30px -15px rgba(15, 23, 42, 0.03);
+    overflow: hidden;
+    cursor: pointer;
 }
 
-.c-services__card-bg-num {
+/* نوار رنگی بالای کارت */
+.svc-card-pro::before {
+    content: '';
     position: absolute;
-    top: 20px;
-    left: 28px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-mint));
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s ease;
+}
+
+.svc-card-pro:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 119, 192, 0.08);
+    border-color: #bae6fd;
+}
+
+.svc-card-pro:hover::before {
+    transform: scaleX(1);
+}
+
+/* بخش هدر کارت (آیکون و شماره) */
+.svc-icon-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.svc-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+    color: var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #bae6fd;
+    transition: all 0.3s ease;
+}
+
+.svc-card-pro:hover .svc-icon {
+    background: var(--color-primary);
+    color: #ffffff;
+    transform: rotate(-5deg) scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 119, 192, 0.2);
+}
+
+.svc-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.svc-number {
     font-family: "Title", sans-serif;
-    font-size: 42px;
+    font-size: 32px;
     font-weight: 900;
     color: #f1f5f9;
-    user-select: none;
-    transition: color 0.4s ease;
-    z-index: 0;
+    line-height: 1;
+    transition: color 0.3s ease;
 }
 
-.c-services__card-body {
-    position: relative;
-    z-index: 1;
+.svc-card-pro:hover .svc-number {
+    color: #e0f2fe;
 }
 
-/* Icon Box */
-.c-services__icon-wrapper {
-    width: 64px;
-    height: 64px;
-    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-    border: 1px solid rgba(0, 119, 192, 0.15);
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-primary, #0077c0);
-    margin-bottom: 28px;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.c-services__icon-wrapper svg {
-    width: 32px;
-    height: 32px;
-}
-
-.c-services__card-title {
-    font-family: "Title", sans-serif;
-    font-size: 22px;
+/* متون کارت */
+.svc-title {
+    font-family: "Button", sans-serif;
+    font-size: 16px;
     font-weight: 700;
     color: #0f172a;
-    margin: 0 0 12px;
+    margin-bottom: 8px;
+    transition: color 0.3s ease;
 }
 
-.c-services__card-desc {
-    font-size: 14.5px;
+.svc-card-pro:hover .svc-title {
+    color: var(--color-primary);
+}
+
+.svc-desc {
+    font-family: "TextRegular", sans-serif;
+    font-size: 12.5px;
     color: #64748b;
-    line-height: 1.75;
-    margin: 0 0 32px;
+    line-height: 1.7;
+    margin-bottom: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-/* Link / Button Inside Card */
-.c-services__card-footer {
+/* ------------------------------------------- */
+/* باکس تاریک و حرفه ای قیمت (High Contrast) */
+/* ------------------------------------------- */
+.svc-finance-box {
+    background: #0f172a; /* رنگ سرمه‌ای تیره */
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-top: auto;
+    margin-bottom: 14px;
     position: relative;
-    z-index: 1;
-    padding-top: 20px;
-    border-top: 1px solid #f1f5f9;
+    overflow: hidden;
 }
 
-.c-services__card-link {
-    display: inline-flex;
-    align-items: center;
-    justify-content: space-between;
+/* افکت نوری داخل باکس تیره */
+.svc-finance-box::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
     width: 100%;
-    color: #334155;
-    font-size: 14px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: all 0.3s ease;
+    height: 100%;
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 70%);
+    z-index: 1;
 }
 
-.c-services__link-icon {
-    width: 36px;
-    height: 36px;
-    background: #f8fafc;
-    border-radius: 50%;
+.svc-finance-row {
     display: flex;
+    justify-content: space-between;
     align-items: center;
+    font-size: 11.5px;
+    position: relative;
+    z-index: 2;
+}
+
+.svc-finance-row--total {
+    color: #94a3b8;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.svc-finance-row--total strong {
+    color: #f8fafc;
+    font-size: 13.5px;
+    font-family: "Button", sans-serif;
+}
+
+.svc-finance-row--prepay {
+    color: #34d399; /* رنگ سبز نعنایی برای تایید */
+    font-weight: 700;
+}
+
+.svc-finance-row--prepay span:last-child {
+    font-family: "Button", sans-serif;
+    font-size: 13px;
+}
+
+/* دکمه اکشن پایین کارت */
+.svc-action-btn {
+    display: flex;
     justify-content: center;
-    color: #64748b;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px;
+    background: #f1f5f9;
+    color: var(--color-primary);
+    border-radius: 12px;
+    font-family: "Button", sans-serif;
+    font-weight: 700;
+    font-size: 13px;
     transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
 }
 
-/* Hover States */
-.c-services__card:hover {
-    transform: translateY(-8px);
-    border-color: rgba(0, 119, 192, 0.25);
-    box-shadow: 0 24px 48px -12px rgba(0, 119, 192, 0.12);
-}
-
-.c-services__card:hover .c-services__icon-wrapper {
-    background: linear-gradient(135deg, var(--color-primary, #0077c0) 0%, #005a93 100%);
+.svc-card-pro:hover .svc-action-btn {
+    background: var(--color-primary);
     color: #ffffff;
-    border-color: transparent;
-    box-shadow: 0 12px 24px rgba(0, 119, 192, 0.25);
-    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 119, 192, 0.2);
 }
 
-.c-services__card:hover .c-services__card-bg-num {
-    color: rgba(0, 119, 192, 0.08);
-}
-
-.c-services__card:hover .c-services__card-link {
-    color: var(--color-primary, #0077c0);
-}
-
-.c-services__card:hover .c-services__link-icon {
-    background: var(--color-primary, #0077c0);
-    color: #ffffff;
-    transform: translateX(-4px);
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-    .c-services__grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
-    }
-}
-
+/* بهینه سازی موبایل */
 @media (max-width: 640px) {
-    .c-services {
-        padding: 80px 0;
-    }
-
-    .c-services__title {
-        font-size: 26px;
-    }
-
-    .c-services__grid {
+    .premium-services-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
     }
-
-    .c-services__card {
-        padding: 32px 24px 24px;
+    .c-services {
+        padding: 40px 0;
+    }
+    .c-services__title {
+        font-size: 24px;
     }
 }

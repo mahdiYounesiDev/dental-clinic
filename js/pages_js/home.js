@@ -2,51 +2,77 @@ document.addEventListener('DOMContentLoaded', async () => {
     const servicesGrid = document.getElementById('js-services-grid');
     const doctorsGrid = document.getElementById('js-doctors-grid');
 
+    // Helper: فرمت قیمت‌ها
     function formatMoney(amount) {
         if (!amount && amount !== 0) return '۰';
         return Number(amount).toLocaleString('fa-IR');
     }
 
+    // آیکون‌های مدرن برای سرویس‌ها
+    const defaultIcons = [
+        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8 2 6 4 6 7c0 2.5 1.5 4.5 3 6v2h6v-2c1.5-1.5 3-3.5 3-6 0-3-2-5-6-5z"/><path d="M9 15v2m6-2v2m-6 2v2m6-2v2m-4.5 1v2"/></svg>`,
+        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/><path d="M8 13c1 2.5 3.5 3.5 4 3.5s3-.8 4-3.5"/><circle cx="9" cy="9" r="1.25" fill="currentColor"/><circle cx="15" cy="9" r="1.25" fill="currentColor"/></svg>`,
+        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 18h16"/><rect x="7" y="4" width="3" height="4" rx="1"/><rect x="14" y="4" width="3" height="4" rx="1"/><rect x="7" y="16" width="3" height="4" rx="1"/><rect x="14" y="16" width="3" height="4" rx="1"/><path d="M8.5 8v8m7-8v8"/></svg>`,
+        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C9 2 7 3.5 7 6.5c0 3 1.5 5 2 8s.5 7.5 3 7.5 2.5-4.5 3-7.5 2-5 2-8S15 2 12 2z"/><path d="M12 6v6m0 4v2"/></svg>`,
+        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-3 0-5 1.5-5 4.5 0 2.5 1 4 1.5 6.5S9 20 12 20s3.5-3.5 3.5-6c.5-2.5 1.5-4 1.5-6.5C17 4.5 15 3 12 3z"/><path d="M19 3l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2z"/><path d="M4 11l.75 1.5L6 13l-1.25.5L4 15l-.5-1.5L2 13l1.5-.5L4 11z"/></svg>`,
+        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>`
+    ];
+
     const renderServices = async () => {
         if (!servicesGrid) return;
         try {
             const services = await window.servicesService.getAllServices();
+
+            // جایگزینی با کلاس شبکه جدید
+            servicesGrid.className = 'premium-services-grid';
+
             if (!services || services.length === 0) {
-                servicesGrid.innerHTML = '<p class="c-services__empty">هیچ خدمتی یافت نشد.</p>';
+                servicesGrid.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:#64748b; font-size: 13px;">هیچ خدمتی یافت نشد.</p>';
                 return;
             }
 
             servicesGrid.innerHTML = services.map((service, index) => {
+                const iconSvg = defaultIcons[index % defaultIcons.length];
+                const numStr = (index + 1).toString().padStart(2, '0');
+
+                // باکس تیره و پیشرفته قیمت
                 const priceHtml = service.price > 0
-                    ? `<div style="margin-top:15px; padding-top:15px; border-top:1px dashed #e2e8f0; text-align:right;">
-                         <div style="font-size:13px; color:#64748b;">هزینه کل: <strong style="color:#0f172a; font-size:15px;">${formatMoney(service.price)}</strong> تومان</div>
-                         <div style="font-size:12px; color:#10b981; margin-top:5px; font-weight:bold;"><i class="fas fa-check-circle"></i> پیش‌پرداخت رزرو: ${formatMoney(service.prepayment)} تومان</div>
+                    ? `<div class="svc-finance-box">
+                         <div class="svc-finance-row svc-finance-row--total">
+                            <span>هزینه کل درمان:</span>
+                            <strong>${formatMoney(service.price)} <small style="font-weight:normal; font-size:10px;">تومان</small></strong>
+                         </div>
+                         <div class="svc-finance-row svc-finance-row--prepay">
+                            <span><i class="fas fa-check-circle" style="margin-left:4px;"></i> پیش‌پرداخت رزرو:</span>
+                            <span>${formatMoney(service.prepayment)} <small style="font-weight:normal; font-size:10px;">تومان</small></span>
+                         </div>
                        </div>`
-                    : `<div style="margin-top:15px; padding-top:15px; border-top:1px dashed #e2e8f0; font-size:13px; color:#64748b; text-align:right;">هزینه پس از معاینه مشخص می‌شود</div>`;
+                    : `<div class="svc-finance-box" style="display:flex; justify-content:center; align-items:center; color:#94a3b8; padding: 18px 10px;">
+                         <i class="fas fa-info-circle" style="margin-left:6px;"></i> هزینه دقیق پس از معاینه مشخص می‌شود
+                       </div>`;
 
                 return `
-                <article class="c-services__card">
-                    <span class="c-services__card-bg-num">0${index + 1}</span>
-                    <div class="c-services__card-body">
-                        <div class="c-services__icon-wrapper">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                            </svg>
-                        </div>
-                        <h3 class="c-services__card-title">${service.serviceName || service.title}</h3>
-                        <p class="c-services__card-desc">${service.serviceDescription || service.desc}</p>
-                        ${priceHtml}
+                <article class="svc-card-pro js-service-book-btn" data-service-id="${service.id}">
+                    <div class="svc-icon-wrapper">
+                        <div class="svc-icon">${iconSvg}</div>
+                        <div class="svc-number">${numStr}</div>
                     </div>
-                    <div class="c-services__card-footer">
-                        <a href="#appointment" class="c-services__card-link js-service-book-btn" data-service-id="${service.id}">
-                            <span>مشاهده جزئیات و نوبت‌دهی</span>
-                        </a>
-                    </div>
+
+                    <h3 class="svc-title">${service.serviceName || service.title}</h3>
+                    <p class="svc-desc">${service.serviceDescription || service.desc || 'ارائه بهترین خدمات تخصصی دندان‌پزشکی با بالاترین کیفیت و تکنولوژی روز دنیا.'}</p>
+
+                    ${priceHtml}
+
+                    <button type="button" class="svc-action-btn">
+                        <span>ثبت نوبت و مشاوره</span>
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    </button>
                 </article>
-            `}).join('');
+                `;
+            }).join('');
         } catch (error) {
             console.error('Error fetching services:', error);
-            servicesGrid.innerHTML = '<p class="c-services__error">خطا در دریافت لیست خدمات از سرور.</p>';
+            servicesGrid.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:#ef4444; font-size: 13px;">خطا در دریافت لیست خدمات.</p>';
         }
     };
 
@@ -61,7 +87,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             doctorsGrid.innerHTML = doctors.map(doc => {
                 let specs = [];
-                // استخراج هوشمند تخصص‌ها (چه به صورت آرایه JSON باشد چه متن ساده)
                 try {
                     specs = JSON.parse(doc.doctorSpecializations);
                 } catch(e) {
