@@ -222,17 +222,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 signinForm.reset();
                 clearFormErrors(signinForm);
 
-                // Role-based routing
                 switch (sessionUser.role) {
+                    case 'admin':
+                        window.location.href = '../pages/admin.html';
+                        break;
                     case 'secretary':
                         window.location.href = '../pages/secretary.html';
                         break;
                     case 'doctor':
                         window.location.href = '../pages/doctor.html';
-                        break;
-                    case 'admin':
-                        // Assuming admin has a dedicated panel later, falling back to secretary for now
-                        window.location.href = '../pages/secretary.html';
                         break;
                     default:
                         window.location.href = '../index.html';

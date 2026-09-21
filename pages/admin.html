@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل مدیریت | لمی دنت</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/pages_style/admin.css">
+</head>
+<body class="admin-body">
+
+    <aside class="a-sidebar">
+        <div class="a-sidebar__logo">
+            <h2>لمی دنت</h2>
+            <p>پنل مدیریت کل سیستم</p>
+        </div>
+        <nav class="a-sidebar__nav" id="js-admin-nav">
+            <a href="#" class="active" data-target="users-section"><i class="fas fa-users-cog"></i> مدیریت کاربران</a>
+            <a href="#" data-target="doctors-section"><i class="fas fa-user-md"></i> پزشکان و خدمات</a>
+            <a href="#" data-target="finance-section"><i class="fas fa-file-invoice-dollar"></i> مدیریت مالی و صندوق</a>
+            <a href="#" data-target="gallery-section"><i class="fas fa-images"></i> مدیریت گالری</a>
+            <hr class="a-sidebar__divider">
+            <a href="../index.html"><i class="fas fa-home"></i> مشاهده سایت</a>
+            <a href="#" id="js-admin-logout" class="a-sidebar__logout"><i class="fas fa-sign-out-alt"></i> خروج از حساب</a>
+        </nav>
+    </aside>
+
+    <main class="a-main">
+        <header class="a-header">
+            <div class="a-header__search">
+                <i class="fas fa-search"></i>
+                <input type="text" id="js-admin-search" placeholder="جستجو در کاربران...">
+            </div>
+            <div class="a-header__user">
+                <span id="js-admin-name">مدیر کل</span>
+            </div>
+        </header>
+
+        <!-- بخش مدیریت کاربران -->
+        <section id="users-section" class="a-content js-section active">
+            <div class="a-header-title">
+                <h1>سطوح دسترسی و کاربران</h1>
+            </div>
+            <div class="a-filters-wrapper">
+                <div class="a-filters">
+                    <button class="a-btn-filter active" data-filter="all">همه کاربران</button>
+                    <button class="a-btn-filter" data-filter="user">بیماران</button>
+                    <button class="a-btn-filter" data-filter="secretary">منشی‌ها</button>
+                    <button class="a-btn-filter" data-filter="doctor">پزشکان</button>
+                    <button class="a-btn-filter" data-filter="admin">مدیران</button>
+                </div>
+            </div>
+            <div class="a-table-wrapper js-drag-scroll">
+                <table class="a-table">
+                    <thead>
+                        <tr>
+                            <th>نام و نام خانوادگی</th>
+                            <th>اطلاعات تماس</th>
+                            <th>تاریخ عضویت</th>
+                            <th>نقش کاربری</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="js-users-tbody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- بخش مدیریت پزشکان و خدمات -->
+        <section id="doctors-section" class="a-content js-section is-hidden">
+            <div class="a-header-title">
+                <h1>مدیریت پزشکان و خدمات کلینیک</h1>
+            </div>
+
+            <div class="a-section-block">
+                <div class="a-section-header">
+                    <h3>لیست پزشکان</h3>
+                    <button class="a-btn-primary" id="js-add-doctor-btn"><i class="fas fa-plus"></i> افزودن پزشک جدید</button>
+                </div>
+                <div class="a-table-wrapper js-drag-scroll">
+                    <table class="a-table">
+                        <thead>
+                            <tr>
+                                <th>مشخصات پزشک</th>
+                                <th>تخصص‌ها</th>
+                                <th>سابقه کار</th>
+                                <th>شماره تماس</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="js-doctors-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="a-section-block a-mt-40">
+                <div class="a-section-header">
+                    <h3>لیست خدمات تخصصی</h3>
+                    <button class="a-btn-primary" id="js-add-service-btn"><i class="fas fa-plus"></i> ثبت خدمت جدید</button>
+                </div>
+                <div class="a-table-wrapper js-drag-scroll">
+                    <table class="a-table">
+                        <thead>
+                            <tr>
+                                <th>عنوان خدمت</th>
+                                <th>پزشک معالج</th>
+                                <th>قیمت کل / پیش‌پرداخت</th>
+                                <th>توضیحات کوتاه</th>
+                                <th>عملیات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="js-services-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- بخش مدیریت مالی و صندوق (NEW) -->
+        <section id="finance-section" class="a-content js-section is-hidden">
+            <div class="a-header-title">
+                <h1>صندوق و مدیریت مالی نوبت‌ها</h1>
+            </div>
+            <div class="a-table-wrapper js-drag-scroll">
+                <table class="a-table">
+                    <thead>
+                        <tr>
+                            <th>کد نوبت</th>
+                            <th>خدمت / پزشک</th>
+                            <th>تاریخ و ساعت</th>
+                            <th>هزینه کل</th>
+                            <th>پرداخت شده</th>
+                            <th>وضعیت مالی</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="js-finance-tbody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- بخش مدیریت گالری -->
+        <section id="gallery-section" class="a-content js-section is-hidden">
+            <div class="a-header-title">
+                <h1>مدیریت گالری تصاویر (قبل و بعد)</h1>
+            </div>
+
+            <div class="a-section-block a-mb-30">
+                <h3>آپلود پرونده تصویری جدید</h3>
+                <form id="js-gallery-form" class="a-form-grid a-gallery-form">
+                    <div class="a-form-group a-grid-full">
+                        <label for="gal-title">عنوان درمان / تصویر</label>
+                        <input type="text" id="gal-title" placeholder="مثال: کامپوزیت فک بالا" required>
+                    </div>
+
+                    <div class="a-form-group">
+                        <label for="gal-doctor">پزشک معالج (اختیاری)</label>
+                        <select id="gal-doctor" class="a-role-select" style="padding: 12px 14px;">
+                            <option value="">نامشخص / کلینیک</option>
+                        </select>
+                    </div>
+                    <div class="a-form-group">
+                        <label for="gal-hashtag">هشتگ (اختیاری)</label>
+                        <input type="text" id="gal-hashtag" placeholder="مثال: #لمینت_سرامیکی">
+                    </div>
+
+                    <div class="a-form-group">
+                        <label for="gal-before-file">تصویر قبل (Before)</label>
+                        <input type="file" id="gal-before-file" accept="image/*" required class="a-file-input">
+                    </div>
+                    <div class="a-form-group">
+                        <label for="gal-after-file">تصویر بعد (After)</label>
+                        <input type="file" id="gal-after-file" accept="image/*" required class="a-file-input">
+                    </div>
+                    <div class="a-form-group a-grid-full">
+                        <button type="submit" class="a-btn-primary a-btn-block"><i class="fas fa-cloud-upload-alt"></i> شروع آپلود تصاویر</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="a-section-block">
+                <h3>تصاویر موجود در گالری</h3>
+                <div id="js-gallery-grid" class="a-gallery-grid"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- مودال ثبت پزشک -->
+    <dialog id="js-doctor-modal" class="c-modal">
+        <div class="c-modal__container a-modal-wide">
+            <header class="c-modal__header">
+                <h2 class="c-modal__title" id="js-doctor-modal-title">ثبت پزشک جدید</h2>
+                <button type="button" class="c-modal__close js-modal-close">&times;</button>
+            </header>
+            <div class="c-modal__body">
+                <form id="js-doctor-form" class="a-form-grid">
+                    <input type="hidden" id="doc-id">
+                    <input type="hidden" id="doc-avatar-url">
+
+                    <div class="a-form-group">
+                        <label for="doc-name">نام</label>
+                        <input type="text" id="doc-name" required>
+                    </div>
+                    <div class="a-form-group">
+                        <label for="doc-family">نام خانوادگی</label>
+                        <input type="text" id="doc-family" required>
+                    </div>
+                    <div class="a-form-group">
+                        <label for="doc-phone">شماره همراه</label>
+                        <input type="tel" id="doc-phone" required>
+                    </div>
+                    <div class="a-form-group">
+                        <label for="doc-email">آدرس ایمیل</label>
+                        <input type="email" id="doc-email">
+                    </div>
+                    <div class="a-form-group a-grid-full">
+                        <label for="doc-file">تصویر پروفایل پزشک</label>
+                        <input type="file" id="doc-file" accept="image/*" class="a-file-input">
+                    </div>
+                    <div class="a-form-group a-grid-full">
+                        <label for="doc-spec">تخصص‌ها (با ویرگول جدا کنید)</label>
+                        <input type="text" id="doc-spec" placeholder="مثال: جراحی فک, ایمپلنت فوری">
+                    </div>
+                    <div class="a-form-group">
+                        <label for="doc-degree">مدرک تحصیلی</label>
+                        <input type="text" id="doc-degree">
+                    </div>
+                    <div class="a-form-group">
+                        <label for="doc-exp">سابقه کار (به سال)</label>
+                        <input type="number" id="doc-exp" min="0">
+                    </div>
+
+                    <button type="submit" class="a-btn-primary a-btn-block a-grid-full a-mt-10">ذخیره اطلاعات پزشک</button>
+                </form>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- مودال ثبت خدمت -->
+    <dialog id="js-service-modal" class="c-modal">
+        <div class="c-modal__container a-modal-narrow">
+            <header class="c-modal__header">
+                <h2 class="c-modal__title" id="js-service-modal-title">ثبت خدمت جدید</h2>
+                <button type="button" class="c-modal__close js-modal-close">&times;</button>
+            </header>
+            <div class="c-modal__body">
+                <form id="js-service-form" class="a-form-grid">
+                    <input type="hidden" id="srv-id">
+
+                    <div class="a-form-group a-grid-full">
+                        <label for="srv-name">عنوان خدمت</label>
+                        <input type="text" id="srv-name" required>
+                    </div>
+                    <div class="a-form-group a-grid-full">
+                        <label for="srv-doctor">پزشک معالج</label>
+                        <select id="srv-doctor" required></select>
+                    </div>
+
+                    <!-- NEW: فیلدهای مالی -->
+                    <div class="a-form-group">
+                        <label for="srv-price">هزینه کل (تومان)</label>
+                        <input type="number" id="srv-price" value="0" min="0" required>
+                    </div>
+                    <div class="a-form-group">
+                        <label for="srv-prepayment">مبلغ پیش‌پرداخت (تومان)</label>
+                        <input type="number" id="srv-prepayment" value="0" min="0" required>
+                    </div>
+
+                    <div class="a-form-group a-grid-full">
+                        <label for="srv-desc">توضیحات کوتاه</label>
+                        <textarea id="srv-desc" rows="3"></textarea>
+                    </div>
+
+                    <button type="submit" class="a-btn-primary a-btn-block a-grid-full a-mt-10">ذخیره خدمت و قیمت</button>
+                </form>
+            </div>
+        </div>
+    </dialog>
+
+    <div id="js-admin-toast" class="a-toast"></div>
+
+    <script type="module" src="../js/utils_js/supabaseClient.js"></script>
+    <script type="module" src="../js/utils_js/custom_error_modal.js"></script>
+    <script type="module" src="../js/services_js/auth_service.js"></script>
+    <script type="module" src="../js/services_js/admin_service.js"></script>
+    <script type="module" src="../js/services_js/gallery_service.js"></script>
+    <script type="module" src="../js/pages_js/admin.js"></script>
+</body>
+</html>
