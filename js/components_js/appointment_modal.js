@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const persianMonths = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
     const defaultTimeSlots = ['۰۹:۰۰ - ۱۰:۰۰', '۱۰:۰۰ - ۱۱:۰۰', '۱۱:۰۰ - ۱۲:۰۰', '۱۶:۰۰ - ۱۷:۰۰', '۱۷:۰۰ - ۱۸:۰۰', '۱۸:۰۰ - ۱۹:۰۰'];
 
+    // Helper: Get authenticated user
     function getCurrentUser() {
         try {
             const userStr = localStorage.getItem('currentUser') || localStorage.getItem('user') || localStorage.getItem('loggedInUser');
@@ -27,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return Number(amount).toLocaleString('fa-IR');
     }
 
+    // Helper: Get today's Persian date
     function getTodayPersianDate() {
         const now = new Date();
         const formatter = new Intl.DateTimeFormat('fa-IR-u-ca-persian-nu-latn', { year: 'numeric', month: 'numeric', day: 'numeric' });
@@ -78,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const bookingForm = document.getElementById('js-booking-form');
     const myAppointmentsList = document.getElementById('js-my-appointments-list');
 
-    // دریافت اطلاعات پایه (پزشکان و خدمات) برای نگاشت صحیح اسامی و قیمت‌ها
+    // Fetch master data (services and doctors)
     async function fetchInitialData() {
         try {
             const [srvRes, docRes] = await Promise.all([
@@ -99,6 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (err) { serverAppointments = []; }
     }
 
+    // Calendar Calculations
     function isPersianLeapYear(year) {
         const leapYears = [1395, 1399, 1403, 1408, 1412, 1416, 1420, 1424, 1428, 1433, 1437, 1441, 1445, 1453, 1458, 1462, 1466, 1470, 1474, 1479, 1483, 1487, 1491, 1495];
         return leapYears.includes(year);
@@ -127,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return String(value).replace(/\d/g, digit => numbers[digit]);
     }
 
-    // --- مدیریت نوبت‌های من ---
+    // User Appointments Management
     async function deleteAppointment(appointmentId) {
         let isConfirmed = false;
         if (window.customModal) {
@@ -221,14 +224,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (calendarModal) calendarModal.showModal();
     });
 
-    // --- لیست خدمات در مودال ---
+    // Render Services Modal List
     function renderServicesList(servicesArray) {
         if (!servicesListContainer) return;
         servicesListContainer.style.maxHeight = '350px';
         servicesListContainer.style.overflowY = 'auto';
 
         servicesListContainer.innerHTML = servicesArray.map(item => {
-            // یافتن دقیق نام پزشک از آیدی آن
             let exactDoctorName = 'پزشک متخصص';
             const doc = allDoctors.find(d => String(d.id) === String(item.serviceDoctorId));
             if (doc) exactDoctorName = `دکتر ${doc.doctorName} ${doc.doctorFamily}`;
@@ -300,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- تقویم و ساعات ---
+    // Calendar Render
     async function renderCalendar() {
         if (!calendarDaysGrid || !calendarMonthLabel) return;
         await fetchServerAppointments();
@@ -378,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- مدیریت پرداخت و فرم ثبت نهایی ---
+    // Payment and Final Submission Form
     if (bookingForm) {
         bookingForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -389,7 +391,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // پیدا کردن قیمت خدمت انتخابی
             const selectedServiceObj = allServices.find(s => s.serviceName === bookingState.service);
             const totalPrice = selectedServiceObj ? selectedServiceObj.price : 0;
             const prepayment = selectedServiceObj ? selectedServiceObj.prepayment : 0;
@@ -404,7 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderInvoiceAndPayment(total, prepay) {
         const formContainer = bookingForm.parentElement;
-        bookingForm.style.display = 'none'; // مخفی کردن فرم اصلی
+        bookingForm.style.display = 'none';
 
         const invoiceDiv = document.createElement('div');
         invoiceDiv.id = 'js-invoice-container';
@@ -449,7 +450,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('js-cancel-pay').addEventListener('click', (e) => {
             e.preventDefault();
             invoiceDiv.remove();
-            bookingForm.style.display = 'block'; // بازگرداندن فرم
+            bookingForm.style.display = 'block';
         });
 
         document.getElementById('js-pay-btn').addEventListener('click', async (e) => {
@@ -459,10 +460,10 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.disabled = true;
             btn.style.opacity = '0.8';
 
-            // شبیه‌سازی درگاه (2.5 ثانیه مکث)
+            // Simulate Payment Gateway delay
             setTimeout(() => {
                 btn.innerHTML = '<i class="fas fa-check-circle" style="margin-left:8px;"></i> پرداخت با موفقیت انجام شد!';
-                btn.style.background = '#10b981'; // سبز
+                btn.style.background = '#10b981';
                 btn.style.boxShadow = 'none';
 
                 setTimeout(() => {
@@ -478,8 +479,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const patientPhoneInput = document.getElementById('booking-phone');
         const patientNotesInput = document.getElementById('booking-notes');
 
-        // اگر پرداخت شده باشد مستقیماً تایید می‌شود، وگرنه نیاز به تایید منشی دارد
-        const finalStatus = paymentStatus === 'prepaid' ? 'تایید شده' : 'در حال بررسی';
+        // All user-created appointments MUST be verified by the secretary first, regardless of payment.
+        const finalStatus = 'در حال بررسی';
 
         const payload = {
             id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
@@ -503,11 +504,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (error) throw error;
 
             const formContainer = bookingForm.parentElement;
+
+            const successMessageText = paymentStatus === 'prepaid'
+                ? 'پرداخت شما تایید شد. نوبت جهت تایید نهایی در صف بررسی منشی قرار گرفت.'
+                : 'نوبت شما جهت بررسی در صف تایید منشی قرار گرفت.';
+
             formContainer.innerHTML = `
                 <div style="text-align:center; padding:30px 20px;">
                     <i class="fas fa-check-circle" style="font-size:50px; color:#10b981; margin-bottom:20px;"></i>
-                    <h3 style="color:var(--color-dark); margin-bottom:10px;">نوبت شما با موفقیت ثبت شد</h3>
-                    <p style="color:#64748b; font-size:14px; line-height:1.6;">${paymentStatus === 'prepaid' ? 'پرداخت شما تایید شد و نوبت قطعی گردید.' : 'نوبت در صف بررسی منشی قرار گرفت.'}</p>
+                    <h3 style="color:var(--color-dark); margin-bottom:10px;">ثبت اولیه با موفقیت انجام شد</h3>
+                    <p style="color:#64748b; font-size:14px; line-height:1.6;">${successMessageText}</p>
                     <button class="c-btn c-btn--primary js-close-success" style="margin-top:25px; padding:10px 30px;">متوجه شدم</button>
                 </div>
             `;

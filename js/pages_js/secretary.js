@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let calendarYear = currentRealYear;
     let calendarMonth = currentRealMonth;
 
-    // 1. Check Authentication & Role
+    // Check Authentication & Role
     const userRaw = localStorage.getItem('currentUser');
     if (!userRaw) { window.location.href = '../pages/login.html'; return; }
     const user = JSON.parse(userRaw);
@@ -59,9 +59,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = '../index.html';
         return;
     }
-    document.getElementById('js-secretary-name').textContent = `${user.userName} | پنل پذیرش`;
 
-    // 2. Drag to Scroll Logic
+    const secretaryNameEl = document.getElementById('js-secretary-name');
+    if (secretaryNameEl) secretaryNameEl.textContent = `${user.userName || 'منشی'} | پنل پذیرش`;
+
+    // Drag to Scroll Logic
     function initDragToScroll(slider) {
         if (!slider) return;
         let isDown = false;
@@ -75,40 +77,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     initDragToScroll(tableWrapper);
 
     // Logout
-    logoutBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        if (window.authService && typeof window.authService.logoutUser === 'function') {
-            await window.authService.logoutUser();
-        }
-        localStorage.removeItem('currentUser');
-        window.location.href = '../index.html';
-    });
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            if (window.authService && typeof window.authService.logoutUser === 'function') {
+                await window.authService.logoutUser();
+            }
+            localStorage.removeItem('currentUser');
+            window.location.href = '../index.html';
+        });
+    }
 
-    // Helpers
+    // Utility Helpers
     function showToast(msg) {
+        if (!toast) return;
         toast.textContent = msg;
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 3500);
     }
+
     function toPersianNumber(value) {
         if (value === null || value === undefined) return '';
         const numbers = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
         return String(value).replace(/\d/g, digit => numbers[digit]);
     }
+
     function toEnglishNumber(value) {
         if (!value) return '';
         const persianNumbers = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
         return String(value).replace(/[۰-۹]/g, w => persianNumbers.indexOf(w));
     }
+
     function formatMoney(amount) {
         if (!amount && amount !== 0) return '۰';
         return Number(amount).toLocaleString('fa-IR');
     }
 
-    // 3. Fetch Data
+    // Fetch Initial Data
     async function fetchData() {
         try {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">در حال دریافت اطلاعات...</td></tr>';
+            if (tbody) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">در حال دریافت اطلاعات...</td></tr>';
 
             const { data: srvData } = await supabase.from('services').select('*');
             if (srvData) allServices = srvData;
@@ -133,16 +141,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             applyFilters();
         } catch (err) {
             console.error('Fetch error:', err);
-            tbody.innerHTML = `<tr><td colspan="5" class="text-center" style="color:red;">Error: ${err.message}</td></tr>`;
+            if (tbody) tbody.innerHTML = `<tr><td colspan="5" class="text-center" style="color:red;">Error: ${err.message}</td></tr>`;
         }
     }
 
     function updateDoctorDropdown() {
+        if (!doctorFilter) return;
         const currentVal = doctorFilter.value;
         doctorFilter.innerHTML = '<option value="all">همه پزشکان</option>';
         doctorsList.forEach(doc => {
             const docName = `دکتر ${doc.doctorName} ${doc.doctorFamily}`;
-            const pendingCount = allAppointments.filter(a => a.doctorName === docName && a.status === 'در حال بررسی').length;
+            const pendingCount = allAppointments.filter(a => {
+                const s = (a.status || 'در حال بررسی').trim();
+                return a.doctorName === docName && (s === 'در حال بررسی' || s === 'pending');
+            }).length;
             const option = document.createElement('option');
             option.value = docName;
             option.textContent = pendingCount > 0 ? `${docName} (${pendingCount} جدید)` : docName;
@@ -156,47 +168,67 @@ document.addEventListener('DOMContentLoaded', async () => {
         let todayCount = 0, pendingCount = 0, cancelledCount = 0;
 
         allAppointments.forEach(app => {
-            if (app.status === 'در حال بررسی') pendingCount++;
-            if (app.status === 'رد شده' || app.status === 'کنسل شده') cancelledCount++;
-            if (app.appointmentDate === todayStr && app.status !== 'کنسل شده' && app.status !== 'رد شده') todayCount++;
+            const status = (app.status || 'در حال بررسی').trim();
+            if (status === 'در حال بررسی' || status === 'pending') pendingCount++;
+            if (status === 'رد شده' || status === 'کنسل شده' || status === 'rejected' || status === 'cancelled') cancelledCount++;
+            if (app.appointmentDate === todayStr && status !== 'کنسل شده' && status !== 'رد شده' && status !== 'cancelled' && status !== 'rejected') todayCount++;
         });
 
-        statToday.textContent = toPersianNumber(todayCount);
-        statPending.textContent = toPersianNumber(pendingCount);
-        statCancelled.textContent = toPersianNumber(cancelledCount);
+        if (statToday) statToday.textContent = toPersianNumber(todayCount);
+        if (statPending) statPending.textContent = toPersianNumber(pendingCount);
+        if (statCancelled) statCancelled.textContent = toPersianNumber(cancelledCount);
 
-        if (pendingCount > 0) {
-            notifBadge.style.display = 'block';
-            notifBadge.textContent = toPersianNumber(pendingCount);
-        } else {
-            notifBadge.style.display = 'none';
+        if (notifBadge) {
+            if (pendingCount > 0) {
+                notifBadge.style.display = 'block';
+                notifBadge.textContent = toPersianNumber(pendingCount);
+            } else {
+                notifBadge.style.display = 'none';
+            }
         }
         updateDoctorDropdown();
     }
 
-    notifBell.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
-        const pendingBtn = document.querySelector('.s-btn-filter[data-filter="pending"]');
-        if (pendingBtn) pendingBtn.classList.add('active');
-        applyFilters();
-    });
+    if (notifBell) {
+        notifBell.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            const pendingBtn = document.querySelector('.s-btn-filter[data-filter="pending"]');
+            if (pendingBtn) pendingBtn.classList.add('active');
+            applyFilters();
+        });
+    }
 
     function applyFilters() {
         const activeStatusBtn = document.querySelector('.s-btn-filter.active');
         const statusFilter = activeStatusBtn ? activeStatusBtn.dataset.filter : 'all';
-        const docFilterValue = doctorFilter.value;
-        const searchQuery = searchInput.value.trim().toLowerCase();
+        const docFilterValue = doctorFilter ? doctorFilter.value : 'all';
+        const searchQuery = searchInput ? searchInput.value.trim().toLowerCase() : '';
 
         let filtered = allAppointments;
         const todayStr = `${toPersianNumber(currentRealDay)} ${persianMonths[currentRealMonth]} ${toPersianNumber(currentRealYear)}`;
 
-        if (statusFilter === 'pending') filtered = filtered.filter(a => a.status === 'در حال بررسی');
-        if (statusFilter === 'approved') filtered = filtered.filter(a => a.status === 'تایید شده');
+        if (statusFilter === 'pending') {
+            filtered = filtered.filter(a => {
+                const s = (a.status || 'در حال بررسی').trim();
+                return s === 'در حال بررسی' || s === 'pending';
+            });
+        }
+        if (statusFilter === 'approved') {
+            filtered = filtered.filter(a => {
+                const s = (a.status || '').trim();
+                return s === 'تایید شده' || s === 'approved';
+            });
+        }
         if (statusFilter === 'today') {
-            filtered = filtered.filter(a => a.appointmentDate === todayStr && a.status !== 'کنسل شده' && a.status !== 'رد شده');
+            filtered = filtered.filter(a => {
+                const s = (a.status || '').trim();
+                return a.appointmentDate === todayStr && s !== 'کنسل شده' && s !== 'رد شده' && s !== 'cancelled' && s !== 'rejected';
+            });
         }
 
-        if (docFilterValue !== 'all') filtered = filtered.filter(a => a.doctorName === docFilterValue);
+        if (docFilterValue !== 'all') {
+            filtered = filtered.filter(a => a.doctorName === docFilterValue);
+        }
 
         if (searchQuery) {
             const engQuery = toEnglishNumber(searchQuery);
@@ -209,8 +241,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderTable(filtered);
     }
 
-    // --- Render Table & Finances ---
+    // Render Table and Finances
     function renderTable(filteredData) {
+        if (!tbody) return;
         tbody.innerHTML = '';
         if (filteredData.length === 0) {
             tbody.innerHTML = '<tr><td colspan="5" class="text-center" style="padding: 40px 0; color: #64748b;">هیچ نوبتی یافت نشد.</td></tr>';
@@ -236,11 +269,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             tbody.appendChild(trTitle);
 
             apps.forEach(app => {
+                const status = (app.status || 'در حال بررسی').trim();
+
                 let statusClass = 'pending';
-                if (app.status === 'تایید شده') statusClass = 'approved';
-                if (app.status === 'رد شده' || app.status === 'کنسل شده') statusClass = 'rejected';
-                if (app.status === 'ویزیت شده') statusClass = 'visited';
-                if (app.status === 'عدم مراجعه') statusClass = 'noshow';
+                if (status === 'تایید شده' || status === 'approved') statusClass = 'approved';
+                else if (status === 'رد شده' || status === 'کنسل شده' || status === 'rejected' || status === 'cancelled') statusClass = 'rejected';
+                else if (status === 'ویزیت شده' || status === 'visited') statusClass = 'visited';
+                else if (status === 'عدم مراجعه' || status === 'noshow') statusClass = 'noshow';
 
                 const payStatus = app.payment_status || 'unpaid';
                 let paymentBadge = '';
@@ -250,7 +285,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     paymentBadge = '<span class="payment-badge" style="background:#dcfce7; color:#166534; padding:4px 8px; border-radius:6px; font-size:11px; display:inline-block;"><i class="fas fa-check-double"></i> تسویه کامل</span>';
                     isFullySettled = true;
                 } else if (payStatus === 'prepaid') {
-                    paymentBadge = '<span class="payment-badge" style="background:#fef08a; color:#854d0e; padding:4px 8px; border-radius:6px; font-size:11px; display:inline-block;"><i class="fas fa-hand-holding-usd"></i> فقط بیعانه پرداخت شده</span>';
+                    paymentBadge = '<span class="payment-badge" style="background:#fef08a; color:#854d0e; padding:4px 8px; border-radius:6px; font-size:11px; display:inline-block;"><i class="fas fa-hand-holding-usd"></i> فقط بیعانه</span>';
                 } else {
                     paymentBadge = '<span class="payment-badge" style="background:#fee2e2; color:#991b1b; padding:4px 8px; border-radius:6px; font-size:11px; display:inline-block;"><i class="fas fa-times-circle"></i> پرداخت نشده</span>';
                 }
@@ -266,6 +301,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                         پرداختی: <strong style="color:var(--color-mint);">${formatMoney(app.paid_amount)}</strong> تومان
                     </div>
                 `;
+
+                // Condition boolean checks for action buttons
+                const isPending = (status === 'در حال بررسی' || status === 'pending');
+                const isApprovedOrVisited = (status === 'تایید شده' || status === 'approved' || status === 'ویزیت شده' || status === 'visited');
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -291,17 +330,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </div>
                     </td>
                     <td>
-                        <span class="status-badge ${statusClass}" style="margin-bottom:8px; display:inline-block;">${app.status}</span><br>
+                        <span class="status-badge ${statusClass}" style="margin-bottom:8px; display:inline-block;">${status}</span><br>
                         ${paymentBadge}
                     </td>
                     <td>
                         <div class="s-actions-group">
-                            ${app.status === 'در حال بررسی' ? `
+                            ${isPending ? `
                                 <button class="s-btn-action approve js-action-approve" data-id="${app.id}"><i class="fas fa-check"></i> تایید</button>
                                 <button class="s-btn-action reject js-action-reject" data-id="${app.id}"><i class="fas fa-times"></i> رد</button>
                             ` : ''}
 
-                            ${(app.status === 'تایید شده' || app.status === 'ویزیت شده') ? `
+                            ${isApprovedOrVisited ? `
                                 ${!isFullySettled ? `<button class="s-btn-action pay js-action-pay" data-id="${app.id}" data-total="${app.total_price}"><i class="fas fa-cash-register"></i> تسویه صندوق</button>` : ''}
                                 <button class="s-btn-action delete js-action-delete" data-id="${app.id}"><i class="fas fa-trash"></i> حذف</button>
                             ` : ''}
@@ -315,9 +354,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function attachActionEvents() {
-        document.querySelectorAll('.js-action-approve').forEach(btn => btn.addEventListener('click', async (e) => await handleStatusChange(e.currentTarget.dataset.id, 'تایید شده')));
-        document.querySelectorAll('.js-action-reject').forEach(btn => btn.addEventListener('click', async (e) => await handleStatusChange(e.currentTarget.dataset.id, 'رد شده')));
-        document.querySelectorAll('.js-action-delete').forEach(btn => btn.addEventListener('click', async (e) => await handleDelete(e.currentTarget.dataset.id)));
+        document.querySelectorAll('.js-action-approve').forEach(btn => {
+            btn.addEventListener('click', async (e) => await handleStatusChange(e.currentTarget.dataset.id, 'تایید شده'));
+        });
+        document.querySelectorAll('.js-action-reject').forEach(btn => {
+            btn.addEventListener('click', async (e) => await handleStatusChange(e.currentTarget.dataset.id, 'رد شده'));
+        });
+        document.querySelectorAll('.js-action-delete').forEach(btn => {
+            btn.addEventListener('click', async (e) => await handleDelete(e.currentTarget.dataset.id));
+        });
 
         document.querySelectorAll('.js-action-pay').forEach(btn => {
             btn.addEventListener('click', async (e) => {
@@ -343,12 +388,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (newStatus === 'تایید شده') {
             const targetApp = allAppointments.find(a => String(a.id) === String(id));
             if (targetApp) {
-                const hasConflict = allAppointments.some(a =>
-                    a.status === 'تایید شده' && String(a.id) !== String(id) &&
-                    a.doctorName === targetApp.doctorName &&
-                    a.appointmentDate === targetApp.appointmentDate &&
-                    a.appointmentTime === targetApp.appointmentTime
-                );
+                const hasConflict = allAppointments.some(a => {
+                    const s = (a.status || '').trim();
+                    return (s === 'تایید شده' || s === 'approved') && String(a.id) !== String(id) &&
+                        a.doctorName === targetApp.doctorName &&
+                        (a.appointmentDate === targetApp.appointmentDate || a.date === targetApp.appointmentDate) &&
+                        (a.appointmentTime === targetApp.appointmentTime || a.time === targetApp.appointmentTime);
+                });
                 if (hasConflict) {
                     await window.customModal.alert('تداخل نوبت', 'این تایم قبلاً برای این پزشک تایید شده است.');
                     return;
@@ -358,7 +404,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const res = await window.customModal.confirm('تغییر وضعیت', `آیا از تغییر وضعیت به "${newStatus}" اطمینان دارید؟`);
         if (res === 'confirm') {
             await window.appointmentsService.updateAppointmentStatus(id, newStatus, '');
-            if (newStatus === 'تایید شده') await window.customModal.alert('اطلاع‌رسانی سیستم', 'نوبت با موفقیت تایید شد.');
+            if (newStatus === 'تایید شده') await window.customModal.alert('موفقیت', 'نوبت با موفقیت تایید شد.');
             await fetchData();
         }
     }
@@ -386,11 +432,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>`;
             });
         }
-        historyContent.innerHTML = html;
-        historyModal.showModal();
+        if (historyContent) historyContent.innerHTML = html;
+        if (historyModal) historyModal.showModal();
     }
 
-    // --- Walkin System ---
+    // Walkin System
     const walkinDoctorSelect = document.getElementById('walkin-doctor');
     const walkinServiceSelect = document.getElementById('walkin-service');
     const walkinServiceContainer = document.getElementById('js-walkin-service-container');
@@ -404,39 +450,42 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.querySelectorAll('input[name="userType"]').forEach(radio => {
         radio.addEventListener('change', (e) => {
-            if (e.target.value === 'existing') { sectionExisting.style.display = 'block'; sectionNew.style.display = 'none'; }
-            else { sectionExisting.style.display = 'none'; sectionNew.style.display = 'block'; walkinState.userId = null; }
+            if (e.target.value === 'existing') { if(sectionExisting) sectionExisting.style.display = 'block'; if(sectionNew) sectionNew.style.display = 'none'; }
+            else { if(sectionExisting) sectionExisting.style.display = 'none'; if(sectionNew) sectionNew.style.display = 'block'; walkinState.userId = null; }
         });
     });
 
-    userSearchInput.addEventListener('input', (e) => {
-        const val = e.target.value.trim().toLowerCase();
-        const engVal = toEnglishNumber(val);
-        userSearchResults.innerHTML = '';
-        if (val.length < 2) { userSearchResults.style.display = 'none'; return; }
+    if (userSearchInput) {
+        userSearchInput.addEventListener('input', (e) => {
+            const val = e.target.value.trim().toLowerCase();
+            const engVal = toEnglishNumber(val);
+            if (!userSearchResults) return;
+            userSearchResults.innerHTML = '';
+            if (val.length < 2) { userSearchResults.style.display = 'none'; return; }
 
-        const matches = allUsers.filter(u => {
-            const nName = (u.name || u.userName || '').toLowerCase();
-            const nFamily = (u.family || u.userFamily || '').toLowerCase();
-            const nPhone = (u.phone || u.userPhone || '').toLowerCase();
-            return nName.includes(val) || nFamily.includes(val) || nPhone.includes(engVal) || nPhone.includes(val);
-        });
-
-        if (matches.length > 0) {
-            userSearchResults.style.display = 'block';
-            userSearchResults.innerHTML = matches.map(u => `<div class="s-search-item" data-id="${u.id}" data-name="${u.name || u.userName} ${u.family || u.userFamily || ''}" data-phone="${u.phone || u.userPhone || ''}"><strong>${u.name || u.userName} ${u.family || u.userFamily || ''}</strong> - ${u.phone || u.userPhone || 'بدون شماره'}</div>`).join('');
-            userSearchResults.querySelectorAll('.s-search-item').forEach(item => {
-                item.addEventListener('click', (ev) => {
-                    const el = ev.currentTarget;
-                    walkinState.userId = el.dataset.id; walkinState.patientName = el.dataset.name; walkinState.patientPhone = el.dataset.phone;
-                    selectedUserDisplay.style.display = 'block'; selectedUserDisplay.textContent = `بیمار انتخاب شد: ${walkinState.patientName}`;
-                    userSearchResults.style.display = 'none'; userSearchInput.value = '';
-                });
+            const matches = allUsers.filter(u => {
+                const nName = (u.name || u.userName || '').toLowerCase();
+                const nFamily = (u.family || u.userFamily || '').toLowerCase();
+                const nPhone = (u.phone || u.userPhone || '').toLowerCase();
+                return nName.includes(val) || nFamily.includes(val) || nPhone.includes(engVal) || nPhone.includes(val);
             });
-        } else {
-            userSearchResults.style.display = 'block'; userSearchResults.innerHTML = '<div style="padding:10px; color:#94a3b8; font-size:12px;">بیماری یافت نشد.</div>';
-        }
-    });
+
+            if (matches.length > 0) {
+                userSearchResults.style.display = 'block';
+                userSearchResults.innerHTML = matches.map(u => `<div class="s-search-item" data-id="${u.id}" data-name="${u.name || u.userName} ${u.family || u.userFamily || ''}" data-phone="${u.phone || u.userPhone || ''}"><strong>${u.name || u.userName} ${u.family || u.userFamily || ''}</strong> - ${u.phone || u.userPhone || 'بدون شماره'}</div>`).join('');
+                userSearchResults.querySelectorAll('.s-search-item').forEach(item => {
+                    item.addEventListener('click', (ev) => {
+                        const el = ev.currentTarget;
+                        walkinState.userId = el.dataset.id; walkinState.patientName = el.dataset.name; walkinState.patientPhone = el.dataset.phone;
+                        if(selectedUserDisplay) { selectedUserDisplay.style.display = 'block'; selectedUserDisplay.textContent = `بیمار انتخاب شد: ${walkinState.patientName}`; }
+                        userSearchResults.style.display = 'none'; userSearchInput.value = '';
+                    });
+                });
+            } else {
+                userSearchResults.style.display = 'block'; userSearchResults.innerHTML = '<div style="padding:10px; color:#94a3b8; font-size:12px;">بیماری یافت نشد.</div>';
+            }
+        });
+    }
 
     const wCalendarGrid = document.getElementById('js-w-calendar-grid');
     const wMonthLabel = document.getElementById('js-w-month-label');
@@ -452,9 +501,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function renderWalkinCalendar() {
-        if(!walkinDoctorSelect.value) return;
-        walkinCalendarWrapper.style.display = 'block';
-        wMonthLabel.textContent = `${persianMonths[calendarMonth]} ${toPersianNumber(calendarYear)}`;
+        if(!walkinDoctorSelect || !walkinDoctorSelect.value) return;
+        if(walkinCalendarWrapper) walkinCalendarWrapper.style.display = 'block';
+        if(wMonthLabel) wMonthLabel.textContent = `${persianMonths[calendarMonth]} ${toPersianNumber(calendarYear)}`;
         const startDay = getMonthStartDay(calendarYear, calendarMonth);
         const totalDays = getPersianMonthDays(calendarYear, calendarMonth);
         let html = '';
@@ -466,27 +515,30 @@ document.addEventListener('DOMContentLoaded', async () => {
         for (let day = 1; day <= totalDays; day++) {
             const formattedDate = `${toPersianNumber(day)} ${persianMonths[calendarMonth]} ${toPersianNumber(calendarYear)}`;
             const isPast = (calendarYear < currentRealYear) || (calendarYear === currentRealYear && calendarMonth < currentRealMonth) || (calendarYear === currentRealYear && calendarMonth === currentRealMonth && day < currentRealDay);
-            const booked = allAppointments.filter(a => a.appointmentDate === formattedDate && a.doctorName === selDocName && (a.status === 'تایید شده' || a.status === 'در حال بررسی'));
+            const booked = allAppointments.filter(a => (a.appointmentDate === formattedDate || a.date === formattedDate) && a.doctorName === selDocName && (a.status === 'تایید شده' || a.status === 'در حال بررسی'));
             const isFull = !isPast && booked.length >= defaultTimeSlots.length;
             let cls = 'c-calendar-day'; let dis = '';
             if (isPast) { cls += ' c-calendar-day--past'; dis = 'disabled'; } else if (isFull) { cls += ' c-calendar-day--booked'; dis = 'disabled'; }
             html += `<button type="button" class="${cls}" ${dis} data-day="${day}">${toPersianNumber(day)}</button>`;
         }
-        wCalendarGrid.innerHTML = html;
-        wCalendarGrid.querySelectorAll('button:not([disabled])').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                wCalendarGrid.querySelectorAll('button').forEach(b => b.style.background = '');
-                e.currentTarget.style.background = '#e0f2fe';
-                walkinState.date = `${toPersianNumber(e.currentTarget.dataset.day)} ${persianMonths[calendarMonth]} ${toPersianNumber(calendarYear)}`;
-                renderWalkinTimeSlots();
+        if(wCalendarGrid) {
+            wCalendarGrid.innerHTML = html;
+            wCalendarGrid.querySelectorAll('button:not([disabled])').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    wCalendarGrid.querySelectorAll('button').forEach(b => b.style.background = '');
+                    e.currentTarget.style.background = '#e0f2fe';
+                    walkinState.date = `${toPersianNumber(e.currentTarget.dataset.day)} ${persianMonths[calendarMonth]} ${toPersianNumber(calendarYear)}`;
+                    renderWalkinTimeSlots();
+                });
             });
-        });
+        }
     }
 
     function renderWalkinTimeSlots() {
+        if (!wTimeSlots || !walkinDoctorSelect) return;
         const selDocOpt = walkinDoctorSelect.options[walkinDoctorSelect.selectedIndex];
         const selDocName = selDocOpt ? selDocOpt.dataset.name : walkinDoctorSelect.value;
-        const bookedTimes = allAppointments.filter(a => a.appointmentDate === walkinState.date && a.doctorName === selDocName && (a.status === 'تایید شده' || a.status === 'در حال بررسی')).map(a => a.appointmentTime);
+        const bookedTimes = allAppointments.filter(a => (a.appointmentDate === walkinState.date || a.date === walkinState.date) && a.doctorName === selDocName && (a.status === 'تایید شده' || a.status === 'در حال بررسی')).map(a => a.appointmentTime || a.time);
 
         wTimeSlots.innerHTML = defaultTimeSlots.map(t => {
             const isDis = bookedTimes.includes(t);
@@ -502,94 +554,107 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    document.getElementById('js-w-prev-month').addEventListener('click', () => { if (calendarYear === currentRealYear && calendarMonth === currentRealMonth) return; calendarMonth--; if (calendarMonth < 0) { calendarMonth = 11; calendarYear--; } renderWalkinCalendar(); });
-    document.getElementById('js-w-next-month').addEventListener('click', () => { calendarMonth++; if (calendarMonth > 11) { calendarMonth = 0; calendarYear++; } renderWalkinCalendar(); });
+    const prevMonthEl = document.getElementById('js-w-prev-month');
+    const nextMonthEl = document.getElementById('js-w-next-month');
+    if(prevMonthEl) prevMonthEl.addEventListener('click', () => { if (calendarYear === currentRealYear && calendarMonth === currentRealMonth) return; calendarMonth--; if (calendarMonth < 0) { calendarMonth = 11; calendarYear--; } renderWalkinCalendar(); });
+    if(nextMonthEl) nextMonthEl.addEventListener('click', () => { calendarMonth++; if (calendarMonth > 11) { calendarMonth = 0; calendarYear++; } renderWalkinCalendar(); });
 
-    walkinDoctorSelect.addEventListener('change', (e) => {
-        walkinState.date = null; walkinState.time = null; wTimeSlots.innerHTML = '<p style="font-size:12px; color:#64748b;">ابتدا تاریخ را انتخاب کنید</p>';
-        const selectedOpt = e.target.options[e.target.selectedIndex];
-        const docId = selectedOpt.dataset.id; const docName = selectedOpt.dataset.name;
-        const docServices = allServices.filter(s => String(s.doctorId) === String(docId) || String(s.serviceDoctorId) === String(docId) || String(s.doctor_id) === String(docId) || s.doctorName === docName || `دکتر ${s.doctorName}` === docName || s.doctor === docName || `دکتر ${s.doctor}` === docName);
-        walkinServiceSelect.innerHTML = '<option value="" disabled selected>لطفا یک خدمت انتخاب کنید</option>';
-        if (docServices.length > 0) { docServices.forEach(s => { const opt = document.createElement('option'); opt.value = s.serviceName || s.title; opt.textContent = s.serviceName || s.title; walkinServiceSelect.appendChild(opt); }); }
-        else { const opt = document.createElement('option'); opt.value = 'ویزیت و مشاوره عمومی'; opt.textContent = 'ویزیت و مشاوره عمومی'; walkinServiceSelect.appendChild(opt); }
-        walkinServiceContainer.style.display = 'block';
-        renderWalkinCalendar();
-    });
+    if(walkinDoctorSelect) {
+        walkinDoctorSelect.addEventListener('change', (e) => {
+            walkinState.date = null; walkinState.time = null; if(wTimeSlots) wTimeSlots.innerHTML = '<p style="font-size:12px; color:#64748b;">ابتدا تاریخ را انتخاب کنید</p>';
+            const selectedOpt = e.target.options[e.target.selectedIndex];
+            const docId = selectedOpt.dataset.id; const docName = selectedOpt.dataset.name;
+            const docServices = allServices.filter(s => String(s.doctorId) === String(docId) || String(s.serviceDoctorId) === String(docId) || s.doctorName === docName);
+            if(walkinServiceSelect) {
+                walkinServiceSelect.innerHTML = '<option value="" disabled selected>لطفا یک خدمت انتخاب کنید</option>';
+                if (docServices.length > 0) { docServices.forEach(s => { const opt = document.createElement('option'); opt.value = s.serviceName || s.title; opt.textContent = s.serviceName || s.title; walkinServiceSelect.appendChild(opt); }); }
+                else { const opt = document.createElement('option'); opt.value = 'ویزیت و مشاوره عمومی'; opt.textContent = 'ویزیت و مشاوره عمومی'; walkinServiceSelect.appendChild(opt); }
+            }
+            if(walkinServiceContainer) walkinServiceContainer.style.display = 'block';
+            renderWalkinCalendar();
+        });
+    }
 
-    document.getElementById('js-submit-walkin').addEventListener('click', async () => {
-        const isExisting = radioExisting.checked;
-        let finalUserId = null; let finalName = ''; let finalPhone = '';
+    const submitWalkinBtn = document.getElementById('js-submit-walkin');
+    if(submitWalkinBtn) {
+        submitWalkinBtn.addEventListener('click', async () => {
+            const isExisting = radioExisting ? radioExisting.checked : true;
+            let finalUserId = null; let finalName = ''; let finalPhone = '';
 
-        if (isExisting) {
-            if (!walkinState.userId) { return window.customModal.alert('خطا', 'لطفا یک بیمار را از لیست جستجو انتخاب کنید.'); }
-            finalUserId = walkinState.userId; finalName = walkinState.patientName; finalPhone = walkinState.patientPhone;
-        } else {
-            const nName = document.getElementById('new-user-name').value.trim();
-            const nFamily = document.getElementById('new-user-family').value.trim();
-            const nPhone = toEnglishNumber(document.getElementById('new-user-phone').value.trim());
+            if (isExisting) {
+                if (!walkinState.userId) { return window.customModal.alert('خطا', 'لطفا یک بیمار را از لیست جستجو انتخاب کنید.'); }
+                finalUserId = walkinState.userId; finalName = walkinState.patientName; finalPhone = walkinState.patientPhone;
+            } else {
+                const nName = document.getElementById('new-user-name')?.value.trim();
+                const nFamily = document.getElementById('new-user-family')?.value.trim();
+                const nPhone = toEnglishNumber(document.getElementById('new-user-phone')?.value.trim());
 
-            if(!nName || !nPhone) { return window.customModal.alert('خطا', 'نام و شماره تماس الزامی است.'); }
-            const fakeEmail = `${nPhone}@lumident.local`;
+                if(!nName || !nPhone) { return window.customModal.alert('خطا', 'نام و شماره تماس الزامی است.'); }
+                const fakeEmail = `${nPhone}@lumident.local`;
+
+                try {
+                    const { data: authData, error: authErr } = await supabase.auth.signUp({ email: fakeEmail, password: nPhone });
+                    if (authErr && authErr.message.includes('already registered')) return window.customModal.alert('خطا', 'این شماره قبلا ثبت شده است.');
+
+                    finalUserId = authData?.user?.id || `usr-${Date.now()}`;
+                    finalName = `${nName} ${nFamily}`; finalPhone = nPhone;
+                    const newUserPayload = { id: finalUserId, name: nName, family: nFamily, phone: nPhone, email: fakeEmail, role: 'user', created_at: new Date().toISOString() };
+                    await supabase.from('profiles').upsert([newUserPayload]);
+                    const { data: refreshedUsers } = await supabase.from('profiles').select('*');
+                    if (refreshedUsers) allUsers = refreshedUsers;
+                } catch(e) { return window.customModal.alert('خطا', e.message); }
+            }
+
+            if (walkinServiceSelect && !walkinServiceSelect.value) return window.customModal.alert('خطا', 'لطفا خدمت را انتخاب کنید.');
+            if (!walkinState.date || !walkinState.time) return window.customModal.alert('خطا', 'تاریخ و ساعت را انتخاب کنید.');
+
+            const selectedDocOpt = walkinDoctorSelect ? walkinDoctorSelect.options[walkinDoctorSelect.selectedIndex] : null;
+            const selectedSrv = allServices.find(s => (s.serviceName || s.title) === (walkinServiceSelect ? walkinServiceSelect.value : ''));
+            const totalPrice = selectedSrv ? selectedSrv.price : 0;
+
+            const payload = {
+                id: String(Date.now()),
+                userId: finalUserId,
+                patient_name: finalName,
+                patient_phone: finalPhone,
+                patient_notes: document.getElementById('walkin-notes')?.value.trim() || '',
+                doctorName: selectedDocOpt ? selectedDocOpt.dataset.name : (walkinDoctorSelect ? walkinDoctorSelect.value : ''),
+                serviceName: walkinServiceSelect ? walkinServiceSelect.value : 'ویزیت',
+                appointmentDate: walkinState.date,
+                appointmentTime: walkinState.time,
+                status: 'تایید شده',
+                total_price: totalPrice,
+                paid_amount: 0,
+                payment_status: 'unpaid'
+            };
 
             try {
-                const { data: authData, error: authErr } = await supabase.auth.signUp({ email: fakeEmail, password: nPhone });
-                if (authErr && authErr.message.includes('already registered')) return window.customModal.alert('خطا', 'این شماره قبلا ثبت شده است.');
+                await supabase.from('appointments').insert([payload]);
+                window.customModal.alert('موفقیت', 'نوبت حضوری با موفقیت ثبت شد.');
+                if(walkinModal) walkinModal.close();
+                await fetchData();
+            } catch(err) { window.customModal.alert('خطا', err.message); }
+        });
+    }
 
-                finalUserId = authData?.user?.id || `usr-${Date.now()}`;
-                finalName = `${nName} ${nFamily}`; finalPhone = nPhone;
-                const newUserPayload = { id: finalUserId, name: nName, family: nFamily, phone: nPhone, email: fakeEmail, role: 'user', created_at: new Date().toISOString() };
-                await supabase.from('profiles').upsert([newUserPayload]);
-                const { data: refreshedUsers } = await supabase.from('profiles').select('*');
-                if (refreshedUsers) allUsers = refreshedUsers;
-            } catch(e) { return window.customModal.alert('خطا', e.message); }
-        }
+    const openWalkinBtn = document.getElementById('js-open-walkin-btn');
+    if(openWalkinBtn) openWalkinBtn.addEventListener('click', () => { if(walkinModal) walkinModal.showModal(); });
 
-        if (!walkinServiceSelect.value) return window.customModal.alert('خطا', 'لطفا خدمت را انتخاب کنید.');
-        if (!walkinState.date || !walkinState.time) return window.customModal.alert('خطا', 'تاریخ و ساعت را انتخاب کنید.');
-
-        const selectedDocOpt = walkinDoctorSelect.options[walkinDoctorSelect.selectedIndex];
-
-        // پیدا کردن قیمت خدمت جهت ثبت در پذیرش حضوری
-        const selectedSrv = allServices.find(s => (s.serviceName || s.title) === walkinServiceSelect.value);
-        const totalPrice = selectedSrv ? selectedSrv.price : 0;
-
-        const payload = {
-            id: String(Date.now()),
-            userId: finalUserId,
-            patient_name: finalName,
-            patient_phone: finalPhone,
-            patient_notes: document.getElementById('walkin-notes').value.trim(),
-            doctorName: selectedDocOpt ? selectedDocOpt.dataset.name : walkinDoctorSelect.value,
-            serviceName: walkinServiceSelect.value,
-            appointmentDate: walkinState.date,
-            appointmentTime: walkinState.time,
-            status: 'تایید شده',
-            total_price: totalPrice,
-            paid_amount: 0,
-            payment_status: 'unpaid'
-        };
-
-        try {
-            await supabase.from('appointments').insert([payload]);
-            window.customModal.alert('موفقیت', 'نوبت حضوری با موفقیت ثبت شد.');
-            walkinModal.close();
-            document.getElementById('new-user-name').value = ''; document.getElementById('new-user-family').value = ''; document.getElementById('new-user-phone').value = ''; document.getElementById('walkin-notes').value = '';
-            walkinServiceSelect.value = ''; walkinServiceContainer.style.display = 'none'; walkinCalendarWrapper.style.display = 'none';
-            walkinState = { userId: null, patientName: '', patientPhone: '', date: null, time: null, notes: '' };
-            await fetchData();
-        } catch(err) { window.customModal.alert('خطا', err.message); }
-    });
-
-    document.getElementById('js-open-walkin-btn').addEventListener('click', () => walkinModal.showModal());
-    document.querySelector('.js-walkin-close').addEventListener('click', () => walkinModal.close());
-    document.querySelector('.js-history-close').addEventListener('click', () => historyModal.close());
+    document.querySelectorAll('.js-walkin-close').forEach(b => b.addEventListener('click', () => { if(walkinModal) walkinModal.close(); }));
+    document.querySelectorAll('.js-history-close').forEach(b => b.addEventListener('click', () => { if(historyModal) historyModal.close(); }));
 
     filterBtns.forEach(btn => { btn.addEventListener('click', (e) => { filterBtns.forEach(b => b.classList.remove('active')); e.target.classList.add('active'); applyFilters(); }); });
-    doctorFilter.addEventListener('change', applyFilters);
-    searchInput.addEventListener('input', applyFilters);
+    if(doctorFilter) doctorFilter.addEventListener('change', applyFilters);
+    if(searchInput) searchInput.addEventListener('input', applyFilters);
 
-    function setupRealtime() { supabase.channel('public:appointments').on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, payload => { fetchData(); showToast('لیست بروزرسانی شد.'); }).subscribe(); }
+    function setupRealtime() {
+        supabase.channel('public:appointments')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, payload => {
+                fetchData();
+                showToast('لیست بروزرسانی شد.');
+            })
+            .subscribe();
+    }
 
     await fetchData();
     setupRealtime();
