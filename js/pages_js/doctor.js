@@ -5,11 +5,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const filterBtns = document.querySelectorAll('.d-btn-filter');
     const logoutBtn = document.getElementById('js-doctor-logout');
 
+    // Note Modal Elements
     const noteModal = document.getElementById('js-note-modal');
     const noteTextarea = document.getElementById('js-note-textarea');
     const notePatientName = document.getElementById('js-note-patient-name');
     const saveNoteBtn = document.getElementById('js-save-note-btn');
 
+    // History Modal Elements
     const historyModal = document.getElementById('js-history-modal');
     const historyContent = document.getElementById('js-history-content');
     const tableWrapper = document.querySelector('.d-table-wrapper');
@@ -17,6 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let doctorAppointments = [];
     let currentEditingAppointmentId = null;
 
+    // 1. Check Authentication & Role
     const userRaw = localStorage.getItem('currentUser');
     if (!userRaw) return window.location.href = '../pages/login.html';
     const user = JSON.parse(userRaw);
@@ -29,6 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const doctorNameDisplay = document.getElementById('js-doctor-name');
     if(doctorNameDisplay) doctorNameDisplay.textContent = `دکتر ${user.userFamily || user.userName} عزیز، خسته نباشید`;
 
+    // 2. Drag to Scroll Logic for Table
     function initDragToScroll(slider) {
         if (!slider) return;
         let isDown = false; let startX; let scrollLeft;
@@ -39,6 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     initDragToScroll(tableWrapper);
 
+    // Close Modals
     document.querySelectorAll('.js-modal-close').forEach(btn => {
         btn.addEventListener('click', () => {
             if(noteModal) noteModal.close();
@@ -46,6 +51,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
+    // Logout
     if(logoutBtn) {
         logoutBtn.addEventListener('click', async (e) => {
             e.preventDefault();
@@ -55,14 +61,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
+    // 3. Fetch Data from Database
     async function loadAppointments() {
         if (!tbody) return;
         try {
             const allAppointments = await window.appointmentsService.getAllAppointments();
+
+            // Smart Filter & Gatekeeper Logic:
+            // Doctors should only see their own appointments that have already been processed by the secretary.
+            // 'در حال بررسی' (Pending) and 'رد شده' (Rejected) are hidden from this view.
             doctorAppointments = allAppointments.filter(app =>
-                (app.doctorId && app.doctorId === user.id) ||
-                (app.doctorName && app.doctorName.includes(user.userFamily || user.userName))
+                (
+                    (app.doctorId && app.doctorId === user.id) ||
+                    (app.doctorName && app.doctorName.includes(user.userFamily || user.userName))
+                )
+                &&
+                (app.status === 'تایید شده' || app.status === 'ویزیت شده' || app.status === 'عدم مراجعه')
             );
+
             const activeFilter = document.querySelector('.d-btn-filter.active')?.dataset.filter || 'all';
             renderTable(activeFilter);
         } catch (error) {
@@ -70,6 +86,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    // Helper: Convert time to minutes for sorting
     function timeToMinutes(timeStr) {
         if (!timeStr) return 0;
         const englishTime = timeStr.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
@@ -77,6 +94,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return startHour * 60;
     }
 
+    // 4. Render Table
     function renderTable(filter) {
         if (!tbody) return;
         tbody.innerHTML = '';
@@ -90,6 +108,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
+        // Group by Date
         const groupedByDate = {};
         filtered.forEach(app => {
             const dateKey = app.appointmentDate || app.date || 'تاریخ نامشخص';
@@ -98,8 +117,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         for (const [dateKey, apps] of Object.entries(groupedByDate)) {
+            // Sort by Time
             apps.sort((a, b) => timeToMinutes(a.appointmentTime || a.time) - timeToMinutes(b.appointmentTime || b.time));
 
+            // Date Header Row
             const dateHeaderRow = document.createElement('tr');
             dateHeaderRow.innerHTML = `<td colspan="5" style="background: #f1f5f9; color: #0077c0; font-family: 'Title', sans-serif; font-size: 16px; padding: 12px 20px; text-align: right; border-bottom: 2px solid #e2e8f0;"><i class="far fa-calendar-alt" style="margin-left: 8px;"></i> نوبت‌های تاریخ: ${dateKey}</td>`;
             tbody.appendChild(dateHeaderRow);
@@ -111,7 +132,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (app.status === 'رد شده' || app.status === 'کنسل شده') statusClass = 'rejected';
                 if (app.status === 'عدم مراجعه') statusClass = 'noshow';
 
-                // بررسی هوشمند امور مالی برای پزشک
+                // Smart financial clearance check for doctor
                 const payStatus = app.payment_status || 'unpaid';
                 const isFinanciallyCleared = (payStatus === 'prepaid' || payStatus === 'settled' || payStatus === 'paid');
 
@@ -147,6 +168,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         attachActionEvents();
     }
 
+    // 5. Attach Action Events & Modals
     function attachActionEvents() {
         document.querySelectorAll('.js-action-visit').forEach(btn => {
             btn.addEventListener('click', async (e) => {
@@ -221,6 +243,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
+    // 6. Save Note
     if (saveNoteBtn) {
         saveNoteBtn.addEventListener('click', async () => {
             const noteText = noteTextarea.value.trim();
@@ -236,10 +259,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
+    // Tabs Filter
     filterBtns.forEach(btn => {
         btn.addEventListener('click', (e) => { filterBtns.forEach(b => b.classList.remove('active')); e.target.classList.add('active'); renderTable(e.target.dataset.filter); });
     });
 
+    // 7. Supabase Realtime Subscription
     function setupRealtime() {
         supabase.channel('public:doctor-appointments').on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, payload => { loadAppointments(); }).subscribe();
     }
