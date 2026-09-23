@@ -1,0 +1,178 @@
+/* =========================================
+   User Dashboard - Responsive Styles
+   ========================================= */
+
+.dashboard-body {
+    background-color: #f8fafc;
+    margin: 0;
+    font-family: "TextRegular", sans-serif;
+    min-height: 100vh;
+}
+
+/* Header */
+.u-header {
+    background: #ffffff;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.u-header__logo h2 {
+    font-family: "Title", sans-serif;
+    color: var(--color-primary, #0077c0);
+    margin: 0 0 5px 0;
+    font-size: 22px;
+}
+
+.u-header__logo p {
+    font-size: 12px;
+    color: #64748b;
+    margin: 0;
+}
+
+.u-header__actions {
+    display: flex;
+    gap: 15px;
+}
+
+.u-btn-outline {
+    padding: 8px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    color: #475569;
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+.u-btn-outline:hover { background: #f1f5f9; }
+
+.u-btn-logout {
+    padding: 8px 16px;
+    background: #fee2e2;
+    color: #ef4444;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.u-btn-logout:hover { background: #fecaca; }
+
+/* Main Content */
+.u-main {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.u-welcome {
+    margin-bottom: 30px;
+}
+.u-welcome h1 {
+    font-family: "Title", sans-serif;
+    color: #0f172a;
+    font-size: 24px;
+    margin: 0 0 8px 0;
+}
+.u-welcome p {
+    color: #64748b;
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Appointment Cards */
+.u-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.u-app-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.u-app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 15px;
+}
+
+.u-app-doctor {
+    font-family: "Title", sans-serif;
+    font-size: 18px;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+.u-app-service {
+    font-size: 13px;
+    color: #64748b;
+}
+
+.u-app-details {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.u-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #334155;
+}
+.u-detail-item i { color: var(--color-primary); }
+
+/* Status Badges */
+.status-badge {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-family: "TextBold", sans-serif;
+}
+.status-badge.pending { background: #fef3c7; color: #b45309; }
+.status-badge.approved { background: #dbeafe; color: #1e40af; }
+.status-badge.visited { background: #dcfce7; color: #166534; }
+.status-badge.rejected { background: #fee2e2; color: #991b1b; }
+
+.u-prescription {
+    background: #f0fdfa;
+    border: 1px solid #ccfbf1;
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 10px;
+}
+.u-prescription h4 {
+    margin: 0 0 10px 0;
+    color: #0f766e;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.u-prescription p {
+    margin: 0;
+    font-size: 13px;
+    color: #115e59;
+    line-height: 1.6;
+}
+
+@media (max-width: 576px) {
+    .u-header { padding: 15px; flex-direction: column; gap: 15px; align-items: flex-start; }
+    .u-header__actions { width: 100%; justify-content: space-between; }
+    .u-app-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل کاربری | LumiDent</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body class="dashboard-body">
+
+    <!-- Header -->
+    <header class="u-header">
+        <div class="u-header__logo">
+            <h2>LumiDent</h2>
+            <p>پنل اختصاصی بیماران</p>
+        </div>
+        <div class="u-header__actions">
+            <a href="../index.html" class="u-btn-outline"><i class="fas fa-home"></i> صفحه اصلی</a>
+            <button id="js-user-logout" class="u-btn-logout"><i class="fas fa-sign-out-alt"></i> خروج</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="u-main">
+        <div class="u-welcome">
+            <h1 id="js-user-greeting">کاربر عزیز، خوش آمدید</h1>
+            <p>در اینجا می‌توانید لیست نوبت‌ها و نسخه‌های پزشکی خود را مشاهده کنید.</p>
+        </div>
+
+        <div class="u-card-container" id="js-user-appointments-container">
+            <!-- Data will be injected here -->
+            <div style="text-align:center; padding:40px; color:#64748b;">در حال دریافت اطلاعات نوبت‌های شما...</div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script type="module" src="../js/utils_js/custom_error_modal.js"></script>
+    <script type="module" src="../js/utils_js/supabaseClient.js"></script>
+    <script type="module" src="../js/services_js/auth_service.js"></script>
+    <script type="module" src="../js/services_js/appointments_service.js"></script>
+    <script type="module" src="../js/pages_js/dashboard.js"></script>
+</body>
+</html>
