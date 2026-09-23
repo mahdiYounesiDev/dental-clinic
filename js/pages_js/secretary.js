@@ -1,7 +1,7 @@
 import { supabase } from '../utils_js/supabaseClient.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // ==========================================
+// ==========================================
     // Server-Side Role Validation (Security Update)
     // ==========================================
     async function verifySecretaryAccess() {
@@ -12,19 +12,34 @@ document.addEventListener('DOMContentLoaded', async () => {
             return false;
         }
 
+        // اصلاح شد: userName حذف شد و به جای آن family اضافه شد
         const { data: profile, error: profileError } = await supabase
             .from('profiles')
-            .select('role, name, userName')
+            .select('role, name, family')
             .eq('id', session.user.id)
             .single();
 
-        if (profileError || !profile || (profile.role !== 'secretary' && profile.role !== 'admin')) {
+        if (profileError) {
+            alert('دسترسی مسدود شد: خطای دیتابیس!\nمتن خطا: ' + profileError.message);
             window.location.href = '../index.html';
             return false;
         }
 
-        const displayName = profile.name || profile.userName || 'Staff';
-        const roleLabel = profile.role === 'admin' ? 'Admin' : 'Secretary';
+        if (!profile) {
+            alert('دسترسی مسدود شد: پروفایل یافت نشد!\nآیدی سشن شما (' + session.user.id + ') در جدول profiles وجود ندارد.');
+            window.location.href = '../index.html';
+            return false;
+        }
+
+        if (profile.role !== 'secretary' && profile.role !== 'admin') {
+            alert('دسترسی مسدود شد: نقش نامعتبر!\nنقش شما در دیتابیس "' + profile.role + '" ثبت شده است، در حالی که باید secretary یا admin باشد.');
+            window.location.href = '../index.html';
+            return false;
+        }
+
+        // استفاده از name و family برای نمایش اسم منشی/ادمین
+        const displayName = profile.name ? `${profile.name} ${profile.family || ''}`.trim() : 'همکار';
+        const roleLabel = profile.role === 'admin' ? 'ادمین' : 'منشی';
 
         const nameEl = document.getElementById('js-secretary-name');
         if (nameEl) nameEl.textContent = `${displayName} | ${roleLabel}`;
